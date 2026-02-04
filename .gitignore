@@ -1,0 +1,48 @@
+# ArcGIS specific
+*.lock
+*.gdb/*.lock
+*.gdb/a*
+*.gdb/*.freelist
+*.gdb/*.atx
+*.sde
+*.tbx/*.lock
+Thumbs.db
+*.aprx.bak
+
+# Large data files (use Git LFS or external storage)
+*.tif
+*.img
+*.sid
+*.jp2
+data/raw/**/*.zip
+data/raw/**/*.gdb
+
+# Temporary files
+*.tmp
+~$*
+*.swp
+
+# Personal settings
+*.ags
+*.atx
+*.pprj
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+venv/
+env/
+
+# Credentials (IMPORTANT!)
+**/credentials.json
+**/api_keys.txt
+**/.env
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
