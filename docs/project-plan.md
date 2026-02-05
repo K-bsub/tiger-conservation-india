@@ -1,4 +1,3 @@
-```markdown
 # Project Plan: Tiger Conservation Success Stories in India
 
 **Project Title:** Identifying Conservation Success Stories: Spatial Analysis of Tiger Population Recovery in India's Protected Areas (2006-2022)
@@ -113,7 +112,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - [x] Create project plan document
 - [x] Set up local project folder structure
 - [x] Create ArcGIS Pro project (.aprx)
-- [ ] Download GBIF tiger occurrence data
+- [x] Download GBIF tiger occurrence data
   - Search for *Panthera tigris* in India
   - Filter date range: 2006-2022
   - Export to CSV
@@ -135,7 +134,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - ✅ GitHub repository initialized
 - ✅ Proposal.md complete
 - ✅ Project-plan.md complete
-- [ ] ArcGIS Pro project created
+- ✅ ArcGIS Pro project created
 - [ ] Initial datasets downloaded
 
 **Time Estimate:** 12-15 hours
@@ -889,9 +888,11 @@ Highlight successful tiger conservation efforts in India through spatial analysi
   - ✅ GitHub repository created
   - ✅ Proposal written
   - ✅ Project plan drafted
+  - ✅ Setting up ArcGIS Pro project
+  - ✅ Beginning data downloads
+  - ✅ Download GBIF tiger occurrence data
 - **In Progress:**
-  - 🟢 Setting up ArcGIS Pro project
-  - 🟢 Beginning data downloads
+  - 🟢 Download WDPA protected area boundaries
 - **Blockers:** None
 - **Next Week Focus:** Complete all data collection
 - **Notes:** Project off to good start. Need to prioritize NTCA data access early.
@@ -1052,10 +1053,9 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | Date | Version | Changes | Author |
 |------|---------|---------|--------|
 | 2026-02-04 | 1.0 | Initial project plan created | Kiran Balasubramanian |
-| | | | |
+| 2026-02-05 | 1.1 | GBIF data related updates    | Kiran Balasubramanian |
 | | | | |
 
 ---
 
 *This is a living document and will be updated throughout the project lifecycle. All major changes will be documented in the revision history.*
-```

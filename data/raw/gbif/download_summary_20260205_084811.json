@@ -1,0 +1,18 @@
+{
+  "download_timestamp": "2026-02-05T08:48:14.410682",
+  "scientific_name": "Panthera tigris",
+  "country": "India",
+  "total_available": 4480,
+  "total_downloaded": 4480,
+  "filtered_2006_2022": 3488,
+  "taxon_keys_found": [
+    7059276,
+    5219416,
+    5219420,
+    4969819,
+    10604898
+  ],
+  "records_with_coordinates": 4317,
+  "states": 25,
+  "years_range": "1825 - 2026"
+}

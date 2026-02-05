@@ -1,4 +1,3 @@
-```markdown
 # Project Proposal: Mapping Tiger Conservation Success in India's National Parks
 
 **Author:** Kiran Balasubramanian 
@@ -285,7 +284,7 @@ The modular Story Map design will allow future expansion to include:
 ## Project Timeline
 
 ### Phase 1: Data Collection (Weeks 1-2)
-- [ ] Download GBIF tiger occurrence data
+- [x] Download GBIF tiger occurrence data
 - [ ] Obtain WDPA reserve boundaries
 - [ ] Access NTCA census reports (2006, 2010, 2014, 2018, 2022)
 - [ ] Collect forest cover and elevation data
@@ -393,9 +392,8 @@ This project will be considered successful if it:
 **Project Author:** Kiran Balasubramanian
 **Institution/Affiliation:** GIS Course Project  
 **Date Created:** February 4, 2026  
-**Last Updated:** February 4, 2026
+**Last Updated:** February 5, 2026
 
 ---
 
 *This proposal outlines Phase 1 of a multi-phase tiger conservation mapping project. The modular design allows for future expansion to include corridor analysis, threat assessment, and regional deep dives while establishing a foundation with positive conservation success stories.*
-```

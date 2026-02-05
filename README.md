@@ -61,9 +61,10 @@ Major tiger reserves across India including:
 
 ## 👤 Author
 
-**Kiran Balasubramanian** - Staff Performance Engineer, Maxeon Solar Technologies
-- Master's degree, University of Michigan
-- Background in spatial analysis and GIS applications
+**Kiran Balasubramanian**
+- Master's degree in Aerospace Engineering, University of Michigan, Ann Arbor
+- Background in algorithms, data science, and physics-based models
+- Learning spatial analysis and GIS applications
 
 ## 📄 License
 
