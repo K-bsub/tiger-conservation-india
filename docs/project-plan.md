@@ -117,7 +117,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
   - Filter date range: 2006-2022
   - Export to CSV
   - Document download date and record count
-- [ ] Download WDPA protected area boundaries
+- [x] Download WDPA protected area boundaries
   - Filter to India
   - Select tiger reserves and national parks
   - Download as shapefile
@@ -891,8 +891,9 @@ Highlight successful tiger conservation efforts in India through spatial analysi
   - ✅ Setting up ArcGIS Pro project
   - ✅ Beginning data downloads
   - ✅ Download GBIF tiger occurrence data
+  - ✅ Download WDPA protected area boundaries
 - **In Progress:**
-  - 🟢 Download WDPA protected area boundaries
+  - 🟢 Set up project geodatabase in ArcGIS Pro
 - **Blockers:** None
 - **Next Week Focus:** Complete all data collection
 - **Notes:** Project off to good start. Need to prioritize NTCA data access early.
@@ -1054,6 +1055,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 |------|---------|---------|--------|
 | 2026-02-04 | 1.0 | Initial project plan created | Kiran Balasubramanian |
 | 2026-02-05 | 1.1 | GBIF data related updates    | Kiran Balasubramanian |
+| 2026-02-07 | 1.2 | WDPA data related updates    | Kiran Balasubramanian |
 | | | | |
 
 ---
