@@ -81,8 +81,8 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 | Week | Milestone | Key Deliverables | Status |
 |------|-----------|------------------|--------|
-| **Week 1** | Project Setup & Initial Data Collection | GitHub repo, proposal, GBIF/WDPA data downloaded | 🟢 In Progress |
-| **Week 2** | Complete Data Collection | All datasets acquired, NTCA data extracted | ⚪ Not Started |
+| **Week 1** | Project Setup & Initial Data Collection | GitHub repo, proposal, GBIF/WDPA data downloaded | ✅ Complete |
+| **Week 2** | Complete Data Collection | All datasets acquired, NTCA data extracted | 🟢 In Progress |
 | **Week 3** | Data Processing & Cleaning | Cleaned datasets, joined tables, organized geodatabase | ⚪ Not Started |
 | **Week 4** | Advanced Data Prep | Time-series tables, spatial data ready for analysis | ⚪ Not Started |
 | **Week 5** | Spatial Analysis | Density maps, hot spot analysis, statistics complete | ⚪ Not Started |
@@ -138,11 +138,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 #### Tasks
 
-- [ ] Access NTCA census reports
-  - Download All India Tiger Estimation Reports: 2006, 2010, 2014, 2018, 2022
-  - Save PDFs to `data/raw/ntca/`
-  - Extract population data to spreadsheet
-  - Create reserve-year-population table
+- [x] Access NTCA census reports
 - [ ] Download iNaturalist data
   - Search for tiger observations in India
   - Filter by research grade/verified
@@ -874,7 +870,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Week 1 Status** (Current)
 - **Date:** February 4, 2026
-- **Progress:** 🟢 On Track
+- **Progress:** ✅ Complete
 - **Completed:**
   - ✅ GitHub repository created
   - ✅ Proposal written
@@ -892,12 +888,12 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 ---
 
 **Week 2 Status**
-- **Date:** [To be updated]
-- **Progress:** ⚪ Not Started
+- **Date:** February 8, 2026
+- **Progress:** 🟢 In Progress
 - **Completed:**
-  - [ ] 
+  - ✅ Access NTCA census reports 
 - **In Progress:**
-  - [ ] 
+  - 🟢 Download iNaturalist data
 - **Blockers:** 
 - **Next Week Focus:** 
 - **Notes:** 
@@ -989,8 +985,8 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 **Completion Percentage:** 5%
 
 **Key Metrics:**
-- Tasks completed: 3 / ~80
-- Milestones completed: 0 / 8
+- Tasks completed: 10 / ~80
+- Milestones completed: 1 / 8
 - Days remaining: 56
 - Estimated hours used: 5 / 150
 
@@ -1009,6 +1005,10 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - GitHub repository structure working well
 - Documentation-first approach helpful for planning
 - Need to front-load data discovery to avoid delays
+- Completed all items
+
+### Week 2 Notes
+- Found all population numbers from NTCA and secondary source
 
 ### Ongoing Observations
 - [To be updated weekly]
@@ -1048,6 +1048,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | 2026-02-05 | 1.1 | GBIF data related updates    			  | Kiran Balasubramanian |
 | 2026-02-07 | 1.2 | WDPA data related updates    			  | Kiran Balasubramanian |
 | 2026-02-07 | 1.3 | Geodatabase setup and download photos    | Kiran Balasubramanian |
+| 2026-02-08 | 2.0 | Downloaded and processed NTCA data 	  | Kiran Balasubramanian |
 | | | | |
 
 ---
