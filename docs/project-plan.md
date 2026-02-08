@@ -113,29 +113,20 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - [x] Set up local project folder structure
 - [x] Create ArcGIS Pro project (.aprx)
 - [x] Download GBIF tiger occurrence data
-  - Search for *Panthera tigris* in India
-  - Filter date range: 2006-2022
-  - Export to CSV
-  - Document download date and record count
 - [x] Download WDPA protected area boundaries
-  - Filter to India
-  - Select tiger reserves and national parks
-  - Download as shapefile
-  - Document version and date
-- [ ] Set up project geodatabase in ArcGIS Pro
-  - Create feature datasets for different data types
-  - Establish consistent naming conventions
-- [ ] Begin collecting reserve photographs
-  - Search Creative Commons sources
-  - Check official park websites
-  - Document attribution requirements
+- [x] Set up project geodatabase in ArcGIS Pro
+- [x] Begin collecting reserve photographs
+  - Collected 24 photos from Creative Commons sources
+  - Documented attribution in media/photo-attributions.md
+  - Organized in media/photos/reserves/
+  - Ready for Story Map development (Week 7)
 
 **Deliverables:**
 - ✅ GitHub repository initialized
 - ✅ Proposal.md complete
 - ✅ Project-plan.md complete
 - ✅ ArcGIS Pro project created
-- [ ] Initial datasets downloaded
+- ✅ Initial datasets downloaded
 
 **Time Estimate:** 12-15 hours
 
@@ -892,8 +883,8 @@ Highlight successful tiger conservation efforts in India through spatial analysi
   - ✅ Beginning data downloads
   - ✅ Download GBIF tiger occurrence data
   - ✅ Download WDPA protected area boundaries
-- **In Progress:**
-  - 🟢 Set up project geodatabase in ArcGIS Pro
+  - ✅ Set up project geodatabase in ArcGIS Pro
+- **In Progress:** None
 - **Blockers:** None
 - **Next Week Focus:** Complete all data collection
 - **Notes:** Project off to good start. Need to prioritize NTCA data access early.
@@ -1053,9 +1044,10 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 | Date | Version | Changes | Author |
 |------|---------|---------|--------|
-| 2026-02-04 | 1.0 | Initial project plan created | Kiran Balasubramanian |
-| 2026-02-05 | 1.1 | GBIF data related updates    | Kiran Balasubramanian |
-| 2026-02-07 | 1.2 | WDPA data related updates    | Kiran Balasubramanian |
+| 2026-02-04 | 1.0 | Initial project plan created 			  | Kiran Balasubramanian |
+| 2026-02-05 | 1.1 | GBIF data related updates    			  | Kiran Balasubramanian |
+| 2026-02-07 | 1.2 | WDPA data related updates    			  | Kiran Balasubramanian |
+| 2026-02-07 | 1.3 | Geodatabase setup and download photos    | Kiran Balasubramanian |
 | | | | |
 
 ---
