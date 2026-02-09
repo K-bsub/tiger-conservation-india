@@ -69,8 +69,6 @@ Official tiger population estimates from National Tiger Conservation Authority a
 
 #### Bandipur & Nagarahole 2006-2010 Data
 
-**[REPLACE WITH ACTUAL PAPER DETAILS]**
-
 - **Title:** COMPARATIVE ANALYSIS OF TIGER LANDSCAPE COMPLEXES AND RESERVES IN INDIA: AN EVALUATION OF THE TIGER POPULATION 2006-2014.
 - **Authors:** Singh, Bhanwar Vishvendra Raj, and Anjan Sen
 - **Journal:** Am Research Thoughts 1

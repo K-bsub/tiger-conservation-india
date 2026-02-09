@@ -139,15 +139,8 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 #### Tasks
 
 - [x] Access NTCA census reports
-- [ ] Download iNaturalist data
-  - Search for tiger observations in India
-  - Filter by research grade/verified
-  - Export observation data
-  - Document data quality notes
-- [ ] Obtain Forest Survey of India data
-  - Access forest cover maps
-  - Download vegetation classification if available
-  - Note data year and resolution
+- [x] Download iNaturalist data
+- [x] Obtain Forest Survey of India data
 - [ ] Download SRTM elevation data
   - Access USGS Earth Explorer
   - Select tiles covering study area
@@ -891,9 +884,11 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - **Date:** February 8, 2026
 - **Progress:** 🟢 In Progress
 - **Completed:**
-  - ✅ Access NTCA census reports 
+  - ✅ Access NTCA census reports
+  - ✅ Download iNaturalist data
+  - ✅ Obtain Forest Survey of India data
 - **In Progress:**
-  - 🟢 Download iNaturalist data
+  - 🟢 Download SRTM elevation data
 - **Blockers:** 
 - **Next Week Focus:** 
 - **Notes:** 
@@ -1026,14 +1021,11 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Project Lead:** Kiran Balasubramanian
 
-**Project Advisor/Instructor:** [If applicable]
-
 **Communication Plan:**
 - Weekly status updates in this document
 - GitHub commits with descriptive messages
-- Reach out immediately if blocked >2 days
 
-**Office Hours / Support:**
+**Support:**
 - Esri Community Forums (technical issues)
 - Course discussion board (if applicable)
 - GIS Stack Exchange (general GIS questions)
@@ -1049,6 +1041,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | 2026-02-07 | 1.2 | WDPA data related updates    			  | Kiran Balasubramanian |
 | 2026-02-07 | 1.3 | Geodatabase setup and download photos    | Kiran Balasubramanian |
 | 2026-02-08 | 2.0 | Downloaded and processed NTCA data 	  | Kiran Balasubramanian |
+| 2026-02-09 | 2.1 | Downloaded iNaturalist and Forest data	  | Kiran Balasubramanian |
 | | | | |
 
 ---
