@@ -287,7 +287,7 @@ The modular Story Map design will allow future expansion to include:
 - [x] Download GBIF tiger occurrence data
 - [x] Obtain WDPA reserve boundaries
 - [x] Access NTCA census reports (2006, 2010, 2014, 2018, 2022)
-- [ ] Collect forest cover and elevation data
+- [x] Collect forest cover and elevation data
 - [x] Gather reserve photographs (Creative Commons or official sources)
 
 ### Phase 2: Data Processing (Weeks 3-4)
@@ -392,7 +392,7 @@ This project will be considered successful if it:
 **Project Author:** Kiran Balasubramanian
 **Institution/Affiliation:** GIS Course Project  
 **Date Created:** February 4, 2026  
-**Last Updated:** February 8, 2026
+**Last Updated:** February 10, 2026
 
 ---
 

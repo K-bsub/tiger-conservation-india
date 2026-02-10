@@ -1,0 +1,35 @@
+SRTM Tiles Downloaded - Tiger Conservation Project
+
+Downloaded: February 9, 2026
+Source: USGS Earth Explorer
+Resolution: 30m (1 Arc-Second)
+
+Tiles by Region:
+
+North India (Uttarakhand, Uttar Pradesh, Bihar, Rajasthan):
+- N28E077.tif (Corbett area)
+- N28E078.tif
+- N29E078.tif
+- N30E078.tif
+- N26E076.tif (Ranthambore area)
+- N27E076.tif
+
+Central India (Madhya Pradesh, Maharashtra):
+- N21E079.tif (Pench area)
+- N21E080.tif
+- N22E079.tif (Kanha area)
+- N22E080.tif
+
+South India (Karnataka):
+- N11E076.tif (Bandipur/Nagarahole area)
+- N12E076.tif
+- N11E077.tif
+- N12E077.tif
+
+Northeast (Assam):
+- N26E093.tif (Kaziranga area)
+- N26E094.tif
+- N27E093.tif
+
+Total Tiles: 19
+Total Size: 470 MB

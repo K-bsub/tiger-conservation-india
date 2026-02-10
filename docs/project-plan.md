@@ -141,12 +141,12 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - [x] Access NTCA census reports
 - [x] Download iNaturalist data
 - [x] Obtain Forest Survey of India data
-- [ ] Download SRTM elevation data
+- [x] Download SRTM elevation data
   - Access USGS Earth Explorer
   - Select tiles covering study area
   - Download 30m resolution (preferred) or 90m
   - Mosaic if multiple tiles needed
-- [ ] Get Natural Earth administrative boundaries
+- [x] Get Natural Earth administrative boundaries
   - Download India states and districts
   - Verify projection and attributes
 - [ ] Download OpenStreetMap data
@@ -164,7 +164,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Deliverables:**
 - [ ] All datasets downloaded and organized
-- [ ] NTCA population data extracted to table
+- [x] NTCA population data extracted to table
 - [ ] Data inventory complete
 - [ ] Data-sources.md documentation
 
@@ -887,8 +887,10 @@ Highlight successful tiger conservation efforts in India through spatial analysi
   - ✅ Access NTCA census reports
   - ✅ Download iNaturalist data
   - ✅ Obtain Forest Survey of India data
+  - ✅ Download SRTM elevation data
+  - ✅ Get Natural Earth administrative boundaries
 - **In Progress:**
-  - 🟢 Download SRTM elevation data
+  - 🟢 Download OpenStreetMap data
 - **Blockers:** 
 - **Next Week Focus:** 
 - **Notes:** 
@@ -1042,6 +1044,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | 2026-02-07 | 1.3 | Geodatabase setup and download photos    | Kiran Balasubramanian |
 | 2026-02-08 | 2.0 | Downloaded and processed NTCA data 	  | Kiran Balasubramanian |
 | 2026-02-09 | 2.1 | Downloaded iNaturalist and Forest data	  | Kiran Balasubramanian |
+| 2026-02-10 | 2.2 | Downloaded SRTM and Natural Earth boundaries data	  | Kiran Balasubramanian |
 | | | | |
 
 ---
