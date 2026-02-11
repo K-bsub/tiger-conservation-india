@@ -55,7 +55,7 @@ Major tiger reserves across India including:
 ## 🚀 Getting Started
 
 1. Review project proposal in `docs/proposal.md`
-2. Check data availability in `data/raw/README.md`
+2. Check data availability in `docs/data-sources.md`
 3. Follow methodology in `docs/methodology.md`
 4. View progress updates in `docs/project-plan.md`
 
@@ -86,4 +86,4 @@ Questions or feedback? [kbsub@umich.edu](mailto:kbsub@umich.edu)
 ---
 
 *Project Status: In Progress*  
-*Last Updated: February 4, 2026*
+*Last Updated: February 11, 2026*

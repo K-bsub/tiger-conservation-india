@@ -82,8 +82,8 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | Week | Milestone | Key Deliverables | Status |
 |------|-----------|------------------|--------|
 | **Week 1** | Project Setup & Initial Data Collection | GitHub repo, proposal, GBIF/WDPA data downloaded | ✅ Complete |
-| **Week 2** | Complete Data Collection | All datasets acquired, NTCA data extracted | 🟢 In Progress |
-| **Week 3** | Data Processing & Cleaning | Cleaned datasets, joined tables, organized geodatabase | ⚪ Not Started |
+| **Week 2** | Complete Data Collection | All datasets acquired, NTCA data extracted | ✅ Complete |
+| **Week 3** | Data Processing & Cleaning | Cleaned datasets, joined tables, organized geodatabase | 🟢 In Progress |
 | **Week 4** | Advanced Data Prep | Time-series tables, spatial data ready for analysis | ⚪ Not Started |
 | **Week 5** | Spatial Analysis | Density maps, hot spot analysis, statistics complete | ⚪ Not Started |
 | **Week 6** | Map Development | Web maps created, symbology finalized, charts made | ⚪ Not Started |
@@ -142,31 +142,16 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - [x] Download iNaturalist data
 - [x] Obtain Forest Survey of India data
 - [x] Download SRTM elevation data
-  - Access USGS Earth Explorer
-  - Select tiles covering study area
-  - Download 30m resolution (preferred) or 90m
-  - Mosaic if multiple tiles needed
 - [x] Get Natural Earth administrative boundaries
-  - Download India states and districts
-  - Verify projection and attributes
-- [ ] Download OpenStreetMap data
-  - Use Geofabrik India extract or QuickOSM
-  - Focus on roads and settlements
-  - Extract relevant features only
-- [ ] Create data inventory spreadsheet
-  - List all datasets with source, date, format
-  - Document any access limitations
-  - Note processing requirements
-- [ ] Create data-sources.md documentation
-  - Full citations for all data
-  - Access URLs and methods
-  - Known issues or limitations
+- [x] Download OpenStreetMap data
+- [x] Create data inventory spreadsheet
+- [x] Create data-sources.md documentation
 
 **Deliverables:**
-- [ ] All datasets downloaded and organized
+- [x] All datasets downloaded and organized
 - [x] NTCA population data extracted to table
-- [ ] Data inventory complete
-- [ ] Data-sources.md documentation
+- [x] Data inventory complete
+- [x] Data-sources.md documentation
 
 **Time Estimate:** 15-18 hours
 
@@ -876,34 +861,36 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - **In Progress:** None
 - **Blockers:** None
 - **Next Week Focus:** Complete all data collection
-- **Notes:** Project off to good start. Need to prioritize NTCA data access early.
+- **Notes:** Project off to good start. Need to prioritize NTCA data access early
 
 ---
 
 **Week 2 Status**
 - **Date:** February 8, 2026
-- **Progress:** 🟢 In Progress
+- **Progress:** ✅ Complete
 - **Completed:**
   - ✅ Access NTCA census reports
   - ✅ Download iNaturalist data
   - ✅ Obtain Forest Survey of India data
   - ✅ Download SRTM elevation data
   - ✅ Get Natural Earth administrative boundaries
-- **In Progress:**
-  - 🟢 Download OpenStreetMap data
-- **Blockers:** 
-- **Next Week Focus:** 
-- **Notes:** 
+  - ✅ Download OpenStreetMap data
+  - ✅ Create data inventory spreadsheet
+  - ✅ Create data-sources.md documentation
+- **In Progress:** None
+- **Blockers:** None
+- **Next Week Focus:** Complete data processing
+- **Notes:** All data downloads completed and documented
 
 ---
 
 **Week 3 Status**
-- **Date:** [To be updated]
-- **Progress:** ⚪ Not Started
+- **Date:** February 11, 2026
+- **Progress:** 🟢 In Progress
 - **Completed:**
   - [ ] 
 - **In Progress:**
-  - [ ] 
+  - 🟢 Set up project projection (WGS 1984 UTM Zone 43N)
 - **Blockers:** 
 - **Next Week Focus:** 
 - **Notes:** 
@@ -1045,6 +1032,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | 2026-02-08 | 2.0 | Downloaded and processed NTCA data 	  | Kiran Balasubramanian |
 | 2026-02-09 | 2.1 | Downloaded iNaturalist and Forest data	  | Kiran Balasubramanian |
 | 2026-02-10 | 2.2 | Downloaded SRTM and Natural Earth boundaries data	  | Kiran Balasubramanian |
+| 2026-02-11 | 2.3 | Downloaded OpenStreet data, and documented data inventory and sources	  | Kiran Balasubramanian |
 | | | | |
 
 ---
