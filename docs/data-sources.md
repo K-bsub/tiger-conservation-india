@@ -2,7 +2,7 @@
 
 **Project:** Tiger Conservation Success Stories in India (2006–2022)  
 **Repository:** https://github.com/K-bsub/tiger-conservation-india  
-**Last Updated:** February 11, 2026  
+**Last Updated:** February 12, 2026  
 **Compiled by:** Kiran Balasubramanian
 
 ---
@@ -290,7 +290,7 @@ supplementary distribution patterns and public engagement context.
 ### 4.1 Global Forest Watch — Tropical Tree Cover
 
 High-resolution tree cover data used as a forest habitat proxy for spatial
-analysis and habitat characterization.
+analysis and visualization.
 
 **Full Citation:**
 > Hansen, M.C., Potapov, P.V., Moore, R., Hancher, M., Turubanova, S.A.,
@@ -313,59 +313,81 @@ analysis and habitat characterization.
 - **Resolution:** 30 meters
 - **Coordinate System:** WGS 1984 (EPSG:4326)
 - **License:** Open access; attribution required (cite Hansen et al. 2013)
+- **Role in project:** Visualization layer (optional); canopy cover context
 
 **Known Issues / Limitations:**
 - **Tree cover ≠ forest cover:** Dataset includes plantations, orchards, and
   other non-forest tree cover — not directly comparable to FSI forest
   classification
-- **Temporal gap:** Data year is 2020; tiger census is 2022 — approximately
-  2-year offset
+- **Temporal gap:** Data year is 2020; tiger census is 2022
 - **No forest type classification:** Only tree cover presence/absence, not
-  forest density classes (VDF/MDF/OF)
-- **May include non-native plantations** such as eucalyptus or acacia in some
-  landscapes
-- **Cloud cover effects** can reduce accuracy in dense tropical areas
+  VDF/MDF/OF density classes
 - **Overall accuracy:** ~85% (Hansen et al. 2013)
 
 ---
 
-### 4.2 India State of Forest Report 2021
+### 4.2 India State of Forest Report 2021 — Chapter 4 *(PRIMARY SOURCE)*
 
-Official national forest statistics and classification for validation and
-context. Primary reference for forest density class data.
+**⭐ PRIMARY source for reserve-level forest cover in this project.**
+Chapter 4 provides VDF/MDF/OF data measured directly from digitized Tiger
+Reserve boundaries (WII, Dehradun) — not district-level proxies. Includes
+decadal change (2011→2021) and corridor forest cover for all 52 reserves.
 
 **Full Citation:**
-> Forest Survey of India. (2022). *India State of Forest Report 2021*.
-> Ministry of Environment, Forest and Climate Change, Government of India,
-> Dehradun, Uttarakhand. Available at: https://fsi.nic.in/
+> Forest Survey of India. (2022). *India State of Forest Report 2021,
+> Chapter 4: Assessment of Forest Cover in Tiger Reserves and Lion
+> Conservation Area of India*. Ministry of Environment, Forest and Climate
+> Change, Government of India, Dehradun, Uttarakhand.
+> Available at: https://fsi.nic.in/
 
 - **Access URL:** https://fsi.nic.in/forest-report-2021
 - **Access Method:** Direct PDF download from FSI website; no account required
-- **Downloaded:** February 9, 2026
-- **Assessment Period:** 2019–2021
-- **File:** `data/raw/forest/fsi_reports/*-2021.pdf`
+- **Downloaded:** February 12, 2026
+- **Assessment Period:** Data period 2019–2020
+- **File:** `data/raw/forest/fsi_reports/chapter-4-2021.pdf`
+- **Processed output:** `data/processed/forest/isfr_2021_reserve_corridors.xlsx`
 - **License:** Government of India open data; attribution required
 
-**Key Statistics Used in This Project:**
-- Total forest cover: 7,13,789 km² (21.71% of India)
-- VDF: 99,779 km² (14.00% of forest area)
-- MDF: 3,08,171 km² (43.17% of forest area)
-- Open Forest: 3,05,839 km² (42.83% of forest area)
+**Data extracted for this project (all 7 reserves):**
+
+| Table | Contents | Status |
+|---|---|---|
+| Table 4.5 | VDF/MDF/OF within TR boundary, 2011 & 2021, % of TR area, change | ✅ Extracted |
+| Table 4.9 / 4.10 | Forest cover in 13 tiger corridors (VDF/MDF/OF, % of corridor) | ✅ Extracted |
+| Table 4.6 | Wetlands within tiger reserves (area in ha) | Available if needed |
+| Table 4.7 | Forest type groups (Champion & Seth classification) | Available if needed |
+
+**Key values (7 project reserves, ISFR 2021):**
+
+| Reserve | TR Area (sq km) | Forest 2021 (sq km) | % of TR | 2011→2021 Change |
+|---|---|---|---|---|
+| Bandipur | 1,784.47 | 1,497.63 | 83.93% | −43.35 |
+| Nagarahole | 1,152.74 | 970.71 | 84.21% | −0.70 (stable) |
+| Kanha | 2,071.51 | 1,886.37 | 91.05% | −7.39 |
+| Pench (MP) | 1,168.66 | 1,070.09 | 91.57% | −6.11 |
+| Pench (MH) | 738.28 | 625.57 | 84.73% | −5.24 |
+| Ranthambore | 1,765.57 | 1,360.30 | 77.05% | **+177.20 ▲** |
+| Kaziranga | 1,180.35 | 1,180.16 | 86.00% | **+274.48 ▲** |
+| Jim Corbett | 1,462.66 | 652.38 | 44.60% | ⚠ Boundary change — verify |
 
 **Known Issues / Limitations:**
-- **Digital spatial data not publicly available** — report provides statistics
-  and static PDF maps only; vector/raster data requires official FSI request
-- **Temporal alignment:** Data collected 2019–2021, approximately 1–2 years
-  before the 2022 tiger census
-- **Minimum mapping unit:** 1 hectare — small forest patches may be missed
-- **Mapping scale:** 1:50,000 — not suitable for sub-reserve level analysis
-- Assessment is biennial; values represent a snapshot, not annual data
+- **Spatial data not publicly available** — Chapter 4 provides statistics from
+  digitized TR boundaries; vector/raster data requires official FSI/WII request
+- **Jim Corbett anomaly:** −594.65 sq km change almost certainly reflects a TR
+  boundary revision between 2011 and 2021 assessments, not actual forest loss;
+  cross-check against NTCA shapefile
+- **Minimum mapping unit:** 1 hectare
+- **ArcGIS Zonal Statistics:** NOT required for tabular analysis (values already
+  extracted). Only needed if building a VDF/MDF/OF visualization raster layer
+  (deferred to Week 6, optional)
 
 ---
 
-### 4.3 India State of Forest Report 2017
+### 4.3 India State of Forest Report 2017 — State Chapters *(SECONDARY / CONTEXT)*
 
-Used for baseline forest cover comparison aligned with the 2018 tiger census.
+Used as a **landscape context layer** — provides district-level forest cover
+data for the broader geography surrounding each reserve. Superseded by ISFR
+2021 Chapter 4 for reserve-level analysis.
 
 **Full Citation:**
 > Forest Survey of India. (2017). *India State of Forest Report 2017*.
@@ -373,16 +395,25 @@ Used for baseline forest cover comparison aligned with the 2018 tiger census.
 > Dehradun, Uttarakhand. Available at: https://fsi.nic.in/
 
 - **Access URL:** https://fsi.nic.in/forest-report-2017
-- **Access Method:** Direct PDF download from FSI website; no account required
-- **Downloaded:** February 9, 2026
-- **Assessment Period:** 2015–2017
-- **File:** `data/raw/forest/fsi_reports/*-2017.pdf`
+- **Access Method:** Direct PDF download; no account required
+- **Downloaded:** February 9–12, 2026
+- **Assessment Period:** Data period Oct–Dec 2015
+- **Files downloaded:** Karnataka, Madhya Pradesh, Maharashtra, Rajasthan,
+  Assam, Uttarakhand state chapters
+- **Files:** `data/raw/forest/fsi_reports/*-isfr-2017.pdf`
+- **Processed output:** `data/processed/forest/isfr_2017_forest_cover.xlsx`
 - **License:** Government of India open data; attribution required
 
+**Role in project:**
+- District-level VDF/MDF/OF context for the landscape surrounding each reserve
+- Useful for Story Map narrative (e.g., Rajasthan state has only 4.84% forest
+  cover, making Ranthambore's tiger success more striking)
+- **Not used** for reserve-level forest cover statistics (superseded by ISFR 2021)
+
 **Known Issues / Limitations:**
-- Same limitations as ISFR 2021 (see above)
-- Used only for 2018 census comparison; not primary analysis dataset
-- Digital spatial data not publicly available
+- District-level data only — reserve boundary not used; values are proxies
+- 2017 assessment; older than ISFR 2021
+- Same spatial data limitations as ISFR 2021
 
 ---
 
@@ -657,8 +688,11 @@ Partnership (February 2026), keybiodiversityareas.org.
 Tiger Occurrences: GBIF.org (2026); iNaturalist contributors (2026),
 research-grade observations.
 
-Forest Cover: Hansen et al. (2013), Science 342:850–853, via Global Forest
-Watch; India State of Forest Reports 2017 & 2021, Forest Survey of India.
+Forest Cover: Forest Survey of India, *India State of Forest Report 2021*,
+Chapter 4 — Assessment of Forest Cover in Tiger Reserves (primary source,
+reserve-boundary level data); ISFR 2017 state chapters (landscape context);
+Hansen et al. (2013), Science 342:850–853, via Global Forest Watch
+(visualization layer).
 
 Elevation: NASA SRTM 1 Arc-Second Global DEM (2000), via USGS Earth Explorer.
 

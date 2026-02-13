@@ -198,10 +198,15 @@ Highlight successful tiger conservation efforts in India through spatial analysi
   - Mosaic SRTM tiles if needed
   - Clip to extent of tiger reserves + buffer
   - Verify no data values are set correctly
-- [ ] Process forest cover data
-  - Clip to study area
-  - Reclassify if needed for analysis
-  - Document classification scheme
+- [x] Process forest cover data *(COMPLETE — approach changed)*
+  - ✅ ISFR 2021 Chapter 4 (Table 4.5): VDF/MDF/OF extracted at TR-boundary level
+    for all 7 reserves; 2011 baseline + 2021 current + decadal change
+  - ✅ ISFR 2021 Tables 4.9/4.10: Forest cover in 13 tiger corridors extracted
+  - ✅ ISFR 2017 state chapters: District-level data extracted as landscape context
+  - ✅ Output: `data/processed/forest/isfr_2021_reserve_corridors.xlsx`
+  - ✅ Output: `data/processed/forest/isfr_2017_forest_cover.xlsx`
+  - ⏭ ArcGIS Zonal Statistics on FSI raster: deferred to Week 6 (optional
+    visualization layer only — tabular values already obtained from ISFR 2021)
 - [ ] Quality check all datasets
   - Verify projections
   - Check for null values
@@ -254,10 +259,12 @@ Highlight successful tiger conservation efforts in India through spatial analysi
   - Run zonal statistics for each reserve
   - Calculate: min, max, mean, std dev elevation
   - Join results to reserve attributes
-- [ ] Extract forest cover statistics
-  - Calculate dominant forest type per reserve
-  - Calculate percent forest cover
-  - Join to reserve attributes
+- [ ] Join forest cover statistics to reserve boundaries *(data already available)*
+  - Import `isfr_2021_reserve_corridors.xlsx` reserve sheet as table in ArcGIS
+  - Join to India_Tiger_Reserves feature class on reserve name
+  - Fields to join: TR_Area_sqkm, VDF_2021, MDF_2021, OF_2021, Total_Forest_2021,
+    Pct_of_TR_2021, Forest_Change_sqkm
+  - Verify all 7 reserves match; document any name mismatches
 - [ ] Create analysis extent/mask
   - Buffer around study area for context
   - Create clipping boundary for maps
@@ -885,15 +892,29 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 ---
 
 **Week 3 Status**
-- **Date:** February 11, 2026
+- **Date:** February 12, 2026
 - **Progress:** 🟢 In Progress
 - **Completed:**
-  - [ ] 
+  - ✅ Set up project projection (WGS 1984 UTM Zone 43N); geodatabase structure documented
+  - ✅ Extracted forest cover data from ISFR 2021 Chapter 4 (Table 4.5) — reserve-boundary
+    level VDF/MDF/OF for all 7 reserves, 2011 & 2021 assessments with decadal change
+  - ✅ Extracted tiger corridor forest cover (Tables 4.9/4.10) — 13 corridors relevant
+    to project reserves with VDF/MDF/OF breakdown
+  - ✅ Extracted ISFR 2017 district-level data (6 state chapters) as landscape context layer
+  - ✅ Forest cover tabular extraction COMPLETE — ArcGIS Zonal Statistics not required
+    for analysis (deferred to Week 6 as optional visualization task)
+  - ✅ Output files: `data/processed/forest/isfr_2021_reserve_corridors.xlsx`,
+    `data/processed/forest/isfr_2017_forest_cover.xlsx`
 - **In Progress:**
-  - 🟢 Set up project projection (WGS 1984 UTM Zone 43N)
-- **Blockers:** 
-- **Next Week Focus:** 
-- **Notes:** 
+  - 🟢 GBIF/iNaturalist occurrence data processing
+  - 🟢 NTCA census data join to reserve boundaries
+- **Blockers:** None
+- **Next Week Focus:** Time-series population table; join ISFR 2021 forest stats to
+  reserve attributes in geodatabase; reserve profile compilation; SRTM import
+- **Notes:** ISFR 2021 Chapter 4 supersedes ISFR 2017 as primary forest source.
+  Ranthambore shows +177 sq km forest gain (2011→2021) — strongest conservation
+  success narrative in dataset. Corbett shows anomalous −595 sq km likely due to
+  boundary revision; flag for verification against NTCA shapefile.
 
 ---
 
@@ -966,20 +987,20 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Current Status:** 🟢 On Track
 
-**Completion Percentage:** 5%
+**Completion Percentage:** 30%
 
 **Key Metrics:**
-- Tasks completed: 10 / ~80
-- Milestones completed: 1 / 8
-- Days remaining: 56
-- Estimated hours used: 5 / 150
+- Tasks completed: ~28 / ~80
+- Milestones completed: 2.5 / 8 (Weeks 1 & 2 complete; Week 3 ~60% done)
+- Days remaining: 54
+- Estimated hours used: ~35 / 150
 
 **Traffic Light Status:**
-- 🟢 Schedule: On track
-- 🟢 Scope: Well-defined
+- 🟢 Schedule: On track (forest data extraction ahead of original plan)
+- 🟢 Scope: Well-defined; 7 reserves confirmed
 - 🟢 Resources: Adequate
-- 🟢 Quality: Not yet assessed
-- 🟡 Risks: Monitoring data availability
+- 🟢 Data: Forest cover complete; population data complete
+- 🟡 Risks: Corbett boundary anomaly needs verification
 
 ---
 
@@ -991,8 +1012,16 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - Need to front-load data discovery to avoid delays
 - Completed all items
 
-### Week 2 Notes
-- Found all population numbers from NTCA and secondary source
+### Week 3 Notes
+- ISFR 2021 Chapter 4 is a significantly better data source than originally planned —
+  provides exact reserve-boundary measurements rather than district proxies
+- ArcGIS Zonal Statistics for forest cover is no longer needed for tabular analysis;
+  deferred to optional visualization task in Week 6
+- Ranthambore shows forest GAIN (+177 sq km) alongside strong tiger population
+  recovery — the most compelling conservation success story in the dataset
+- Kaziranga corridor situation (eastern corridors at 11–18% forest) adds important
+  threat/vulnerability context alongside its reserve-level success
+- Flag: Jim Corbett −595 sq km forest change likely a boundary issue, not real loss
 
 ### Ongoing Observations
 - [To be updated weekly]
@@ -1033,7 +1062,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | 2026-02-09 | 2.1 | Downloaded iNaturalist and Forest data	  | Kiran Balasubramanian |
 | 2026-02-10 | 2.2 | Downloaded SRTM and Natural Earth boundaries data	  | Kiran Balasubramanian |
 | 2026-02-11 | 2.3 | Downloaded OpenStreet data, and documented data inventory and sources	  | Kiran Balasubramanian |
-| | | | |
+| 2026-02-12 | 3.0 | Extracted ISFR 2021 Ch.4 forest cover (reserve-boundary level, all 7 reserves); extracted 13 tiger corridor data; updated Week 3 status; revised forest cover approach (Zonal Statistics deferred) | Kiran Balasubramanian |
 
 ---
 

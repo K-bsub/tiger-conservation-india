@@ -85,10 +85,14 @@ The study area encompasses India's major tiger reserves, with particular focus o
 
 #### Forest Survey of India
 
-- **Data Type:** Forest cover classification data and vegetation type maps
+- **Data Type:** Forest cover classification — VDF/MDF/OF at reserve-boundary level
+- **Primary source:** ISFR 2021, Chapter 4 — Assessment of Forest Cover in Tiger Reserves;
+  provides exact forest cover within each TR boundary (not district proxies), with
+  2011 vs. 2021 decadal comparison and tiger corridor data
+- **Secondary source:** ISFR 2017 state chapters — district-level landscape context
 - **Access:** https://fsi.nic.in
-- **Format:** Raster/vector spatial data
-- **Status:** Publicly available
+- **Format:** PDF reports (tabular extraction); raster/vector data requires FSI request
+- **Status:** ✅ Tabular data fully extracted; forest cover analysis complete
 
 #### SRTM (Shuttle Radar Topography Mission)
 
@@ -120,10 +124,13 @@ The study area encompasses India's major tiger reserves, with particular focus o
 - ✅ WDPA protected area boundaries (direct download)
 - ✅ Elevation data (USGS)
 - ✅ Administrative boundaries (Natural Earth)
+- ✅ Forest cover data — ISFR 2021 Chapter 4 (tabular extraction complete;
+  reserve-boundary VDF/MDF/OF for all 7 reserves extracted February 2026)
 
 **May Require Request:**
 - ⚠️ Detailed spatial data from NTCA (formal data request may be needed)
-- ⚠️ High-resolution forest cover data (FSI may require registration)
+- ⚠️ FSI forest cover raster/vector (requires registration; deferred —
+  tabular values from ISFR 2021 already satisfy analysis requirements)
 
 **Contingency Plan:**
 If comprehensive spatial data from NTCA is unavailable, I will supplement with GBIF and iNaturalist point data to create density maps and distribution analyses. No data creation is anticipated as all necessary datasets exist in public repositories, though data cleaning and format standardization will be required to integrate temporal census data with spatial occurrence records.
@@ -146,9 +153,19 @@ GBIF and iNaturalist point observations will be filtered to include only verifie
 
 All spatial data will be projected to **WGS 1984 UTM Zone 43N** to maintain accurate distance and area calculations for India.
 
+#### Forest Cover Data
+
+Forest cover at the reserve level is sourced from ISFR 2021 Chapter 4 (Table 4.5),
+which provides VDF/MDF/OF measurements taken directly from digitized Tiger Reserve
+boundaries. This eliminates the need for ArcGIS Zonal Statistics for tabular analysis.
+If a VDF/MDF/OF visualization raster layer is desired for the Story Map, FSI raster
+data will be requested and processed in Week 6 (optional). District-level context
+from ISFR 2017 is retained for landscape narrative purposes.
+
 #### Data Clipping
 
-Forest cover and elevation rasters will be clipped to the extent of tiger reserves to improve processing efficiency and focus analysis on relevant areas.
+Elevation rasters will be clipped to the extent of tiger reserves to improve
+processing efficiency and focus analysis on relevant areas.
 
 ### Analysis Methods
 
