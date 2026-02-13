@@ -310,9 +310,9 @@ The modular Story Map design will allow future expansion to include:
 ### Phase 2: Data Processing (Weeks 3-4)
 - [x] Clean and filter occurrence data to study area and timeframe
 - [x] Extract census data from NTCA reports to tabular format
-- [ ] Join temporal data to spatial boundaries
-- [ ] Create population trend tables and calculate growth statistics
-- [ ] Prepare all data in consistent projection and format
+- [x] Join temporal data to spatial boundaries
+- [x] Create population trend tables and calculate growth statistics
+- [x] Prepare all data in consistent projection and format
 
 ### Phase 3: Spatial Analysis (Week 5)
 - [ ] Perform kernel density analysis
@@ -409,7 +409,7 @@ This project will be considered successful if it:
 **Project Author:** Kiran Balasubramanian
 **Institution/Affiliation:** GIS Course Project  
 **Date Created:** February 4, 2026  
-**Last Updated:** February 10, 2026
+**Last Updated:** February 13, 2026
 
 ---
 

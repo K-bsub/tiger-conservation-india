@@ -5,7 +5,7 @@
 **Author:** Kiran Balasubramanian
 **Start Date:** February 4, 2026  
 **Target Completion:** April 2026 (8 weeks)  
-**Last Updated:** February 4, 2026
+**Last Updated:** February 13, 2026
 
 ---
 
@@ -148,10 +148,10 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - [x] Create data-sources.md documentation
 
 **Deliverables:**
-- [x] All datasets downloaded and organized
-- [x] NTCA population data extracted to table
-- [x] Data inventory complete
-- [x] Data-sources.md documentation
+- ✅ All datasets downloaded and organized
+- ✅ NTCA population data extracted to table
+- ✅ Data inventory complete
+- ✅ Data-sources.md documentation
 
 **Time Estimate:** 15-18 hours
 
@@ -163,10 +163,8 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 #### Tasks
 
-- [ ] Set up project projection (WGS 1984 UTM Zone 43N)
-  - Reproject all vector data
-  - Define projection for raster data
-- [ ] Process GBIF occurrence data
+- [x] Set up project projection (WGS 1984 UTM Zone 43N)
+- [x] Process GBIF occurrence data
   - Import CSV to ArcGIS Pro
   - Display XY coordinates
   - Filter to valid coordinates only
@@ -174,23 +172,23 @@ Highlight successful tiger conservation efforts in India through spatial analysi
   - Filter to coordinate uncertainty <1km
   - Export to feature class
   - Create 2006-2012 and 2013-2022 subsets
-- [ ] Process iNaturalist data
+- [x] Process iNaturalist data
   - Similar cleaning steps as GBIF
   - Verify research grade observations
   - Check for duplicates with GBIF
   - Combine or keep separate (document decision)
-- [ ] Clean WDPA protected areas
+- [x] Clean WDPA protected areas
   - Select only tiger reserves from dataset
   - Verify reserve names match NTCA data
   - Standardize name field for joining
   - Calculate area in km²
   - Create unique reserve ID field
-- [ ] Process census population data
+- [x] Process census population data
   - Create standardized reserve name field
   - Verify spelling consistency
   - Structure as long-format table (Reserve, Year, Population)
   - Add growth calculation fields
-- [ ] Join census data to spatial boundaries
+- [x] Join census data to spatial boundaries
   - Create relationship class or multiple joined layers
   - Verify all reserves have matching spatial data
   - Document any missing matches
@@ -199,14 +197,6 @@ Highlight successful tiger conservation efforts in India through spatial analysi
   - Clip to extent of tiger reserves + buffer
   - Verify no data values are set correctly
 - [x] Process forest cover data *(COMPLETE — approach changed)*
-  - ✅ ISFR 2021 Chapter 4 (Table 4.5): VDF/MDF/OF extracted at TR-boundary level
-    for all 7 reserves; 2011 baseline + 2021 current + decadal change
-  - ✅ ISFR 2021 Tables 4.9/4.10: Forest cover in 13 tiger corridors extracted
-  - ✅ ISFR 2017 state chapters: District-level data extracted as landscape context
-  - ✅ Output: `data/processed/forest/isfr_2021_reserve_corridors.xlsx`
-  - ✅ Output: `data/processed/forest/isfr_2017_forest_cover.xlsx`
-  - ⏭ ArcGIS Zonal Statistics on FSI raster: deferred to Week 6 (optional
-    visualization layer only — tabular values already obtained from ISFR 2021)
 - [ ] Quality check all datasets
   - Verify projections
   - Check for null values
@@ -905,9 +895,12 @@ Highlight successful tiger conservation efforts in India through spatial analysi
     for analysis (deferred to Week 6 as optional visualization task)
   - ✅ Output files: `data/processed/forest/isfr_2021_reserve_corridors.xlsx`,
     `data/processed/forest/isfr_2017_forest_cover.xlsx`
+  - ✅ GBIF/iNaturalist occurrence data processing
+  - ✅ Clean WDPA protected areas
+  - ✅ Process census population data
+  - ✅ NTCA census data join to reserve boundaries
 - **In Progress:**
-  - 🟢 GBIF/iNaturalist occurrence data processing
-  - 🟢 NTCA census data join to reserve boundaries
+  - 🟢 Clip elevation data
 - **Blockers:** None
 - **Next Week Focus:** Time-series population table; join ISFR 2021 forest stats to
   reserve attributes in geodatabase; reserve profile compilation; SRTM import
@@ -1063,6 +1056,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | 2026-02-10 | 2.2 | Downloaded SRTM and Natural Earth boundaries data	  | Kiran Balasubramanian |
 | 2026-02-11 | 2.3 | Downloaded OpenStreet data, and documented data inventory and sources	  | Kiran Balasubramanian |
 | 2026-02-12 | 3.0 | Extracted ISFR 2021 Ch.4 forest cover (reserve-boundary level, all 7 reserves); extracted 13 tiger corridor data; updated Week 3 status; revised forest cover approach (Zonal Statistics deferred) | Kiran Balasubramanian |
+| 2026-02-13 | 3.0 | Processed GBIF and iNaturalist data, cleaned WDPA protected areas, processed census population data and joined to spatial boundaries  | Kiran Balasubramanian |
 
 ---
 
