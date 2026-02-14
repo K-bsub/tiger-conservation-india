@@ -438,10 +438,10 @@ and as a covariate in SECR density models.
 - **Access Method:** Free download via USGS Earth Explorer; free account
   registration required. Navigate to: Digital Elevation → SRTM →
   SRTM 1 Arc-Second Global → download GeoTIFF tiles
-- **Downloaded:** February 9, 2026
+- **Downloaded:** February 9–13, 2026 (initial 13 tiles Feb 9; 11 additional tiles Feb 13 after buffer QC)
 - **Data Collection Date:** February 2000 (Space Shuttle Endeavour mission)
-- **Files:** `data/raw/elevation/srtm_30m_tiles/*.tif` (19 tiles)
-- **Total File Size:** 470 MB
+- **Files:** `data/raw/elevation/srtm_30m_tiles/*.tif` (24 tiles)
+- **Total File Size:** ~600 MB
 - **Geographic Coverage:** 11°N–31°N, 73°E–94°E
 - **Horizontal Resolution:** 30 meters (~1 arc-second)
 - **Vertical Accuracy:** ±16 m absolute, ±6 m relative
@@ -450,17 +450,22 @@ and as a covariate in SECR density models.
 - **Format:** GeoTIFF, 16-bit signed integer; NoData = -32768
 - **License:** Public domain
 
-**Tiles by Reserve:**
+**Tiles by Reserve (24 tiles total):**
 
-| Reserve | Tiles |
-|---|---|
-| Jim Corbett NP | N29E078, N29E079, N30E078 |
-| Kaziranga NP | N26E093, N26E094 |
-| Bandipur NP | N11E076, N12E076 |
-| Nagarahole NP | N11E076, N12E076 |
-| Kanha NP | N22E080, N22E081 |
-| Pench TR | N21E079, N21E080 |
-| Ranthambore NP | N26E076, N26E077 |
+| Reserve | Core tiles | Buffer tiles (50km) |
+|---|---|---|
+| Jim Corbett NP | N29E078, N29E079, N30E078 | — |
+| Kaziranga NP | N26E093, N26E094 | N26E092, N27E092, N27E093 |
+| Bandipur NP | N11E076, N12E076 | N11E075, N12E075 |
+| Nagarahole NP | N11E076, N12E076 | N11E075, N12E075 |
+| Kanha NP | N22E080, N22E081 | N21E080, N21E081 |
+| Pench TR | N21E079, N21E080 | N21E078, N22E078, N22E079 |
+| Ranthambore NP | N26E076, N26E077 | N25E076 |
+
+**Complete tile list (alphabetical):**  
+N11E075, N11E076, N12E075, N12E076, N21E078, N21E079, N21E080, N21E081,
+N22E078, N22E079, N22E080, N22E081, N25E076, N26E076, N26E077, N26E092,
+N26E093, N26E094, N27E092, N27E093, N29E078, N29E079, N30E078
 
 **Known Issues / Limitations:**
 - **Vegetation bias (critical):** Radar signal reflects off tree canopy, not

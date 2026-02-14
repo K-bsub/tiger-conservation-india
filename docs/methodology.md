@@ -3,7 +3,7 @@
 **Project:** Identifying Conservation Success Stories: Spatial Analysis of Tiger Population Recovery  
 **Author:** Kiran Balasubramanian  
 **Repository:** https://github.com/K-bsub/tiger-conservation-india  
-**Last Updated:** February 12, 2026
+**Last Updated:** February 13, 2026
 
 ---
 
@@ -49,13 +49,13 @@ reserves.
 | Bandipur National Park | Karnataka | Western Ghats |
 | Nagarahole National Park | Karnataka | Western Ghats |
 | Kanha National Park | Madhya Pradesh | Central India |
-| Pench Tiger Reserve (MP) | Madhya Pradesh | Central India |
-| Pench Tiger Reserve (MH) | Maharashtra | Central India |
+| Pench Tiger Reserve (Combined) | MP / Maharashtra | Central India |
 | Ranthambore Tiger Reserve | Rajasthan | Semi-Arid |
 | Kaziranga National Park | Assam | Northeast |
 | Jim Corbett National Park | Uttarakhand | Terai Arc |
 
-> Note: Jim Corbett is included for landscape context; forest boundary data requires
+> Note: Pench is treated as a single combined MP/Maharashtra landscape (Decision 5, Section 6).
+> Jim Corbett is included for landscape context; forest boundary data requires
 > verification (see Section 6).
 
 ---
@@ -88,7 +88,7 @@ All rasters reprojected using **Project Raster** tool with bilinear resampling.
 | iNaturalist observations | iNaturalist (Feb 2026) | Supplementary distribution | ✅ Processed |
 | Forest cover — reserve level | ISFR 2021 Chapter 4 (FSI) | Habitat characterization | ✅ Complete (tabular) |
 | Forest cover — landscape context | ISFR 2017 state chapters (FSI) | District-level context | ✅ Complete (tabular) |
-| Elevation (SRTM) | USGS Earth Explorer (2000) | Terrain characterization | ⬜ Pending (Week 3) |
+| Elevation (SRTM) | USGS Earth Explorer (2000) | Terrain characterization | ✅ Complete (24 tiles) |
 | Admin boundaries | Natural Earth (2024) | Map context | ✅ Downloaded |
 | Districts | DataMeet India (2011) | Sub-state context | ✅ Downloaded |
 | Roads & settlements | OpenStreetMap via Geofabrik (2026) | Human footprint context | ✅ Downloaded |
@@ -353,29 +353,61 @@ Rajasthan, Assam, Uttarakhand
 
 ### 4.6 Elevation Data (SRTM)
 
-**Status:** ⬜ Pending — to be completed Week 3
+**Status:** ✅ Complete — February 13, 2026
 
-**Input:** `data/raw/elevation/srtm_30m_tiles/*.tif` (19 tiles)  
-**Expected output:** `tiger_project.gdb/Environmental_Data/SRTM_India_Clipped`
+**Input:** `data/raw/elevation/srtm_30m_tiles/*.tif` (24 tiles)  
+**Output feature classes** (all in `tiger_project.gdb/Environmental_Data/`):
 
-**Planned steps:**
-1. **Mosaic to New Raster** — combine 19 tiles into single raster
-2. **Project Raster** → UTM 43N; bilinear resampling; cell size 30m
-3. **Extract by Mask** — clip to study area extent (tiger reserves + 50km buffer)
-4. Set NoData value: −32768
-5. Verify coverage over all 7 reserves
+| Feature Class | CRS | Description |
+|---|---|---|
+| `SRTM_India_Mosaic` | WGS84 | Raw mosaic of all 24 tiles, 16-bit signed |
+| `SRTM_India_UTM43N` | UTM 43N | Reprojected, 30m cell, bilinear — intermediate |
+| `SRTM_India_Clipped` | UTM 43N | Final — clipped to Reserve_Buffer_50km |
 
-**Tiles by reserve (reference):**
+**Processing steps completed:**
+1. **Mosaic to New Raster** — 24 tiles → `SRTM_India_Mosaic` (WGS84, 16-bit signed, 1 band)
+2. **Project Raster** → `SRTM_India_UTM43N` (UTM 43N, 30m cell size, bilinear resampling)
+3. **Buffer** — `Project_Reserves_Clean` + 50km dissolved → `Reserve_Buffer_50km`
+4. **Extract by Mask** → `SRTM_India_Clipped`
+5. **NoData verified:** −32768 confirmed in raster properties; statistics minimum > 0m
+6. **Coverage verified** visually over all 7 reserves
 
-| Reserve | SRTM Tiles |
-|---|---|
-| Jim Corbett | N29E078, N29E079, N30E078 |
-| Kaziranga | N26E093, N26E094 |
-| Bandipur | N11E076, N12E076 |
-| Nagarahole | N11E076, N12E076 |
-| Kanha | N22E080, N22E081 |
-| Pench (MP/MH) | N21E079, N21E080 |
-| Ranthambore | N26E076, N26E077 |
+**Complete tile list (24 tiles):**
+
+| Reserve | Core tiles (original 13) | Buffer tiles (11 added) |
+|---|---|---|
+| Jim Corbett | N29E078, N29E079, N30E078 | — |
+| Kaziranga | N26E093, N26E094 | N26E092, N27E092, N27E093 |
+| Bandipur | N11E076, N12E076 | N11E075, N12E075 |
+| Nagarahole | N11E076, N12E076 | N11E075, N12E075 |
+| Kanha | N22E080, N22E081 | N21E080, N21E081 |
+| Pench | N21E079, N21E080 | N21E078, N22E078, N22E079 |
+| Ranthambore | N26E076, N26E077 | N25E076 |
+
+**All 24 unique tiles:**
+N11E075, N11E076, N12E075, N12E076, N21E078, N21E079, N21E080, N21E081,
+N22E078, N22E079, N22E080, N22E081, N25E076, N26E076, N26E077, N26E092,
+N26E093, N26E094, N27E092, N27E093, N29E078, N29E079, N30E078
+
+**Note — tile count change:** Initial download was 13 core tiles. Visual QC against
+50km buffers revealed 11 additional tiles needed for complete buffer coverage (gaps
+visible at west edge of Kaziranga, west edge of Bandipur/Nagarahole, south of
+Ranthambore, west/north of Pench, south of Kanha). Downloaded via USGS Earth Explorer.
+
+**Elevation ranges observed:**
+
+| Reserve | Min (m) | Max (m) |
+|---|---|---|
+| Bandipur | [fill] | [fill] |
+| Nagarahole | [fill] | [fill] |
+| Kanha | [fill] | [fill] |
+| Pench | [fill] | [fill] |
+| Ranthambore | [fill] | [fill] |
+| Kaziranga | [fill] | [fill] |
+| Jim Corbett | [fill] | [fill] |
+
+> Run **Zonal Statistics as Table** on `SRTM_India_Clipped` using `Project_Reserves_Clean`
+> as zones to populate the table above (Week 5).
 
 **⚠️ Known limitation:** SRTM radar reflects off tree canopy in dense forest — elevation
 values in Bandipur, Nagarahole, Kanha, and Corbett represent canopy height, not bare
@@ -651,8 +683,12 @@ constraints. See `data/README.md` for download links and instructions.
 | 2026-02-12 | 4.5 | ISFR 2021 Chapter 4 extracted — all 7 reserves + 13 corridors |
 | 2026-02-12 | 6 | Decision recorded: ISFR 2021 as primary forest source |
 | 2026-02-12 | 6 | Decision recorded: Jim Corbett boundary anomaly flagged |
-| 2026-02-12 | 4.3 | GBIF occurrence data processed — 181 |
-| 2026-02-12 | 4.4 | iNaturalist occurrence data processed — 722 |
+| 2026-02-13 | 4.3 | GBIF occurrence data processed — 181 |
+| 2026-02-13 | 4.4 | iNaturalist occurrence data processed — 722 |
+| 2026-02-13 | 4.6 | SRTM mosaic complete — 24 tiles (13 original + 11 added after QC) |
+| 2026-02-13 | 4.6 | SRTM clipped to Reserve_Buffer_50km — SRTM_India_Clipped complete |
+| 2026-02-13 | 3   | SRTM status updated to ✅ Complete (24 tiles) |
+| 2026-02-13 | 1   | Pench rows consolidated to single combined landscape entry |
 
 ---
 

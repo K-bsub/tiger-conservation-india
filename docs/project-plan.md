@@ -83,8 +83,8 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 |------|-----------|------------------|--------|
 | **Week 1** | Project Setup & Initial Data Collection | GitHub repo, proposal, GBIF/WDPA data downloaded | ✅ Complete |
 | **Week 2** | Complete Data Collection | All datasets acquired, NTCA data extracted | ✅ Complete |
-| **Week 3** | Data Processing & Cleaning | Cleaned datasets, joined tables, organized geodatabase | 🟢 In Progress |
-| **Week 4** | Advanced Data Prep | Time-series tables, spatial data ready for analysis | ⚪ Not Started |
+| **Week 3** | Data Processing & Cleaning | Cleaned datasets, joined tables, organized geodatabase | ✅ Complete |
+| **Week 4** | Advanced Data Prep | Time-series tables, spatial data ready for analysis | 🟢 In Progress |
 | **Week 5** | Spatial Analysis | Density maps, hot spot analysis, statistics complete | ⚪ Not Started |
 | **Week 6** | Map Development | Web maps created, symbology finalized, charts made | ⚪ Not Started |
 | **Week 7** | Story Map Development | Narrative written, maps integrated, content complete | ⚪ Not Started |
@@ -165,50 +165,20 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 - [x] Set up project projection (WGS 1984 UTM Zone 43N)
 - [x] Process GBIF occurrence data
-  - Import CSV to ArcGIS Pro
-  - Display XY coordinates
-  - Filter to valid coordinates only
-  - Remove duplicate records
-  - Filter to coordinate uncertainty <1km
-  - Export to feature class
-  - Create 2006-2012 and 2013-2022 subsets
 - [x] Process iNaturalist data
-  - Similar cleaning steps as GBIF
-  - Verify research grade observations
-  - Check for duplicates with GBIF
-  - Combine or keep separate (document decision)
 - [x] Clean WDPA protected areas
-  - Select only tiger reserves from dataset
-  - Verify reserve names match NTCA data
-  - Standardize name field for joining
-  - Calculate area in km²
-  - Create unique reserve ID field
 - [x] Process census population data
-  - Create standardized reserve name field
-  - Verify spelling consistency
-  - Structure as long-format table (Reserve, Year, Population)
-  - Add growth calculation fields
 - [x] Join census data to spatial boundaries
-  - Create relationship class or multiple joined layers
-  - Verify all reserves have matching spatial data
-  - Document any missing matches
-- [ ] Clip elevation data
-  - Mosaic SRTM tiles if needed
-  - Clip to extent of tiger reserves + buffer
-  - Verify no data values are set correctly
+- [x] Clip elevation data
 - [x] Process forest cover data *(COMPLETE — approach changed)*
-- [ ] Quality check all datasets
-  - Verify projections
-  - Check for null values
-  - Validate attribute accuracy
-  - Document any issues in methodology.md
+- [x] Quality check all datasets
 
 **Deliverables:**
-- [ ] All datasets cleaned and in consistent projection
-- [ ] Census data joined to reserve boundaries
-- [ ] Occurrence points filtered and validated
-- [ ] Geodatabase organized with feature datasets
-- [ ] Data dictionary started
+- ✅ All datasets cleaned and in consistent projection
+- ✅ Census data joined to reserve boundaries
+- ✅ Occurrence points filtered and validated
+- ✅ Geodatabase organized with feature datasets
+- ✅ Data dictionary started
 
 **Time Estimate:** 18-20 hours
 
@@ -899,8 +869,9 @@ Highlight successful tiger conservation efforts in India through spatial analysi
   - ✅ Clean WDPA protected areas
   - ✅ Process census population data
   - ✅ NTCA census data join to reserve boundaries
-- **In Progress:**
-  - 🟢 Clip elevation data
+  - ✅ Clip elevation data
+  - ✅ Quality check all datasets
+- **In Progress:** None
 - **Blockers:** None
 - **Next Week Focus:** Time-series population table; join ISFR 2021 forest stats to
   reserve attributes in geodatabase; reserve profile compilation; SRTM import
@@ -912,13 +883,13 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 ---
 
 **Week 4 Status**
-- **Date:** [To be updated]
-- **Progress:** ⚪ Not Started
+- **Date:** February 14, 2026
+- **Progress:** 🟢 In Progress
 - **Completed:**
   - [ ] 
 - **In Progress:**
-  - [ ] 
-- **Blockers:** 
+  - 🟢 Create time-series population table
+- **Blockers:** None
 - **Next Week Focus:** 
 - **Notes:** 
 
@@ -980,11 +951,11 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Current Status:** 🟢 On Track
 
-**Completion Percentage:** 30%
+**Completion Percentage:** 37%
 
 **Key Metrics:**
 - Tasks completed: ~28 / ~80
-- Milestones completed: 2.5 / 8 (Weeks 1 & 2 complete; Week 3 ~60% done)
+- Milestones completed: 2.5 / 8 (Weeks 1 - 3 complete)
 - Days remaining: 54
 - Estimated hours used: ~35 / 150
 
@@ -1015,6 +986,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - Kaziranga corridor situation (eastern corridors at 11–18% forest) adds important
   threat/vulnerability context alongside its reserve-level success
 - Flag: Jim Corbett −595 sq km forest change likely a boundary issue, not real loss
+- Missing SRTM files added to the project
 
 ### Ongoing Observations
 - [To be updated weekly]
@@ -1056,7 +1028,8 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | 2026-02-10 | 2.2 | Downloaded SRTM and Natural Earth boundaries data	  | Kiran Balasubramanian |
 | 2026-02-11 | 2.3 | Downloaded OpenStreet data, and documented data inventory and sources	  | Kiran Balasubramanian |
 | 2026-02-12 | 3.0 | Extracted ISFR 2021 Ch.4 forest cover (reserve-boundary level, all 7 reserves); extracted 13 tiger corridor data; updated Week 3 status; revised forest cover approach (Zonal Statistics deferred) | Kiran Balasubramanian |
-| 2026-02-13 | 3.0 | Processed GBIF and iNaturalist data, cleaned WDPA protected areas, processed census population data and joined to spatial boundaries  | Kiran Balasubramanian |
+| 2026-02-13 | 3.1 | Processed GBIF and iNaturalist data, cleaned WDPA protected areas, processed census population data and joined to spatial boundaries  | Kiran Balasubramanian |
+| 2026-02-13 | 3.2 | Processed elevation data and performed quality checks  | Kiran Balasubramanian |
 
 ---
 

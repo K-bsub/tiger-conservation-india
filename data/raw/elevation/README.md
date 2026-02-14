@@ -10,7 +10,7 @@ Digital Elevation Model (DEM) for tiger habitat analysis in India.
 **Version:** SRTM 1 Arc-Second Global  
 **Source:** USGS Earth Explorer  
 **Website:** https://earthexplorer.usgs.gov/  
-**Download Date:** February 9, 2026  
+**Download Date:** February 9–13, 2026 (13 core tiles Feb 9; 11 buffer tiles Feb 13)  
 **Data Collection Date:** February 2000 (Shuttle mission)
 
 ---
@@ -39,10 +39,10 @@ Digital Elevation Model (DEM) for tiger habitat analysis in India.
 
 ### Coverage
 
-- **Geographic Extent:** 11°N to 31°N, 73°E to 94°E
+- **Geographic Extent:** 11°N to 31°N, 73°E to 95°E
 - **Tile Size:** 1° × 1° (approximately 111 km × 111 km at equator)
-- **Total Tiles:** 19 tiles
-- **Total File Size:** 470 MB
+- **Total Tiles:** 24 tiles (13 core + 11 additional for 50km buffer coverage)
+- **Total File Size:** ~600 MB
 
 ---
 
@@ -52,15 +52,19 @@ See `srtm_metadata/tile_index.txt` for complete list.
 
 ### Coverage by Reserve
 
-| Reserve | Tiles Needed | Coverage |
-|---------|--------------|----------|
-| Jim Corbett NP | N29E078, N29E079, N30E078 | Complete |
-| Kaziranga NP | N26E093, N26E094 | Complete |
-| Bandipur NP | N11E076, N12E076 | Complete |
-| Nagarahole NP | N11E076, N12E076 | Complete |
-| Kanha NP | N22E080, N22E081 | Complete |
-| Pench TR | N21E079, N21E080 | Complete |
-| Ranthambore NP | N26E076, N26E077 | Complete |
+| Reserve | Core Tiles | Buffer Tiles (50km) | Coverage |
+|---------|------------|---------------------|----------|
+| Jim Corbett NP | N29E078, N29E079, N30E078 | — | ✅ Complete |
+| Kaziranga NP | N26E093, N26E094 | N26E092, N27E092, N27E093 | ✅ Complete |
+| Bandipur NP | N11E076, N12E076 | N11E075, N12E075 | ✅ Complete |
+| Nagarahole NP | N11E076, N12E076 | N11E075, N12E075 | ✅ Complete |
+| Kanha NP | N22E080, N22E081 | N21E080, N21E081 | ✅ Complete |
+| Pench TR | N21E079, N21E080 | N21E078, N22E078, N22E079 | ✅ Complete |
+| Ranthambore NP | N26E076, N26E077 | N25E076 | ✅ Complete |
+
+**Note:** Initial download (Feb 9) included 13 core tiles. Visual QC of 50km buffers
+revealed gaps at western edges of Kaziranga, Bandipur/Nagarahole, Pench and southern
+edges of Ranthambore/Kanha. 11 additional tiles downloaded Feb 13 to complete coverage.
 
 ---
 
@@ -99,33 +103,24 @@ See `srtm_metadata/tile_index.txt` for complete list.
 
 ---
 
-## Derived Products to Create
+## Processing Status
 
-**Week 3 Processing:**
+**Completed February 13, 2026:**
 
-1. **Mosaic Tiles**
-   - Merge all tiles into single raster
-   - Clip to study area extent
+1. **✅ Mosaic Tiles** — 24 tiles → `SRTM_India_Mosaic` (WGS84, 16-bit signed)
+2. **✅ Reproject** — `SRTM_India_UTM43N` (UTM 43N, 30m cell, bilinear resampling)
+3. **✅ Buffer** — `Reserve_Buffer_50km` (Project_Reserves_Clean + 50km dissolved)
+4. **✅ Clip to Study Area** — `SRTM_India_Clipped` (Extract by Mask)
+5. **✅ NoData verified** — −32768 confirmed; statistics minimum > 0m
+6. **✅ Coverage verified** — all 7 reserves confirmed
 
-2. **Slope**
-   - Calculate slope in degrees
-   - Use for terrain ruggedness
+**Pending (Week 5):**
 
-3. **Aspect**
-   - Calculate aspect (direction of slope)
-   - Use for habitat preference analysis
-
-4. **Elevation Zones**
-   - Classify into elevation bands
-   - Low (<500m), Medium (500-1500m), High (>1500m)
-
-5. **Terrain Ruggedness Index (TRI)**
-   - Calculate terrain complexity
-   - Use as habitat variable
-
-6. **Hillshade**
-   - Create for visualization
-   - Use as basemap in Story Map
+7. **⬜ Zonal Statistics** — MIN/MAX/MEAN/STD per reserve → `reserve_elevation_stats`
+8. **⬜ Slope** — `slope_degrees.tif`
+9. **⬜ Aspect** — `aspect.tif`
+10. **⬜ Terrain Ruggedness Index (TRI)** — Focal Statistics STD 3×3 → `terrain_ruggedness.tif`
+11. **⬜ Hillshade** — for Story Map visualization
 
 ---
 
@@ -333,29 +328,15 @@ If SRTM doesn't meet needs:
 
 ## Quality Control Checklist
 
-Before using data:
-
-- [ ] All tiles downloaded successfully
-- [ ] No corrupted files (check file sizes)
-- [ ] Tiles cover all 7 tiger reserves
-- [ ] Coordinate system is WGS 1984
-- [ ] NoData values properly defined
-- [ ] Visual check: No obvious artifacts
-- [ ] Elevation values reasonable for region
-- [ ] Metadata documented
+- [x] All tiles downloaded successfully (24 tiles)
+- [x] No corrupted files (check file sizes)
+- [x] Tiles cover all 7 tiger reserves + 50km buffers
+- [x] Coordinate system is WGS 1984 (raw); UTM 43N (processed)
+- [x] NoData values properly defined (−32768)
+- [x] Visual check: No obvious artifacts
+- [x] Elevation values reasonable for region
+- [x] Metadata documented
 
 ---
 
-## Storage Requirements
-
-**Per Tile:** ~25-50 MB (30m resolution)  
-**Total Raw Data:** ~1.5 - 3 GB (for 30-50 tiles)  
-**After Mosaicking:** ~2-4 GB (single file)  
-**Derived Products:** ~1-2 GB (slope, aspect, etc.)  
-**Total Storage Needed:** ~5-10 GB
-
----
-
-*Last Updated: February 9, 2026*  
-*Downloaded for: Tiger Conservation Success Stories Project*  
-*Resolution: 30 meters (SRTM 1 Arc-Second)*
+*Last Updated: February 13, 2026*
