@@ -85,8 +85,8 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | **Week 2** | Complete Data Collection | All datasets acquired, NTCA data extracted | ✅ Complete |
 | **Week 3** | Data Processing & Cleaning | Cleaned datasets, joined tables, organized geodatabase | ✅ Complete |
 | **Week 4** | Advanced Data Prep | Time-series tables, spatial data ready for analysis | ✅ Complete |
-| **Week 5** | Spatial Analysis | Density maps, hot spot analysis, statistics complete | 🟢 In Progress |
-| **Week 6** | Map Development | Web maps created, symbology finalized, charts made | ⚪ Not Started |
+| **Week 5** | Spatial Analysis | Density maps, hot spot analysis, statistics complete | ✅ Complete |
+| **Week 6** | Map Development | Web maps created, symbology finalized, charts made | 🟢 In Progress |
 | **Week 7** | Story Map Development | Narrative written, maps integrated, content complete | ⚪ Not Started |
 | **Week 8** | Finalization & Publication | Story Map published, documentation complete, presentation ready | ⚪ Not Started |
 
@@ -217,63 +217,22 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 #### Tasks
 
-- [ ] Kernel Density Analysis - Baseline (2006-2010)
-  - Input: occurrence points 2006-2010
-  - Set appropriate search radius (test 10km, 20km, 30km)
-  - Set cell size to 1km
-  - Output to raster
-  - Classify into 5-7 density classes
-  - Document parameters used
-- [ ] Kernel Density Analysis - Current (2018-2022)
-  - Repeat above with 2018-2022 points
-  - Use same parameters for consistency
-  - Enable comparison between periods
-- [ ] Hot Spot Analysis (Getis-Ord Gi*)
-  - Input: occurrence points (full dataset or by period)
-  - Test different distance bands
-  - Identify statistically significant clusters
-  - Generate confidence level outputs
-  - Map hot spots, cold spots, and non-significant areas
-- [ ] Reserve-level statistics
-  - Calculate for each reserve:
-    - Total occurrence points
-    - Point density (points per 100 km²)
-    - Tigers per 100 km² (from census)
-    - Population rank
-    - Growth rate rank
-  - Add to attribute table
-- [ ] Summary statistics
-  - Calculate study area totals:
-    - Total tiger population 2006 vs 2022
-    - Overall percent change
-    - Mean reserve growth rate
-    - Range of growth rates
-  - Create summary table for Story Map
-- [ ] Comparative analysis
-  - Create charts in Excel/Python:
-    - Population trends line graph (5-7 reserves)
-    - Growth rate bar chart (ranked)
-    - Density comparison (2006 vs 2022)
-    - Reserve size vs population scatter plot
-  - Export as images for Story Map
-- [ ] Validate analysis results
-  - Check for outliers or errors
-  - Verify statistical significance
-  - Cross-reference with published literature
-  - Document any unexpected findings
-- [ ] Create analysis results folder
-  - Export all analysis outputs
-  - Save rasters with descriptive names
-  - Export tables as CSV for backup
-  - Screenshot key results
+- [x] Kernel Density Analysis - Baseline (2006-2010)
+- [x] Kernel Density Analysis - Current (2018-2022)
+- [x] Hot Spot Analysis (Getis-Ord Gi*)
+- [x] Reserve-level statistics
+- [x] Summary statistics
+- [x] Comparative analysis
+- [x] Validate analysis results
+- [x] Create analysis results folder
 
 **Deliverables:**
-- [ ] Kernel density rasters (baseline and current)
-- [ ] Hot spot analysis results
-- [ ] Reserve statistics table complete
-- [ ] Summary statistics compiled
-- [ ] Chart graphics created
-- [ ] Analysis results documented in methodology.md
+- ✅ Kernel density rasters (baseline and current)
+- ✅ Hot spot analysis results
+- ✅ Reserve statistics table complete
+- ✅ Summary statistics compiled
+- ✅ Chart graphics created
+- ✅ Analysis results documented in methodology.md
 
 **Time Estimate:** 15-18 hours
 
@@ -871,22 +830,28 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - **Date:** February 15, 2026
 - **Progress:** 🟢 In Progress
 - **Completed:**
-  - [ ] 
-- **In Progress:**
-  - 🟢 Kernel Density Analysis - Baseline (2006-2010)
-- **Blockers:** 
-- **Next Week Focus:** 
-- **Notes:** 
+  - ✅ Kernel Density Analysis - Baseline (2006-2010)
+  - ✅ Kernel Density Analysis - Current (2018-2022)
+  - ✅ Hot Spot Analysis (Getis-Ord Gi*)
+  - ✅ Reserve-level statistics
+  - ✅ Summary statistics
+  - ✅ Comparative analysis
+  - ✅ Validate analysis results
+  - ✅ Create analysis results folder
+- **In Progress:** None
+- **Blockers:** None
+- **Next Week Focus:** Build web maps in ArcGIS Online (KDE comparison, hot spot, reserve choropleth), finalise symbology and popups for all 7 reserves, create supporting charts and infographics, and complete Story Map narrative outline before beginning content assembly
+- **Notes:** Week 5 completed on schedule. Analysis produced clean results with two documented flags (Jim Corbett density and forest cover, both traced to KBA boundary mismatch — not data errors) and three unexpected findings worth featuring in the Story Map: Ranthambore as a dispersal source population for Rajasthan, Kaziranga operating at carrying capacity as a Northeast source reserve, and the inverse GBIF density/tiger density relationship at Ranthambore as a teachable observer-effort moment. Hot spot analysis confirmed statistically significant clusters at Kanha/Pench and Kaziranga at 25km distance band; zero hot spots within strict KBA polygon boundaries confirmed as GBIF observer bias, not absence of clustering — 50km buffer used as spatial filter throughout. ISA ERROR_000541 was non-fatal. Reserve_Summary_Stats table fully populated across all 31 fields.
 
 ---
 
 **Week 6 Status**
-- **Date:** [To be updated]
-- **Progress:** ⚪ Not Started
+- **Date:** February 15, 2026
+- **Progress:** 🟢 In Progress
 - **Completed:**
   - [ ] 
 - **In Progress:**
-  - [ ] 
+  - 🟢 Design symbology scheme
 - **Blockers:** 
 - **Next Week Focus:** 
 - **Notes:** 
@@ -923,13 +888,13 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Current Status:** 🟢 On Track
 
-**Completion Percentage:** 45%
+**Completion Percentage:** 56%
 
 **Key Metrics:**
-- Tasks completed: 34 / 75
-- Milestones completed: 4 / 8 (Weeks 1 - 4 complete)
-- Days remaining: 28
-- Estimated hours used: ~68 / 146
+- Tasks completed: 42 / 75
+- Milestones completed: 5 / 8 (Weeks 1 - 5 complete)
+- Days remaining: 21
+- Estimated hours used: ~86 / 146
 
 **Traffic Light Status:**
 - 🟢 Schedule: On track (forest data extraction ahead of original plan)
@@ -1003,6 +968,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | 2026-02-13 | 3.1 | Processed GBIF and iNaturalist data, cleaned WDPA protected areas, processed census population data and joined to spatial boundaries  | Kiran Balasubramanian |
 | 2026-02-13 | 3.2 | Processed elevation data and performed quality checks  | Kiran Balasubramanian |
 | 2026-02-14 | 4.0 | Completed all tasks from Week 4  | Kiran Balasubramanian |
+| 2026-02-15 | 5.0 | Completed all tasks from Week 5  | Kiran Balasubramanian |
 
 ---
 

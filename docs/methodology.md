@@ -471,17 +471,23 @@ Used for: human disturbance context layers in Story Map; proximity analysis if n
 ### 5.2 Kernel Density Estimation
 
 **Tool:** ArcGIS Pro — Kernel Density (Spatial Analyst)  
-**Input:** `GBIF_Tiger_Baseline_2006_2012` and `GBIF_Tiger_Current_2013_2022`
+**Input:** `GBIF_Tiger_Baseline_2006_2010` and `GBIF_Tiger_Current_2018_2022`
 
-**Parameters (to be finalized during analysis — document actual values used):**
+**Parameters:**
 
 | Parameter | Planned Value | Actual Value Used |
 |---|---|---|
-| Search radius | Test 10 km, 20 km, 30 km | [fill in] |
-| Cell size | 1 km (1,000 m) | [fill in] |
+| Search radius | Test 10 km, 20 km, 30 km | 20 km |
+| Cell size | 1 km (1,000 m) | 1 km (1,000 m) |
 | Area units | Square kilometers | Square kilometers |
 | Output values | Densities | Densities |
 | Population field | None (each point = 1) | — |
+
+**Classification:** Natural Breaks (Jenks), 5 classes
+**Class breaks (both periods):** 0.001178 / 0.00483 / 0.010957 / 0.01885 / 0.030042
+**Symbology** applied to current period via `KDE_Classification.lyrx`
+  Note: 908 current-period points vs 116 baseline — shared classification
+  breaks enforce comparability; raw density values not directly comparable
 
 **Outputs:**
 - `KDE_Tiger_Baseline_2006_2010.tif`
@@ -502,17 +508,26 @@ Both saved to `tiger_project.gdb/Analysis_Results/`
 **Input:** `GBIF_Tiger_Points_UTM43N` (full dataset)
 
 **Parameters (to be finalized — document actual values used):**
-
-| Parameter | Planned Approach | Actual Value Used |
-|---|---|---|
-| Distance band | Test Incremental Spatial Autocorrelation first | [fill in] |
-| Conceptualization | Fixed distance band | [fill in] |
-| Significance level | p < 0.05, p < 0.01, p < 0.001 | — |
+Distance band:      50,000 m
+Conceptualization:  Fixed distance band
+FDR correction:     Applied (Benjamini-Hochberg)
+Input point count:  1,411 (full dataset, 2006–2022)
+ISA output:         Analysis_Results/ISA_Results
+  Peak z-score at:  25 km
+Notes: Any reserves showing no hot spots — attribute to GBIF
+  reporting effort, not conservation status
 
 **Output:** `HotSpot_Tiger_GiStar` feature class in `Analysis_Results/`
 
-**Interpretation:** Features classified as Hot Spot (99%), Hot Spot (95%), Hot Spot (90%),
-Not Significant, Cold Spot (90%), Cold Spot (95%), Cold Spot (99%).
+**Notes:** Hot spot clusters confirmed at Kanha (Central India), Ranthambore (Rajasthan) and Kaziranga
+(Northeast) at 25km distance band. Clusters at Corbett,
+Pench/Bandipur/Nagarahole show Not Significant or Cold Spot — attributed to
+lower GBIF reporting density at those reserves, not absence of tigers.
+
+Hot spots fall within 50km buffer zone rather than strict reserve
+boundaries — consistent with known GBIF observation bias toward roads
+and park gates at reserve periphery. Reserve_Buffer_50km_separate used as
+spatial filter for Step 7 point counting.
 
 ---
 
@@ -726,7 +741,11 @@ constraints. See `data/README.md` for download links and instructions.
 | 2026-02-13 | 4.6 | SRTM clipped to Reserve_Buffer_50km — SRTM_India_Clipped complete |
 | 2026-02-13 | 3   | SRTM status updated to ✅ Complete (24 tiles) |
 | 2026-02-13 | 1   | Pench rows consolidated to single combined landscape entry |
-
+| 2026-02-15 | 7 | Validation complete — 2 flags, 0 corrections:
+| 2026-02-15 | 7 | (1) Corbett density inflated (KBA < legal TR area);
+| 2026-02-15 | 7 | (2) Corbett forest cover anomaly (boundary revision confirmed)
+| 2026-02-15 | 7 | Unexpected findings documented: Ranthambore dispersal source,
+| 2026-02-15 | 7 | Kaziranga at carrying capacity, Ranthambore GBIF observer bias
 ---
 
 *Document maintained in: `docs/methodology.md`*  

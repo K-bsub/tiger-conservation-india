@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiger Conservation — Comparative Analysis</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap');
+
+  :root {
+    --ink:       #1a1a18;
+    --cream:     #f7f4ee;
+    --khaki:     #c8b97a;
+    --forest:    #2d5a27;
+    --moss:      #4a7c3f;
+    --fern:      #7aad6a;
+    --dusk:      #8b5e3c;
+    --amber:     #d4860b;
+    --rust:      #b84c2e;
+    --slate:     #5a6e7a;
+    --mist:      #e8ede5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--ink);
+    padding: 48px 40px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 52px;
+    padding-bottom: 28px;
+    border-bottom: 2px solid var(--khaki);
+    position: relative;
+  }
+
+  .page-header::before {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--forest);
+    margin: 0 auto 16px;
+  }
+
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    color: var(--forest);
+    text-transform: uppercase;
+  }
+
+  .page-header p {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--slate);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+
+  .chart-card {
+    background: #fff;
+    border: 1px solid #e2ddd4;
+    border-top: 4px solid var(--forest);
+    padding: 28px 28px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .chart-card.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .chart-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 4px;
+  }
+
+  .chart-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .chart-sub {
+    font-size: 0.78rem;
+    font-weight: 300;
+    color: var(--slate);
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  .chart-wrap {
+    position: relative;
+  }
+
+  .note {
+    margin-top: 10px;
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--slate);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* Export instructions strip */
+  .export-bar {
+    margin-top: 40px;
+    padding: 14px 20px;
+    background: var(--mist);
+    border-left: 4px solid var(--forest);
+    font-size: 0.78rem;
+    color: var(--slate);
+    line-height: 1.6;
+  }
+
+  .export-bar strong { color: var(--forest); }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Tiger Conservation — Comparative Analysis</h1>
+  <p>Seven Featured Reserves · India · NTCA Census Data 2006–2022</p>
+</div>
+
+<div class="grid">
+
+  <!-- CHART 1: Population Trends Line Graph (full width) -->
+  <div class="chart-card full-width">
+    <div class="chart-label">Chart 1 · Population Trends</div>
+    <div class="chart-title">Tiger Population Growth Across Seven Reserves (2006–2022)</div>
+    <div class="chart-sub">NTCA census estimates at 4-year intervals. Kaziranga shown from 2010 (no 2006 reserve-level estimate available).</div>
+    <div class="chart-wrap" style="height:340px">
+      <canvas id="lineChart"></canvas>
+    </div>
+    <div class="note">Source: NTCA All India Tiger Estimation Reports 2006, 2010, 2014, 2018, 2022. Values are statistical estimates (SECR method), not exact counts.</div>
+  </div>
+
+  <!-- CHART 2: Growth Rate Bar Chart -->
+  <div class="chart-card">
+    <div class="chart-label">Chart 2 · Growth Rate</div>
+    <div class="chart-title">Percent Population Change, 2006–2022</div>
+    <div class="chart-sub">Ranked by total percent change. Kaziranga excluded (no 2006 baseline).</div>
+    <div class="chart-wrap" style="height:300px">
+      <canvas id="barChart"></canvas>
+    </div>
+    <div class="note">AAGR = Average Annual Growth Rate over 16-year period.</div>
+  </div>
+
+  <!-- CHART 3: Density Comparison -->
+  <div class="chart-card">
+    <div class="chart-label">Chart 3 · Density</div>
+    <div class="chart-title">Tigers per 100 km² — 2006 vs 2022</div>
+    <div class="chart-sub">Calculated from NTCA population estimates and ISFR 2021 reserve areas.</div>
+    <div class="chart-wrap" style="height:300px">
+      <canvas id="densityChart"></canvas>
+    </div>
+    <div class="note">Jim Corbett 2022 density (17.78) may be inflated — KBA boundary smaller than legal TR area.</div>
+  </div>
+
+  <!-- CHART 4: Scatter Plot -->
+  <div class="chart-card full-width">
+    <div class="chart-label">Chart 4 · Size vs Population</div>
+    <div class="chart-title">Reserve Area vs 2022 Population — Sized by Growth Rate</div>
+    <div class="chart-sub">Bubble size represents percent change 2006–2022. Reveals that large area alone does not predict high tiger population.</div>
+    <div class="chart-wrap" style="height:340px">
+      <canvas id="scatterChart"></canvas>
+    </div>
+    <div class="note">Kaziranga shown at 2022 population only (no 2006 baseline); bubble sized at median growth rate for display purposes.</div>
+  </div>
+
+</div>
+
+<div class="export-bar">
+  <strong>Export instructions:</strong> Open in Chrome → right-click each chart → Save image as… OR use browser Print → Save as PDF (A3, landscape) for full-page export.
+  For individual chart images at Story Map resolution (1400×800px): use browser DevTools → screenshot individual .chart-card elements.
+</div>
+
+<script>
+// ─── Shared colour palette ────────────────────────────────────────────────────
+const COLORS = {
+  Pench:       '#2d5a27',
+  Bandipur:    '#4a7c3f',
+  Nagarahole:  '#7aad6a',
+  Ranthambore: '#d4860b',
+  Corbett:     '#8b5e3c',
+  Kanha:       '#5a6e7a',
+  Kaziranga:   '#b84c2e',
+};
+
+const YEARS = [2006, 2010, 2014, 2018, 2022];
+
+Chart.defaults.font.family = "'Source Sans 3', sans-serif";
+Chart.defaults.color = '#5a6e7a';
+
+// ─── CHART 1 — Line Graph ─────────────────────────────────────────────────────
+const lineData = {
+  labels: YEARS,
+  datasets: [
+    { label: 'Jim Corbett', data: [164, 185, 215, 231, 260], borderColor: COLORS.Corbett,     backgroundColor: COLORS.Corbett+'22',     tension: 0.35, pointRadius: 5, pointHoverRadius: 7, borderWidth: 2.5 },
+    { label: 'Bandipur',    data: [68,  90,  120, 140, 150], borderColor: COLORS.Bandipur,    backgroundColor: COLORS.Bandipur+'22',    tension: 0.35, pointRadius: 5, pointHoverRadius: 7, borderWidth: 2.5 },
+    { label: 'Nagarahole',  data: [78,  90,  100, 127, 141], borderColor: COLORS.Nagarahole,  backgroundColor: COLORS.Nagarahole+'22',  tension: 0.35, pointRadius: 5, pointHoverRadius: 7, borderWidth: 2.5 },
+    { label: 'Kanha',       data: [89,  89,  90,  98,  105], borderColor: COLORS.Kanha,       backgroundColor: COLORS.Kanha+'22',       tension: 0.35, pointRadius: 5, pointHoverRadius: 7, borderWidth: 2.5, borderDash: [5,3] },
+    { label: 'Pench',       data: [33,  38,  46,  57,  77],  borderColor: COLORS.Pench,       backgroundColor: COLORS.Pench+'22',       tension: 0.35, pointRadius: 5, pointHoverRadius: 7, borderWidth: 2.5 },
+    { label: 'Ranthambore', data: [32,  41,  51,  57,  57],  borderColor: COLORS.Ranthambore, backgroundColor: COLORS.Ranthambore+'22', tension: 0.35, pointRadius: 5, pointHoverRadius: 7, borderWidth: 2.5 },
+    { label: 'Kaziranga',   data: [null,103, 103, 104, 104], borderColor: COLORS.Kaziranga,   backgroundColor: COLORS.Kaziranga+'22',   tension: 0.35, pointRadius: 5, pointHoverRadius: 7, borderWidth: 2.5, borderDash: [3,3] },
+  ]
+};
+
+new Chart(document.getElementById('lineChart'), {
+  type: 'line',
+  data: lineData,
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { position: 'right', labels: { boxWidth: 14, padding: 14, font: { size: 12 } } },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y ?? '—'} tigers` } }
+    },
+    scales: {
+      x: { title: { display: true, text: 'Census Year', font: { size: 11, weight: '600' } }, grid: { color: '#e8ede5' } },
+      y: { title: { display: true, text: 'Tiger Population (estimate)', font: { size: 11, weight: '600' } }, beginAtZero: false, min: 0, grid: { color: '#e8ede5' } }
+    }
+  }
+});
+
+// ─── CHART 2 — Growth Rate Bar ────────────────────────────────────────────────
+const growthReserves = ['Pench','Bandipur','Nagarahole','Ranthambore','Jim Corbett','Kanha'];
+const growthValues   = [133.3, 120.6, 80.8, 78.1, 58.5, 18.0];
+const aagr           = [5.44,  5.07,  3.77, 3.67, 2.92, 1.04];
+const growthColors   = growthReserves.map(r => COLORS[r.replace('Jim Corbett','Corbett')] || '#888');
+
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels: growthReserves,
+    datasets: [{
+      label: '% Change 2006–2022',
+      data: growthValues,
+      backgroundColor: growthColors.map(c => c + 'cc'),
+      borderColor: growthColors,
+      borderWidth: 2,
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    indexAxis: 'y',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const i = ctx.dataIndex;
+            return [`  Growth: +${ctx.parsed.x}%`, `  AAGR: +${aagr[i]}%/yr`];
+          }
+        }
+      },
+      datalabels: { display: false }
+    },
+    scales: {
+      x: { title: { display: true, text: '% Change (2006 → 2022)', font: { size: 11, weight: '600' } }, grid: { color: '#e8ede5' } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// ─── CHART 3 — Density Grouped Bar ────────────────────────────────────────────
+const densityReserves = ['Nagarahole','Jim Corbett','Kaziranga','Bandipur','Kanha','Pench','Ranthambore'];
+const density2006     = [6.77,  11.21, null, 3.81, 4.30, 1.73, 1.81];
+const density2022     = [12.23, 17.78, 8.81, 8.41, 5.07, 4.04, 3.23];
+const dColors2022     = densityReserves.map(r => COLORS[r.replace('Jim Corbett','Corbett')] || '#888');
+
+new Chart(document.getElementById('densityChart'), {
+  type: 'bar',
+  data: {
+    labels: densityReserves,
+    datasets: [
+      {
+        label: '2006',
+        data: density2006,
+        backgroundColor: '#c8b97a55',
+        borderColor: '#c8b97a',
+        borderWidth: 2,
+        borderRadius: 3,
+      },
+      {
+        label: '2022',
+        data: density2022,
+        backgroundColor: dColors2022.map(c => c + 'cc'),
+        borderColor: dColors2022,
+        borderWidth: 2,
+        borderRadius: 3,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top', labels: { boxWidth: 14, font: { size: 12 } } },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y ?? '—'} tigers/100km²` } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+      y: { title: { display: true, text: 'Tigers per 100 km²', font: { size: 11, weight: '600' } }, grid: { color: '#e8ede5' }, beginAtZero: true }
+    }
+  }
+});
+
+// ─── CHART 4 — Scatter / Bubble ───────────────────────────────────────────────
+const scatterData = [
+  { label: 'Jim Corbett', x: 1462.7, y: 260, r: 58.5,  color: COLORS.Corbett },
+  { label: 'Bandipur',    x: 1784.5, y: 150, r: 120.6, color: COLORS.Bandipur },
+  { label: 'Nagarahole',  x: 1152.7, y: 141, r: 80.8,  color: COLORS.Nagarahole },
+  { label: 'Kanha',       x: 2071.5, y: 105, r: 18.0,  color: COLORS.Kanha },
+  { label: 'Kaziranga',   x: 1180.4, y: 104, r: 60.0,  color: COLORS.Kaziranga },   // median r for display
+  { label: 'Pench',       x: 1906.9, y:  77, r: 133.3, color: COLORS.Pench },
+  { label: 'Ranthambore', x: 1765.6, y:  57, r: 78.1,  color: COLORS.Ranthambore },
+];
+
+// Scale bubble radius: sqrt(pct) * factor to keep sizes readable
+const scaleBubble = pct => Math.sqrt(Math.abs(pct)) * 1.4;
+
+new Chart(document.getElementById('scatterChart'), {
+  type: 'bubble',
+  data: {
+    datasets: scatterData.map(d => ({
+      label: d.label,
+      data: [{ x: d.x, y: d.y, r: scaleBubble(d.r) }],
+      backgroundColor: d.color + 'aa',
+      borderColor: d.color,
+      borderWidth: 2,
+    }))
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right', labels: { boxWidth: 14, padding: 12, font: { size: 12 } } },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const d = scatterData[ctx.datasetIndex];
+            const pct = d.label === 'Kaziranga' ? 'n/a (no 2006 baseline)' : `+${d.r}%`;
+            return [`  ${d.label}`, `  Area: ${d.x.toLocaleString()} km²`, `  Pop 2022: ${d.y}`, `  Growth: ${pct}`];
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: 'Reserve Area (km²)', font: { size: 11, weight: '600' } },
+        grid: { color: '#e8ede5' },
+        min: 800, max: 2400
+      },
+      y: {
+        title: { display: true, text: '2022 Tiger Population', font: { size: 11, weight: '600' } },
+        grid: { color: '#e8ede5' },
+        beginAtZero: true
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

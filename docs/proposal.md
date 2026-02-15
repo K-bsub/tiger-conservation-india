@@ -315,11 +315,11 @@ The modular Story Map design will allow future expansion to include:
 - [x] Prepare all data in consistent projection and format
 
 ### Phase 3: Spatial Analysis (Week 5)
-- [ ] Perform kernel density analysis
-- [ ] Run hot spot analysis (Getis-Ord Gi*)
-- [ ] Calculate zonal statistics for habitat characterization
-- [ ] Generate reserve-level summary statistics
-- [ ] Create time-series visualizations
+- [x] Perform kernel density analysis
+- [x] Run hot spot analysis (Getis-Ord Gi*)
+- [x] Calculate zonal statistics for habitat characterization
+- [x] Generate reserve-level summary statistics
+- [x] Create time-series visualizations
 
 ### Phase 4: Map Development (Week 6)
 - [ ] Design symbology and color schemes
@@ -409,7 +409,7 @@ This project will be considered successful if it:
 **Project Author:** Kiran Balasubramanian
 **Institution/Affiliation:** GIS Course Project  
 **Date Created:** February 4, 2026  
-**Last Updated:** February 13, 2026
+**Last Updated:** February 15, 2026
 
 ---
 
