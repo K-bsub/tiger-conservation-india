@@ -84,8 +84,8 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | **Week 1** | Project Setup & Initial Data Collection | GitHub repo, proposal, GBIF/WDPA data downloaded | ✅ Complete |
 | **Week 2** | Complete Data Collection | All datasets acquired, NTCA data extracted | ✅ Complete |
 | **Week 3** | Data Processing & Cleaning | Cleaned datasets, joined tables, organized geodatabase | ✅ Complete |
-| **Week 4** | Advanced Data Prep | Time-series tables, spatial data ready for analysis | 🟢 In Progress |
-| **Week 5** | Spatial Analysis | Density maps, hot spot analysis, statistics complete | ⚪ Not Started |
+| **Week 4** | Advanced Data Prep | Time-series tables, spatial data ready for analysis | ✅ Complete |
+| **Week 5** | Spatial Analysis | Density maps, hot spot analysis, statistics complete | 🟢 In Progress |
 | **Week 6** | Map Development | Web maps created, symbology finalized, charts made | ⚪ Not Started |
 | **Week 7** | Story Map Development | Narrative written, maps integrated, content complete | ⚪ Not Started |
 | **Week 8** | Finalization & Publication | Story Map published, documentation complete, presentation ready | ⚪ Not Started |
@@ -190,56 +190,22 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 #### Tasks
 
-- [ ] Create time-series population table
-  - Structure: Reserve | 2006 | 2010 | 2014 | 2018 | 2022
-  - Calculate absolute change (2022 - 2006)
-  - Calculate percent change ((2022-2006)/2006 * 100)
-  - Calculate average annual growth rate
-  - Rank reserves by growth metrics
-- [ ] Identify top performing reserves
-  - Select reserves in top quartile for percent growth
-  - Verify data completeness for selected reserves
-  - Create final list of 5-7 featured reserves
-  - Document selection criteria
-- [ ] Create reserve profile data
-  - For each featured reserve compile:
-    - Area (km²)
-    - 2006 population
-    - 2022 population
-    - Growth rate
-    - State/region
-    - Establishment year
-  - Add to attribute table or separate table
-- [ ] Prepare occurrence data for density analysis
-  - Create separate point layers by time period
-  - 2006-2010 (baseline)
-  - 2018-2022 (current)
-  - Verify point counts sufficient for kernel density
-- [ ] Extract elevation statistics
-  - Run zonal statistics for each reserve
-  - Calculate: min, max, mean, std dev elevation
-  - Join results to reserve attributes
-- [ ] Join forest cover statistics to reserve boundaries *(data already available)*
-  - Import `isfr_2021_reserve_corridors.xlsx` reserve sheet as table in ArcGIS
-  - Join to India_Tiger_Reserves feature class on reserve name
-  - Fields to join: TR_Area_sqkm, VDF_2021, MDF_2021, OF_2021, Total_Forest_2021,
-    Pct_of_TR_2021, Forest_Change_sqkm
-  - Verify all 7 reserves match; document any name mismatches
-- [ ] Create analysis extent/mask
-  - Buffer around study area for context
-  - Create clipping boundary for maps
-- [ ] Set up feature class templates for results
-  - Hot spot analysis output
-  - Density raster output
-  - Summary statistics table
+- [x] Create time-series population table
+- [x] Identify top performing reserves
+- [x] Create reserve profile data
+- [x] Prepare occurrence data for density analysis
+- [x] Extract elevation statistics
+- [x] Join forest cover statistics to reserve boundaries *(data already available)*
+- [x] Create analysis extent/mask
+- [x] Set up feature class templates for results
 
 **Deliverables:**
-- [ ] Time-series table with growth calculations
-- [ ] List of 5-7 featured reserves finalized
-- [ ] Reserve profile data compiled
-- [ ] Occurrence data organized by time period
-- [ ] Habitat statistics joined to reserves
-- [ ] Data dictionary updated
+- ✅ Time-series table with growth calculations
+- ✅ List of 5-7 featured reserves finalized
+- ✅ Reserve profile data compiled
+- ✅ Occurrence data organized by time period
+- ✅ Habitat statistics joined to reserves
+- ✅ Data dictionary updated
 
 **Time Estimate:** 12-15 hours
 
@@ -853,7 +819,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Week 3 Status**
 - **Date:** February 12, 2026
-- **Progress:** 🟢 In Progress
+- **Progress:** ✅ Complete
 - **Completed:**
   - ✅ Set up project projection (WGS 1984 UTM Zone 43N); geodatabase structure documented
   - ✅ Extracted forest cover data from ISFR 2021 Chapter 4 (Table 4.5) — reserve-boundary
@@ -884,24 +850,30 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Week 4 Status**
 - **Date:** February 14, 2026
-- **Progress:** 🟢 In Progress
+- **Progress:** ✅ Complete
 - **Completed:**
-  - [ ] 
-- **In Progress:**
-  - 🟢 Create time-series population table
+  - ✅ Create time-series population table
+  - ✅ Identify top performing reserves
+  - ✅ Create reserve profile data
+  - ✅ Prepare occurrence data for density analysis
+  - ✅ Extract elevation statistics
+  - ✅ Join forest cover statistics to reserve boundaries
+  - ✅ Create analysis extent/mask
+  - ✅ Set up feature class templates for results
+- **In Progress:** None 
 - **Blockers:** None
-- **Next Week Focus:** 
-- **Notes:** 
+- **Next Week Focus:** Run kernel density estimation (baseline 2006–2010 vs current 2018–2022), execute hot spot analysis (Getis-Ord Gi), complete reserve-level Summarize Within point counts, populate Reserve_Summary_Stats table, and verify Jim Corbett forest boundary anomaly before analysis
+- **Notes:** Week 4 completed ahead of schedule. Three analytical decisions revised during prep: GBIF uncertainty filter relaxed from ≤10,000m to IS NOT NULL (18 baseline points insufficient for KDE); temporal subsets realigned to census windows (2006–2010 / 2018–2022); top reserve selection used multi-criterion threshold instead of strict quartile (N=6 too small for quartile method). Pench confirmed as single combined landscape throughout all layers. Tiger_Reserves_Full is now the master spatial layer carrying population + elevation + forest cover attributes. All Week 5 result templates in place — HotSpot_Tiger_GiStar FC, Reserve_Summary_Stats table, and Analysis Environments configured. Jim Corbett forest anomaly (−594 km² change) flagged for verification before narrative use.
 
 ---
 
 **Week 5 Status**
-- **Date:** [To be updated]
-- **Progress:** ⚪ Not Started
+- **Date:** February 15, 2026
+- **Progress:** 🟢 In Progress
 - **Completed:**
   - [ ] 
 - **In Progress:**
-  - [ ] 
+  - 🟢 Kernel Density Analysis - Baseline (2006-2010)
 - **Blockers:** 
 - **Next Week Focus:** 
 - **Notes:** 
@@ -951,13 +923,13 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Current Status:** 🟢 On Track
 
-**Completion Percentage:** 37%
+**Completion Percentage:** 45%
 
 **Key Metrics:**
-- Tasks completed: ~28 / ~80
-- Milestones completed: 2.5 / 8 (Weeks 1 - 3 complete)
-- Days remaining: 54
-- Estimated hours used: ~35 / 150
+- Tasks completed: 34 / 75
+- Milestones completed: 4 / 8 (Weeks 1 - 4 complete)
+- Days remaining: 28
+- Estimated hours used: ~68 / 146
 
 **Traffic Light Status:**
 - 🟢 Schedule: On track (forest data extraction ahead of original plan)
@@ -1030,6 +1002,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | 2026-02-12 | 3.0 | Extracted ISFR 2021 Ch.4 forest cover (reserve-boundary level, all 7 reserves); extracted 13 tiger corridor data; updated Week 3 status; revised forest cover approach (Zonal Statistics deferred) | Kiran Balasubramanian |
 | 2026-02-13 | 3.1 | Processed GBIF and iNaturalist data, cleaned WDPA protected areas, processed census population data and joined to spatial boundaries  | Kiran Balasubramanian |
 | 2026-02-13 | 3.2 | Processed elevation data and performed quality checks  | Kiran Balasubramanian |
+| 2026-02-14 | 4.0 | Completed all tasks from Week 4  | Kiran Balasubramanian |
 
 ---
 

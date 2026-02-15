@@ -3,7 +3,7 @@
 **Project:** Identifying Conservation Success Stories: Spatial Analysis of Tiger Population Recovery  
 **Author:** Kiran Balasubramanian  
 **Repository:** https://github.com/K-bsub/tiger-conservation-india  
-**Last Updated:** February 13, 2026
+**Last Updated:** February 14, 2026
 
 ---
 
@@ -238,8 +238,8 @@ Final feature class: tiger_project.gdb/Protected_Areas/Tiger_Reserves_Population
 6. **Export to feature class** — `GBIF_Tiger_Points_Cleaned` (WGS84)
 7. **Reproject** — `GBIF_Tiger_Points_UTM43N` (UTM 43N, EPSG:32643)
 8. **Create time subsets:**
-   - Baseline: `year >= 2006 AND year <= 2012` → `GBIF_Tiger_Baseline_2006_2012`
-   - Current: `year >= 2013 AND year <= 2022` → `GBIF_Tiger_Current_2013_2022`
+   - Baseline: `year >= 2006 AND year <= 2010` → `GBIF_Tiger_Baseline_2006_2010`
+   - Current: `year >= 2018 AND year <= 2022` → `GBIF_Tiger_Current_2018_2022`
 
 **Record counts:**
 
@@ -248,9 +248,9 @@ Final feature class: tiger_project.gdb/Protected_Areas/Tiger_Reserves_Population
 | Raw CSV records (2006–2022) | 3488 |
 | After coordinate validation | 3474 |
 | After duplicate removal | 1628 |
-| After uncertainty filter | 181 |
-| Baseline subset (2006–2012) | 18 |
-| Current subset (2013–2022) | 163 |
+| After uncertainty filter | 1411 |
+| Baseline subset (2006–2010) | 116 |
+| Current subset (2018–2022) | 908 |
 
 ---
 
@@ -396,15 +396,15 @@ Ranthambore, west/north of Pench, south of Kanha). Downloaded via USGS Earth Exp
 
 **Elevation ranges observed:**
 
-| Reserve | Min (m) | Max (m) |
-|---|---|---|
-| Bandipur | [fill] | [fill] |
-| Nagarahole | [fill] | [fill] |
-| Kanha | [fill] | [fill] |
-| Pench | [fill] | [fill] |
-| Ranthambore | [fill] | [fill] |
-| Kaziranga | [fill] | [fill] |
-| Jim Corbett | [fill] | [fill] |
+| Reserve | Min (m) | Max (m) | Mean (m) | Std (m) |
+|---|---|---|---|---|
+| Bandipur | 384 | 1453 | 874.7 | 119.2 |
+| Nagarahole | 692 | 965 | 810.8 | 48.7 |
+| Kanha | 482 | 912 | 698.8 | 103.3 |
+| Pench | 310 | 627 | 453.6 | 66.6 |
+| Ranthambore | 214 | 509 | 352.4 | 78 |
+| Kaziranga | 40 | 114 | 77.8 | 5.4 |
+| Jim Corbett | 257 | 1329 | 535.1 | 169..8 |
 
 > Run **Zonal Statistics as Table** on `SRTM_India_Clipped` using `Project_Reserves_Clean`
 > as zones to populate the table above (Week 5).
@@ -484,8 +484,8 @@ Used for: human disturbance context layers in Story Map; proximity analysis if n
 | Population field | None (each point = 1) | — |
 
 **Outputs:**
-- `KDE_Tiger_Baseline_2006_2012.tif`
-- `KDE_Tiger_Current_2013_2022.tif`
+- `KDE_Tiger_Baseline_2006_2010.tif`
+- `KDE_Tiger_Current_2018_2022.tif`
 
 Both saved to `tiger_project.gdb/Analysis_Results/`
 
@@ -519,7 +519,7 @@ Not Significant, Cold Spot (90%), Cold Spot (95%), Cold Spot (99%).
 ### 5.4 Reserve-Level Statistics
 
 **Tool:** ArcGIS Pro — Summarize Within / Spatial Join  
-**Inputs:** `India_Tiger_Reserves`, `GBIF_Tiger_Points_UTM43N`
+**Inputs:** Tiger_Reserves_Full, GBIF_Tiger_Points_UTM43N, GBIF_Tiger_Baseline_2006_2010, GBIF_Tiger_Current_2018_2022
 
 **Metrics calculated per reserve:**
 
@@ -580,23 +580,60 @@ between 2011 and 2021 FSI assessments.
 ---
 
 **Decision 3: GBIF coordinate uncertainty threshold**  
-*Date:* February 12, 2026  
-*Decision:* [Fill in — 1,000 m / 5,000 m]  
-*Justification:* [Fill in after running filter and checking remaining record counts.
-If < ~200 records remain at 1,000m, document decision to relax to 5,000m and note
-that iNaturalist data will supplement.]  
-*Impact:* [Fill in — X% of records removed]
+Date: February 14, 2026
+Decision: Accept all records where coordinateUncertaintyInMeters IS NOT NULL
+  (i.e. any recorded uncertainty value, no upper limit).
+Justification: At a 10,000m threshold only 181 records remained — 18 in the
+  baseline period (2006–2010), insufficient for kernel density estimation.
+  Relaxing to IS NOT NULL recovers ~1,200–1,400 records. Records with high
+  uncertainty (>10km) will produce positional imprecision in KDE outputs but
+  will cluster correctly at the reserve level for Summarize Within analysis.
+  The 22km iNaturalist coordinate offset means this threshold is consistent
+  with the iNaturalist data quality standard already accepted for that layer.
+Impact: 40.5% of raw records retained after all filters.
+  Baseline (2006–2010): 116 records.
+  Current (2018–2022): 908 records.
 
 ---
 
 **Decision 4: GBIF temporal subsets — 2006–2012 vs 2013–2022**  
-*Date:* February 12, 2026  
-*Decision:* Split occurrence data at 2012/2013 boundary rather than using census years
-(2006–2009 vs 2018–2022) as originally considered.  
-*Justification:* Maximizes point counts in both subsets for kernel density estimation.
-Census-aligned subsets (4-year windows) would produce very sparse point layers.
-The split roughly corresponds to early vs. late Project Tiger era under the current
-NTCA framework (established 2006).
+Date: February 14, 2026
+Decision: Split occurrence data into 2006–2010 (baseline) and 2018–2022
+  (current) windows, aligned with NTCA census periods.
+Justification: Census-aligned windows make the Story Map narrative directly
+  comparable to NTCA population estimates — "detections near the time of the
+  2006/2010 census" vs "detections near the time of the 2018/2022 census."
+  The original 2006–2012 / 2013–2022 split (Decision 4, Feb 12) is superseded
+  by this revision following the uncertainty filter change.
+  2018–2022 window used for current period (not 2013–2022) to avoid blurring
+  two census cycles in the "current" layer.
+Impact: Replaces GBIF_Tiger_Baseline_2006_2012 and GBIF_Tiger_Current_2013_2022.
+  Old layers deleted from GDB.
+
+---
+
+**Decision 5: Featured reserve selection criteria**
+Date: February 13, 2026
+Method: Multi-criterion threshold applied to 7 candidate reserves
+
+Primary criterion:   Percent population change ≥ 50% (2006–2022 baseline)
+Supporting criterion: Population ≥ 50 tigers in 2022
+
+Strict top-quartile not used — with N=6 comparable reserves,
+a 75th percentile cutoff yields only 2 reserves (Pench 133%,
+Bandipur 121%), insufficient for a 5–7 reserve Story Map.
+
+Final 7 reserves selected:
+  Growth category  — Pench, Bandipur, Nagarahole, Ranthambore, Jim Corbett
+  Stable/capacity  — Kanha (18% growth, strong absolute population),
+                     Kaziranga (stable at carrying capacity, highest
+                     density in India ~10 tigers/100km²)
+
+Landscape coverage: Western Ghats (2), Central India (2),
+                    Semi-Arid (1), Terai Arc (1), Northeast (1)
+
+Excluded from growth ranking: Kaziranga — different baseline year
+  (2010 vs 2006); included on density/stability grounds instead.
 
 ---
 
