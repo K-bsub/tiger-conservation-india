@@ -233,7 +233,7 @@ All photos used in this project are properly licensed and attributed.
 ### Photo 3: Ranthambore Tiger
 - **Filename:** ranthambore_tiger_01.jpg
 - **Source:** Wikimedia Commons
-- **URL:** [https://commons.wikimedia.org/wiki/File:Karmazari_Pench_National_Park_7.jpg]
+- **URL:** [https://commons.wikimedia.org/wiki/File:Tigers-at-Ranthambore-National-Park_03.jpg]
 - **Photographer:** [Fitindia]
 - **License:** CC BY-SA 4.0
 - **Attribution Required:** Yes

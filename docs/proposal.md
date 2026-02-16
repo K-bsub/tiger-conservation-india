@@ -329,11 +329,11 @@ The modular Story Map design will allow future expansion to include:
 - [x] Prepare all map products
 
 ### Phase 5: Story Map Development (Week 7)
-- [ ] Write narrative text for all sections
-- [ ] Design Story Map layout and structure
-- [ ] Add maps, charts, and media
-- [ ] Integrate analysis results
-- [ ] Review and refine content
+- [x] Write narrative text for all sections
+- [x] Design Story Map layout and structure
+- [x] Add maps, charts, and media
+- [x] Integrate analysis results
+- [x] Review and refine content
 
 ### Phase 6: Finalization (Week 8)
 - [ ] Test all interactive elements

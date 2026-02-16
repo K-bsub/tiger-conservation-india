@@ -87,8 +87,8 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | **Week 4** | Advanced Data Prep | Time-series tables, spatial data ready for analysis | ✅ Complete |
 | **Week 5** | Spatial Analysis | Density maps, hot spot analysis, statistics complete | ✅ Complete |
 | **Week 6** | Map Development | Web maps created, symbology finalized, charts made | ✅ Complete |
-| **Week 7** | Story Map Development | Narrative written, maps integrated, content complete | 🟢 In Progress |
-| **Week 8** | Finalization & Publication | Story Map published, documentation complete, presentation ready | ⚪ Not Started |
+| **Week 7** | Story Map Development | Narrative written, maps integrated, content complete | ✅ Complete |
+| **Week 8** | Finalization & Publication | Story Map published, documentation complete, presentation ready | 🟢 In Progress |
 
 **Status Legend:**
 - 🟢 In Progress
@@ -273,88 +273,26 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 #### Tasks
 
-- [ ] Create Story Map outline
-  - Define chapter structure
-  - Plan content flow
-  - Identify map/chart placements
-  - Sketch layout (paper or digital)
-- [ ] Write narrative text
-  - Introduction (2-3 paragraphs)
-    - Tiger conservation context
-    - Project Tiger history
-    - Why this matters
-  - Success Stories chapter (main content)
-    - Overview of featured reserves
-    - What makes them successful
-    - Key statistics and highlights
-  - Reserve profiles (5-7 sections)
-    - Individual reserve stories
-    - Specific achievements
-    - Habitat characteristics
-  - Conclusion (2 paragraphs)
-    - Key takeaways
-    - Conservation importance
-    - Call to action
-- [ ] Source and prepare media
-  - Find tiger photos (with attribution)
-  - Collect reserve photographs
-  - Create or source icons
-  - Verify all images are properly licensed
-  - Resize images for web optimization
-- [ ] Build Story Map in ArcGIS StoryMaps
-  - Create new Story Map
-  - Set up navigation structure
-  - Add cover/title section with hero image
-  - Insert introduction text
-- [ ] Add overview map section
-  - Embed Web Map 1 (Overview)
-  - Add explanatory text
-  - Configure map settings
-  - Add legend if needed
-- [ ] Add population trends section
-  - Insert line graph chart
-  - Add supporting text explaining trends
-  - Include data source citation
-- [ ] Add density comparison section
-  - Embed Web Map 2 (Density)
-  - Add before/after comparison text
-  - Explain significance of spatial changes
-- [ ] Add hot spot analysis section
-  - Embed Web Map 3 (Hot Spots)
-  - Explain clustering patterns
-  - Discuss implications
-- [ ] Create reserve profile sections
-  - For each of 5-7 reserves:
-    - Add reserve name heading
-    - Insert individual reserve map
-    - Add profile statistics (sidebar or cards)
-    - Write 1-2 paragraph story
-    - Add reserve photo
-- [ ] Add comparative analysis section
-  - Insert ranking bar chart
-  - Add infographics
-  - Include summary statistics
-- [ ] Create conclusion section
-  - Summarize key findings
-  - Broader conservation implications
-  - Acknowledgments
-  - Data sources and credits
-- [ ] Add interactive elements
-  - Image carousels if multiple photos
-  - Expandable text for details
-  - Buttons or links to resources
-- [ ] Configure Story Map settings
-  - Set privacy to public/private as appropriate
-  - Configure sharing options
-  - Add metadata/tags
-  - Set thumbnail image
+- [x] Create Story Map outline
+- [x] Write narrative text
+- [x] Source and prepare media
+- [x] Build Story Map in ArcGIS StoryMaps
+- [x] Add overview map section
+- [x] Add population trends section
+- [x] Add density comparison section
+- [x] Add hot spot analysis section
+- [x] Create reserve profile sections
+- [x] Add comparative analysis section
+- [x] Create conclusion section
+- [x] Add interactive elements
+- [x] Configure Story Map settings
 
 **Deliverables:**
-- [ ] Story Map outline complete
-- [ ] All narrative text written
-- [ ] Media collected and optimized
-- [ ] Story Map built with all content
-- [ ] Interactive elements functional
+- ✅ Story Map outline complete
+- ✅ All narrative text written
+- ✅ Media collected and optimized
+- ✅ Story Map built with all content
+- ✅ Interactive elements functional
 
 **Time Estimate:** 18-22 hours
 
@@ -786,7 +724,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Week 5 Status**
 - **Date:** February 15, 2026
-- **Progress:** 🟢 In Progress
+- **Progress:** ✅ Complete
 - **Completed:**
   - ✅ Kernel Density Analysis - Baseline (2006-2010)
   - ✅ Kernel Density Analysis - Current (2018-2022)
@@ -805,7 +743,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Week 6 Status**
 - **Date:** February 15, 2026
-- **Progress:** 🟢 In Progress
+- **Progress:** ✅ Complete
 - **Completed:**
   - ✅ Design symbology scheme
   - ✅ Create Web Map 1: Overview Map
@@ -845,18 +783,29 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - **Date:** February 16, 2026
 - **Progress:** 🟢 In Progress
 - **Completed:**
-  - [ ] 
-- **In Progress:**
-  - [ ] 
-- **Blockers:** 
-- **Next Week Focus:** 
-- **Notes:** 
+  - ✅ Create Story Map outline
+  - ✅ Write narrative text
+  - ✅ Source and prepare media
+  - ✅ Build Story Map in ArcGIS StoryMaps
+  - ✅ Add overview map section
+  - ✅ Add population trends section
+  - ✅ Add density comparison section
+  - ✅ Add hot spot analysis section
+  - ✅ Create reserve profile sections
+  - ✅ Add comparative analysis section
+  - ✅ Create conclusion section
+  - ✅ Add interactive elements
+  - ✅ Configure Story Map settings
+- **In Progress:** None
+- **Blockers:** None
+- **Next Week Focus:** Internal review and testing across devices (desktop/tablet/mobile), gather feedback from 2–3 reviewers, make revisions based on feedback, final content polish (proofread all text, verify all map/chart captions, test all links), change privacy to Public and publish, complete project documentation (finalize methodology.md, write final-report.md), organize GitHub repository, archive project files
+- **Notes:** Story Map is functionally complete with all content in place — 7 sections, 9 embedded maps, 4 charts, 8 photos (including 3-photo intro slideshow), interactive elements (accordion for observer bias note, buttons for methodology and NTCA reports), and full credits. Privacy currently set to Private — will publish publicly after Week 8 review and polish pass. All interactive elements tested and rendering correctly. Photo attributions verified — all images properly licensed (21 CC BY-SA 4.0 from Wikimedia Commons, 3 Unsplash free-to-use). iNaturalist removed from credits section as decided — data processed but not used in any analysis or visualization. Narrative incorporates all key findings from Week 5 analysis: Pench highest growth (133%), Ranthambore observer bias teaching moment, Kaziranga carrying capacity interpretation, Corbett density caveat flagged. Ready for Week 8 QA and publication.
 
 ---
 
 **Week 8 Status**
-- **Date:** [To be updated]
-- **Progress:** ⚪ Not Started
+- **Date:** February 16, 2026
+- **Progress:** 🟢 In Progress
 - **Completed:**
   - [ ] 
 - **In Progress:**
@@ -871,13 +820,13 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Current Status:** 🟢 On Track
 
-**Completion Percentage:** 69%
+**Completion Percentage:** 87%
 
 **Key Metrics:**
-- Tasks completed: 52 / 75
-- Milestones completed: 6 / 8 (Weeks 1 - 6 complete)
-- Days remaining: 14
-- Estimated hours used: ~106 / 146
+- Tasks completed: 65 / 75
+- Milestones completed: 7 / 8 (Weeks 1 - 7 complete)
+- Days remaining: 7
+- Estimated hours used: ~128 / 146
 
 **Traffic Light Status:**
 - 🟢 Schedule: On track (forest data extraction ahead of original plan)
@@ -953,6 +902,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | 2026-02-14 | 4.0 | Completed all tasks from Week 4  | Kiran Balasubramanian |
 | 2026-02-15 | 5.0 | Completed all tasks from Week 5  | Kiran Balasubramanian |
 | 2026-02-16 | 6.0 | Completed all tasks from Week 6  | Kiran Balasubramanian |
+| 2026-02-16 | 7.0 | Completed all tasks from Week 7  | Kiran Balasubramanian |
 
 ---
 
