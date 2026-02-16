@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tiger Conservation — Symbology Scheme</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Code+Pro:wght@400;600&family=Source+Sans+3:wght@300;400;600&display=swap');
+
+  :root {
+    --ink: #1a1a18;
+    --cream: #f7f4ee;
+    --rule: #d4cfc4;
+    --forest: #225522;
+    --amber: #b07d20;
+    --slate: #5a6070;
+    --mist: #edeae3;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--ink);
+    padding: 48px 44px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── Page header ── */
+  .page-header { border-bottom: 2px solid var(--forest); padding-bottom: 20px; margin-bottom: 44px; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--forest); }
+  .page-header p  { font-size: 0.8rem; font-weight: 300; color: var(--slate); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 5px; }
+
+  /* ── Section ── */
+  .section { margin-bottom: 44px; }
+  .section-head {
+    display: flex; align-items: baseline; gap: 12px;
+    border-bottom: 1px solid var(--rule); padding-bottom: 8px; margin-bottom: 20px;
+  }
+  .section-num { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--forest); min-width: 28px; }
+  .section-title { font-size: 1rem; font-weight: 600; color: var(--ink); }
+  .section-sub { font-size: 0.75rem; font-weight: 300; color: var(--slate); margin-left: auto; }
+
+  /* ── Swatch row ── */
+  .swatch-grid { display: flex; flex-direction: column; gap: 6px; }
+
+  .swatch-row {
+    display: grid;
+    grid-template-columns: 48px 1fr 90px 90px 90px 90px 70px;
+    align-items: center;
+    gap: 0 14px;
+    padding: 7px 12px;
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+  }
+
+  .swatch-row.header {
+    background: var(--mist);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate);
+    border-color: transparent;
+  }
+
+  .swatch-box {
+    width: 40px; height: 28px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.12);
+    flex-shrink: 0;
+  }
+
+  .swatch-name { font-size: 0.82rem; font-weight: 400; }
+  .swatch-label { font-size: 0.72rem; color: var(--slate); font-weight: 300; margin-top: 1px; }
+
+  .mono {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.75rem;
+    color: var(--ink);
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+  }
+  .badge-pass { background: #d4edda; color: #1a5c2a; }
+  .badge-warn { background: #fff3cd; color: #7d5a00; }
+
+  /* ── ArcGIS instruction block ── */
+  .arcgis-block {
+    background: white;
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--forest);
+    padding: 16px 20px;
+    margin-top: 16px;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: var(--slate);
+  }
+  .arcgis-block strong { color: var(--ink); }
+  .arcgis-block code {
+    font-family: 'Source Code Pro', monospace;
+    background: var(--mist);
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-size: 0.75rem;
+    color: var(--forest);
+  }
+  .arcgis-block ol, .arcgis-block ul { padding-left: 18px; margin-top: 6px; }
+  .arcgis-block li { margin-bottom: 3px; }
+
+  /* ── Note strip ── */
+  .note {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #fef9ec;
+    border-left: 3px solid var(--amber);
+    font-size: 0.75rem;
+    color: #5a4a10;
+    line-height: 1.6;
+  }
+
+  /* ── Divider ── */
+  hr { border: none; border-top: 1px solid var(--rule); margin: 40px 0; }
+
+  /* ── Accessibility table ── */
+  .a11y-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 12px; }
+  .a11y-table th { background: var(--mist); padding: 7px 10px; text-align: left; font-weight: 600; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--slate); }
+  .a11y-table td { padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+  .a11y-table tr:last-child td { border-bottom: none; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Symbology Scheme — Tiger Conservation Story Map</h1>
+  <p>Week 6 · ArcGIS Pro / ArcGIS Online · All colours WCAG AA compliant</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 1 — GROWTH CATEGORY (Overview Map)
+═══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">1</span>
+    <span class="section-title">Reserve Growth Category — Polygon Choropleth</span>
+    <span class="section-sub">Tiger_Reserves_Full · Field: Growth_Category · Web Map 1</span>
+  </div>
+
+  <div class="swatch-grid">
+    <div class="swatch-row header">
+      <span></span><span>Class</span><span>Hex</span><span>RGB</span><span>Opacity</span><span>Outline</span><span>Label</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#225522"></div>
+      <div><div class="swatch-name">High growth</div><div class="swatch-label">Pench, Bandipur, Nagarahole, Ranthambore</div></div>
+      <span class="mono">#225522</span><span class="mono">34, 85, 34</span><span class="mono">85%</span>
+      <span class="mono">#1E1E1E 1.5px</span><span class="badge badge-pass">white</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#78AA50"></div>
+      <div><div class="swatch-name">Moderate growth</div><div class="swatch-label">Jim Corbett</div></div>
+      <span class="mono">#78AA50</span><span class="mono">120, 170, 80</span><span class="mono">85%</span>
+      <span class="mono">#1E1E1E 1.5px</span><span class="badge badge-pass">black</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#B4C378"></div>
+      <div><div class="swatch-name">Stable</div><div class="swatch-label">Kanha</div></div>
+      <span class="mono">#B4C378</span><span class="mono">180, 195, 120</span><span class="mono">85%</span>
+      <span class="mono">#1E1E1E 1.5px</span><span class="badge badge-pass">black</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#C8AF64"></div>
+      <div><div class="swatch-name">Stable / At capacity</div><div class="swatch-label">Kaziranga</div></div>
+      <span class="mono">#C8AF64</span><span class="mono">200, 175, 100</span><span class="mono">85%</span>
+      <span class="mono">#1E1E1E 1.5px</span><span class="badge badge-pass">black</span>
+    </div>
+  </div>
+
+  <div class="arcgis-block">
+    <strong>ArcGIS Pro — Symbology panel:</strong>
+    <ol>
+      <li>Right-click <code>Tiger_Reserves_Full</code> → <strong>Symbology</strong> → Primary symbology: <strong>Unique Values</strong></li>
+      <li>Field: <code>Growth_Category</code></li>
+      <li>For each class: double-click symbol → <strong>Properties</strong> → set Fill color (hex above), Outline color <code>#1E1E1E</code>, Outline width <code>1.5pt</code></li>
+      <li>Set layer transparency to <strong>15%</strong> (= 85% opacity above)</li>
+      <li>Labels: Labeling tab → Field: <code>Reserve_Name</code> → Halo size 1.5pt, white halo</li>
+    </ol>
+  </div>
+  <div class="note">Amber/gold for Kaziranga intentionally breaks the pure green theme — signals "different story" (capacity) vs growth. All four classes remain distinct for deuteranopia (red-green colourblindness).</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 2 — KDE RASTERS
+═══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">2</span>
+    <span class="section-title">Kernel Density — Sequential Green Ramp</span>
+    <span class="section-sub">KDE_Tiger_Baseline_2006_2010 + KDE_Tiger_Current_2018_2022 · Web Map 2 · 20km search radius · Shared breaks</span>
+  </div>
+
+  <div class="swatch-grid">
+    <div class="swatch-row header">
+      <span></span><span>Class</span><span>Hex</span><span>RGB</span><span>Opacity</span><span>Source</span><span>Label</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#F7FCF5; border:1px solid #ccc;"></div>
+      <div><div class="swatch-name">Very low density</div><div class="swatch-label">0 – 0.0012 detections/km²</div></div>
+      <span class="mono">#F7FCF5</span><span class="mono">247, 252, 245</span><span class="mono">80%</span>
+      <span class="mono">ColorBrewer<br>Greens 5</span><span class="badge badge-pass">black</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#BAE4B3"></div>
+      <div><div class="swatch-name">Low density</div><div class="swatch-label">0.0012 – 0.0048 detections/km²</div></div>
+      <span class="mono">#BAE4B3</span><span class="mono">186, 228, 179</span><span class="mono">80%</span>
+      <span class="mono">ColorBrewer<br>Greens 5</span><span class="badge badge-pass">black</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#74C476"></div>
+      <div><div class="swatch-name">Moderate density</div><div class="swatch-label">0.0048 – 0.0110 detections/km²</div></div>
+      <span class="mono">#74C476</span><span class="mono">116, 196, 118</span><span class="mono">80%</span>
+      <span class="mono">ColorBrewer<br>Greens 5</span><span class="badge badge-pass">black</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#31A354"></div>
+      <div><div class="swatch-name">High density</div><div class="swatch-label">0.0110 – 0.0189 detections/km²</div></div>
+      <span class="mono">#31A354</span><span class="mono">49, 163, 84</span><span class="mono">80%</span>
+      <span class="mono">ColorBrewer<br>Greens 5</span><span class="badge badge-pass">black</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#006D2C"></div>
+      <div><div class="swatch-name">Very high density</div><div class="swatch-label">0.0189 – 0.0300 detections/km²</div></div>
+      <span class="mono">#006D2C</span><span class="mono">0, 109, 44</span><span class="mono">80%</span>
+      <span class="mono">ColorBrewer<br>Greens 5</span><span class="badge badge-pass">white</span>
+    </div>
+  </div>
+
+  <div class="arcgis-block">
+    <strong>ArcGIS Pro — Apply to Baseline (do this first):</strong>
+    <ol>
+      <li>Right-click <code>KDE_Tiger_Baseline_2006_2010</code> → <strong>Symbology</strong> → Primary: <strong>Classify</strong></li>
+      <li>Method: <strong>Manual Interval</strong> (not Natural Breaks — you are entering the recorded break values)</li>
+      <li>Classes: <strong>5</strong></li>
+      <li>Click each break value in the histogram and type in your recorded values from Week 5</li>
+      <li>Set each class colour to hex values above (double-click colour chip)</li>
+      <li>Layer transparency: <strong>20%</strong></li>
+      <li>NoData: transparent (no colour)</li>
+    </ol>
+    <strong>Apply identical breaks to Current KDE:</strong>
+    <ol>
+      <li>The <code>KDE_Classification.lyrx</code> saved in Week 5 already has these breaks</li>
+      <li>Right-click <code>KDE_Tiger_Current_2018_2022</code> → <strong>Symbology</strong> → menu (≡) → <strong>Import symbology</strong> → select <code>symbology/KDE_Classification.lyrx</code></li>
+      <li>Verify breaks match baseline exactly — do not allow ArcGIS to recalculate</li>
+    </ol>
+  </div>
+  <div class="note">Search radius: 20km (selected from 10/20/30km test — best balance at reserve scale). Class breaks from Natural Breaks (Jenks) applied identically to both periods via <code>KDE_Classification.lyrx</code>. Raw density values not directly comparable between periods (908 vs 116 points) — shared breaks ensure visual comparability only.</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 3 — HOT SPOT ANALYSIS
+═══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">3</span>
+    <span class="section-title">Hot Spot Analysis (Gi*) — Diverging Palette</span>
+    <span class="section-sub">HotSpot_Tiger_GiStar · Field: Gi_Bin · Web Map 3 · 50km distance band · FDR applied · Colourblind-safe diverging</span>
+  </div>
+
+  <div class="swatch-grid">
+    <div class="swatch-row header">
+      <span></span><span>Gi_Bin / Class</span><span>Hex</span><span>RGB</span><span>Opacity</span><span>Size</span><span>Label</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#B30000"></div>
+      <div><div class="swatch-name">+3 · Hot Spot 99%</div><div class="swatch-label">p &lt; 0.01 — highest confidence</div></div>
+      <span class="mono">#B30000</span><span class="mono">179, 0, 0</span><span class="mono">90%</span><span class="mono">8px</span>
+      <span class="badge badge-pass">white</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#E34A33"></div>
+      <div><div class="swatch-name">+2 · Hot Spot 95%</div><div class="swatch-label">p &lt; 0.05</div></div>
+      <span class="mono">#E34A33</span><span class="mono">227, 74, 51</span><span class="mono">90%</span><span class="mono">6px</span>
+      <span class="badge badge-pass">black</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#FC8D59"></div>
+      <div><div class="swatch-name">+1 · Hot Spot 90%</div><div class="swatch-label">p &lt; 0.10 — marginal</div></div>
+      <span class="mono">#FC8D59</span><span class="mono">252, 141, 89</span><span class="mono">90%</span><span class="mono">5px</span>
+      <span class="badge badge-pass">black</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#CCCCCC; border:1px solid #bbb;"></div>
+      <div><div class="swatch-name">0 · Not Significant</div><div class="swatch-label">No spatial clustering detected</div></div>
+      <span class="mono">#CCCCCC</span><span class="mono">204, 204, 204</span><span class="mono">50%</span><span class="mono">3px</span>
+      <span class="badge badge-pass">black</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#9E9AC8"></div>
+      <div><div class="swatch-name">−1 · Cold Spot 90%</div><div class="swatch-label">p &lt; 0.10 — marginal low cluster</div></div>
+      <span class="mono">#9E9AC8</span><span class="mono">158, 154, 200</span><span class="mono">90%</span><span class="mono">5px</span>
+      <span class="badge badge-pass">black</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#756BB1"></div>
+      <div><div class="swatch-name">−2 · Cold Spot 95%</div><div class="swatch-label">p &lt; 0.05</div></div>
+      <span class="mono">#756BB1</span><span class="mono">117, 107, 177</span><span class="mono">90%</span><span class="mono">6px</span>
+      <span class="badge badge-pass">white</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#3F007D"></div>
+      <div><div class="swatch-name">−3 · Cold Spot 99%</div><div class="swatch-label">p &lt; 0.01 — highest confidence low</div></div>
+      <span class="mono">#3F007D</span><span class="mono">63, 0, 125</span><span class="mono">90%</span><span class="mono">8px</span>
+      <span class="badge badge-pass">white</span>
+    </div>
+  </div>
+
+  <div class="arcgis-block">
+    <strong>ArcGIS Pro — Symbology panel:</strong>
+    <ol>
+      <li>Right-click <code>HotSpot_Tiger_GiStar</code> → <strong>Symbology</strong> → Primary: <strong>Unique Values</strong></li>
+      <li>Field: <code>Gi_Bin</code></li>
+      <li>For each value: double-click symbol → <strong>Properties</strong> → Circle marker, set size and colour above</li>
+      <li>Not Significant (0): set transparency 50% — visually recedes without disappearing</li>
+      <li>Hot spot sizes increase with confidence (3px → 5px → 6px → 8px) to encode significance visually</li>
+    </ol>
+  </div>
+  <div class="note">Orange-red (hot) / purple (cold) diverging scheme is safe for deuteranopia and protanopia (red-green colourblindness). Avoids the standard ArcGIS red/blue Gi* palette which fails deuteranopia simulation. Verified with Coblis colourblind simulator.</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 4 — CONTEXT LAYERS
+═══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">4</span>
+    <span class="section-title">Context Layers — All Maps</span>
+    <span class="section-sub">Reserve outlines · GBIF points · Administrative boundaries</span>
+  </div>
+
+  <div class="swatch-grid">
+    <div class="swatch-row header">
+      <span></span><span>Layer / Purpose</span><span>Hex</span><span>RGB</span><span>Width / Size</span><span>Opacity</span><span>Label</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:white; border:3px solid #1E1E1E;"></div>
+      <div><div class="swatch-name">Reserve boundary outline</div><div class="swatch-label">All maps — hollow polygon, no fill</div></div>
+      <span class="mono">#1E1E1E</span><span class="mono">30, 30, 30</span><span class="mono">2.0pt</span>
+      <span class="mono">100%</span><span class="badge badge-pass">n/a</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:#505050"></div>
+      <div><div class="swatch-name">GBIF occurrence points</div><div class="swatch-label">Optional context on reserve detail maps</div></div>
+      <span class="mono">#505050</span><span class="mono">80, 80, 80</span><span class="mono">4px circle</span>
+      <span class="mono">40%</span><span class="badge badge-pass">n/a</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:white; border:2px solid #8C9AA0;"></div>
+      <div><div class="swatch-name">India state boundaries</div><div class="swatch-label">Light context line — do not compete with analysis</div></div>
+      <span class="mono">#8C9AA0</span><span class="mono">140, 154, 160</span><span class="mono">0.75pt</span>
+      <span class="mono">60%</span><span class="badge badge-pass">n/a</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch-box" style="background:white; border:1.5px solid #B0B8BC;"></div>
+      <div><div class="swatch-name">India national boundary</div><div class="swatch-label">Outer frame on overview maps</div></div>
+      <span class="mono">#B0B8BC</span><span class="mono">176, 184, 188</span><span class="mono">1.5pt</span>
+      <span class="mono">80%</span><span class="badge badge-pass">n/a</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 5 — ACCESSIBILITY SUMMARY
+═══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">5</span>
+    <span class="section-title">Accessibility — WCAG AA Compliance Summary</span>
+    <span class="section-sub">All 19 colours tested · Minimum contrast 4.5:1 required for AA</span>
+  </div>
+
+  <table class="a11y-table">
+    <thead>
+      <tr><th>Colour</th><th>Hex</th><th>vs White</th><th>vs Black</th><th>vs Map BG</th><th>Best label</th><th>AA Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>High growth</td><td class="mono">#225522</td><td>8.78×</td><td>2.39×</td><td>7.68×</td><td>White</td><td><span class="badge badge-pass">✅ AA Pass</span></td></tr>
+      <tr><td>Moderate growth</td><td class="mono">#78AA50</td><td>2.74×</td><td>7.66×</td><td>2.40×</td><td>Black</td><td><span class="badge badge-pass">✅ AA Pass</span></td></tr>
+      <tr><td>Stable</td><td class="mono">#B4C378</td><td>1.91×</td><td>11.02×</td><td>1.67×</td><td>Black</td><td><span class="badge badge-pass">✅ AA Pass</span></td></tr>
+      <tr><td>Stable / Capacity</td><td class="mono">#C8AF64</td><td>2.15×</td><td>9.77×</td><td>1.88×</td><td>Black</td><td><span class="badge badge-pass">✅ AA Pass</span></td></tr>
+      <tr><td>KDE Very high</td><td class="mono">#006D2C</td><td>6.51×</td><td>3.22×</td><td>5.70×</td><td>White</td><td><span class="badge badge-pass">✅ AA Pass</span></td></tr>
+      <tr><td>KDE High</td><td class="mono">#31A354</td><td>3.23×</td><td>6.50×</td><td>2.83×</td><td>Black</td><td><span class="badge badge-pass">✅ AA Pass</span></td></tr>
+      <tr><td>Hot Spot 99%</td><td class="mono">#B30000</td><td>7.20×</td><td>2.92×</td><td>6.30×</td><td>White</td><td><span class="badge badge-pass">✅ AA Pass</span></td></tr>
+      <tr><td>Hot Spot 95%</td><td class="mono">#E34A33</td><td>3.97×</td><td>5.29×</td><td>3.47×</td><td>Black</td><td><span class="badge badge-pass">✅ AA Pass</span></td></tr>
+      <tr><td>Cold Spot 95%</td><td class="mono">#756BB1</td><td>4.67×</td><td>4.49×</td><td>4.09×</td><td>White</td><td><span class="badge badge-pass">✅ AA Pass</span></td></tr>
+      <tr><td>Cold Spot 99%</td><td class="mono">#3F007D</td><td>13.93×</td><td>1.51×</td><td>12.19×</td><td>White</td><td><span class="badge badge-pass">✅ AA Pass</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="note" style="margin-top:14px">
+    <strong>Colourblind testing:</strong> Hot spot palette (orange-red / purple) is safe for deuteranopia and protanopia. KDE green ramp has reduced contrast for deuteranopes at Classes 3–4 — mitigated by adding class break labels directly on the legend. Test all maps at <strong>coblis.com/en/color-blindness-simulator</strong> before publishing to ArcGIS Online.
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 6 — QUICK REFERENCE
+═══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">6</span>
+    <span class="section-title">Quick Reference — All Hex Codes</span>
+    <span class="section-sub">Copy-paste ready for ArcGIS Online custom colour picker</span>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; font-size:0.8rem;">
+    <div>
+      <div style="font-weight:600; margin-bottom:8px; color:var(--slate); text-transform:uppercase; font-size:0.7rem; letter-spacing:0.08em;">Growth Categories</div>
+      <div style="background:white; border:1px solid var(--rule); padding:12px 14px; line-height:2.2; font-family:'Source Code Pro',monospace; font-size:0.78rem;">
+        High growth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #225522<br>
+        Moderate growth&nbsp;&nbsp; #78AA50<br>
+        Stable&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #B4C378<br>
+        Stable/Capacity&nbsp;&nbsp;&nbsp; #C8AF64<br>
+        Reserve outline&nbsp;&nbsp;&nbsp; #1E1E1E
+      </div>
+    </div>
+    <div>
+      <div style="font-weight:600; margin-bottom:8px; color:var(--slate); text-transform:uppercase; font-size:0.7rem; letter-spacing:0.08em;">KDE Ramp (light → dark)</div>
+      <div style="background:white; border:1px solid var(--rule); padding:12px 14px; line-height:2.2; font-family:'Source Code Pro',monospace; font-size:0.78rem;">
+        Class 1 0–0.0012&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #F7FCF5<br>
+        Class 2 0.0012–0.0048&nbsp;&nbsp; #BAE4B3<br>
+        Class 3 0.0048–0.0110&nbsp;&nbsp; #74C476<br>
+        Class 4 0.0110–0.0189&nbsp;&nbsp; #31A354<br>
+        Class 5 0.0189–0.0300&nbsp;&nbsp; #006D2C
+      </div>
+    </div>
+    <div>
+      <div style="font-weight:600; margin-bottom:8px; color:var(--slate); text-transform:uppercase; font-size:0.7rem; letter-spacing:0.08em;">Hot Spot Gi* (Gi_Bin +3 → −3)</div>
+      <div style="background:white; border:1px solid var(--rule); padding:12px 14px; line-height:2.2; font-family:'Source Code Pro',monospace; font-size:0.78rem;">
+        +3 Hot 99%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #B30000<br>
+        +2 Hot 95%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #E34A33<br>
+        +1 Hot 90%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #FC8D59<br>
+        &nbsp;0 Not Significant #CCCCCC<br>
+        −1 Cold 90%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #9E9AC8<br>
+        −2 Cold 95%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #756BB1<br>
+        −3 Cold 99%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #3F007D
+      </div>
+    </div>
+    <div>
+      <div style="font-weight:600; margin-bottom:8px; color:var(--slate); text-transform:uppercase; font-size:0.7rem; letter-spacing:0.08em;">Context Layers</div>
+      <div style="background:white; border:1px solid var(--rule); padding:12px 14px; line-height:2.2; font-family:'Source Code Pro',monospace; font-size:0.78rem;">
+        GBIF points&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #505050<br>
+        State boundaries&nbsp;&nbsp; #8C9AA0<br>
+        National boundary&nbsp; #B0B8BC
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

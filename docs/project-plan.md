@@ -5,7 +5,7 @@
 **Author:** Kiran Balasubramanian
 **Start Date:** February 4, 2026  
 **Target Completion:** April 2026 (8 weeks)  
-**Last Updated:** February 13, 2026
+**Last Updated:** February 16, 2026
 
 ---
 
@@ -86,8 +86,8 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | **Week 3** | Data Processing & Cleaning | Cleaned datasets, joined tables, organized geodatabase | ✅ Complete |
 | **Week 4** | Advanced Data Prep | Time-series tables, spatial data ready for analysis | ✅ Complete |
 | **Week 5** | Spatial Analysis | Density maps, hot spot analysis, statistics complete | ✅ Complete |
-| **Week 6** | Map Development | Web maps created, symbology finalized, charts made | 🟢 In Progress |
-| **Week 7** | Story Map Development | Narrative written, maps integrated, content complete | ⚪ Not Started |
+| **Week 6** | Map Development | Web maps created, symbology finalized, charts made | ✅ Complete |
+| **Week 7** | Story Map Development | Narrative written, maps integrated, content complete | 🟢 In Progress |
 | **Week 8** | Finalization & Publication | Story Map published, documentation complete, presentation ready | ⚪ Not Started |
 
 **Status Legend:**
@@ -244,66 +244,24 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 #### Tasks
 
-- [ ] Design symbology scheme
-  - Choose color palette (green theme for success)
-  - Define classification breaks
-  - Create legend graphics
-  - Test color accessibility
-  - Document color codes (RGB/Hex)
-- [ ] Create Web Map 1: Overview Map
-  - Add reserve boundaries
-  - Symbolize by population growth category
-  - Add labels for featured reserves
-  - Set appropriate zoom levels
-  - Configure popups with key statistics
-- [ ] Create Web Map 2: Density Comparison
-  - Add baseline density raster (2006-2010)
-  - Add current density raster (2018-2022)
-  - Set up swipe/slider tool if available
-  - Or create side-by-side layout
-  - Add reserve boundaries for context
-- [ ] Create Web Map 3: Hot Spot Analysis
-  - Add hot spot results layer
-  - Symbolize by confidence level
-  - Add occurrence points (optional)
-  - Configure informative popups
-- [ ] Create individual reserve maps
-  - One detailed map per featured reserve (5-7 maps)
-  - Show reserve boundary, density, key features
-  - Add context layers (roads, settlements, terrain)
-  - Configure zoom level to reserve extent
-- [ ] Create population trend chart
-  - Line graph showing 2006-2022 trends
-  - Include 5-7 featured reserves
-  - Label axes and lines clearly
-  - Export as high-res image
-- [ ] Create growth ranking chart
-  - Horizontal bar chart
-  - Rank reserves by % growth
-  - Color code featured reserves
-  - Export as image
-- [ ] Create comparison infographics
-  - 2006 vs 2022 total population
-  - Top 3 reserves highlights
-  - Key statistics callouts
-  - Design in PowerPoint/Illustrator or similar
-- [ ] Test all web maps
-  - Verify popups display correctly
-  - Check layer visibility at different scales
-  - Test on mobile device if possible
-  - Ensure fast loading times
-- [ ] Export static map versions
-  - Create PDF/PNG versions as backup
-  - Save map layouts in ArcGIS Pro
-  - Document map specifications
+- [x] Design symbology scheme
+- [x] Create Web Map 1: Overview Map
+- [x] Create Web Map 2: Density Comparison
+- [x] Create Web Map 3: Hot Spot Analysis
+- [x] Create individual reserve maps
+- [x] Create population trend chart
+- [x] Create growth ranking chart
+- [x] Create comparison infographics
+- [x] Test all web maps
+- [x] Export static map versions
 
 **Deliverables:**
-- [ ] Symbology guide documented
-- [ ] 3+ web maps published to ArcGIS Online
-- [ ] 5-7 individual reserve maps
-- [ ] Chart graphics (2+ charts)
-- [ ] Infographic elements created
-- [ ] All maps tested and functional
+- ✅ Symbology guide documented
+- ✅ 3+ web maps published to ArcGIS Online
+- ✅ 5-7 individual reserve maps
+- ✅ Chart graphics (2+ charts)
+- ✅ Infographic elements created
+- ✅ All maps tested and functional
 
 **Time Estimate:** 18-20 hours
 
@@ -849,18 +807,43 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - **Date:** February 15, 2026
 - **Progress:** 🟢 In Progress
 - **Completed:**
-  - [ ] 
-- **In Progress:**
-  - 🟢 Design symbology scheme
-- **Blockers:** 
-- **Next Week Focus:** 
-- **Notes:** 
+  - ✅ Design symbology scheme
+  - ✅ Create Web Map 1: Overview Map
+  - ✅ Create Web Map 2: Density Comparison
+  - ✅ Create Web Map 3: Hot Spot Analysis
+  - ✅ Create individual reserve maps
+  - ✅ Create population trend chart
+  - ✅ Create growth ranking chart
+  - ✅ Create comparison infographics
+  - ✅ Test all web maps
+  - ✅ Export static map versions
+- **In Progress:** None
+- **Blockers:** None
+- **Next Week Focus:** Build ArcGIS StoryMap — draft chapter structure and
+  narrative outline first; write introduction, success stories overview, and
+  7 reserve profile sections; integrate all web maps and chart images;
+  add media (reserve photos from `media/photos/reserves/`); configure
+  interactive elements and Story Map settings; complete data sources and
+  credits section
+- **Notes:** Week 6 completed on schedule. Key cartographic decisions: Terrain
+  with Labels basemap selected for all reserve detail maps — eliminates need
+  to publish SRTM raster to AGOL and provides superior terrain context for
+  free. Nagarahole created as separate map (Option B, tighter zoom) rather
+  than sharing the Bandipur landscape map — 6 distinct reserve maps total.
+  Ranthambore Cold Spot cluster north of reserve (dense purple dots near
+  Sawai Madhopur) retained intentionally — strongest visual illustration of
+  GBIF observer-effort bias in the dataset; earmarked as Story Map teaching
+  moment. Kaziranga map is the most visually distinctive of the set —
+  Brahmaputra braided channels and amber fill make it immediately identifiable.
+  Chart 4 (bubble) and Chart 3 (density) are bonus deliverables beyond the
+  original Week 6 scope. All 4 charts ready for Story Map integration as
+  static PNG exports or direct HTML embed if AGOL supports custom embeds.
 
 ---
 
 **Week 7 Status**
-- **Date:** [To be updated]
-- **Progress:** ⚪ Not Started
+- **Date:** February 16, 2026
+- **Progress:** 🟢 In Progress
 - **Completed:**
   - [ ] 
 - **In Progress:**
@@ -888,13 +871,13 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Current Status:** 🟢 On Track
 
-**Completion Percentage:** 56%
+**Completion Percentage:** 69%
 
 **Key Metrics:**
-- Tasks completed: 42 / 75
-- Milestones completed: 5 / 8 (Weeks 1 - 5 complete)
-- Days remaining: 21
-- Estimated hours used: ~86 / 146
+- Tasks completed: 52 / 75
+- Milestones completed: 6 / 8 (Weeks 1 - 6 complete)
+- Days remaining: 14
+- Estimated hours used: ~106 / 146
 
 **Traffic Light Status:**
 - 🟢 Schedule: On track (forest data extraction ahead of original plan)
@@ -969,6 +952,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | 2026-02-13 | 3.2 | Processed elevation data and performed quality checks  | Kiran Balasubramanian |
 | 2026-02-14 | 4.0 | Completed all tasks from Week 4  | Kiran Balasubramanian |
 | 2026-02-15 | 5.0 | Completed all tasks from Week 5  | Kiran Balasubramanian |
+| 2026-02-16 | 6.0 | Completed all tasks from Week 6  | Kiran Balasubramanian |
 
 ---
 

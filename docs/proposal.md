@@ -322,11 +322,11 @@ The modular Story Map design will allow future expansion to include:
 - [x] Create time-series visualizations
 
 ### Phase 4: Map Development (Week 6)
-- [ ] Design symbology and color schemes
-- [ ] Create web maps in ArcGIS Online
-- [ ] Configure popups and labels
-- [ ] Generate chart graphics
-- [ ] Prepare all map products
+- [x] Design symbology and color schemes
+- [x] Create web maps in ArcGIS Online
+- [x] Configure popups and labels
+- [x] Generate chart graphics
+- [x] Prepare all map products
 
 ### Phase 5: Story Map Development (Week 7)
 - [ ] Write narrative text for all sections
@@ -409,7 +409,7 @@ This project will be considered successful if it:
 **Project Author:** Kiran Balasubramanian
 **Institution/Affiliation:** GIS Course Project  
 **Date Created:** February 4, 2026  
-**Last Updated:** February 15, 2026
+**Last Updated:** February 16, 2026
 
 ---
 
