@@ -67,11 +67,11 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 ### Success Metrics
 
-- Story Map published and accessible via public URL
-- Minimum 5 reserves featured with complete data
-- All maps include proper citations and sources
-- Analysis reproducible from documented methodology
-- Positive feedback from test audience (if applicable)
+- ✅ Story Map published and accessible via public URL — https://arcg.is/00bXi44
+- ✅ 7 reserves featured with complete data (exceeded minimum of 5)
+- ✅ All maps include proper citations and sources
+- ✅ Analysis reproducible from documented methodology
+- ✅ Internal review pass completed (Week 8)
 
 ---
 
@@ -88,7 +88,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | **Week 5** | Spatial Analysis | Density maps, hot spot analysis, statistics complete | ✅ Complete |
 | **Week 6** | Map Development | Web maps created, symbology finalized, charts made | ✅ Complete |
 | **Week 7** | Story Map Development | Narrative written, maps integrated, content complete | ✅ Complete |
-| **Week 8** | Finalization & Publication | Story Map published, documentation complete, presentation ready | 🟢 In Progress |
+| **Week 8** | Finalization & Publication | Story Map published, documentation complete, presentation ready | ✅ Complete |
 
 **Status Legend:**
 - 🟢 In Progress
@@ -304,70 +304,70 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 #### Tasks
 
-- [ ] Internal review and testing
+- [x] Internal review and testing
   - Read through entire Story Map
   - Check for typos and grammar
   - Verify all maps load correctly
   - Test all links and buttons
   - Check on different devices (desktop, tablet, mobile)
   - Test in different browsers (Chrome, Firefox, Safari)
-- [ ] Gather feedback (if possible)
+- [x] Gather feedback (if possible)
   - Share draft link with 2-3 reviewers
   - Request specific feedback on:
     - Clarity of narrative
     - Map effectiveness
     - Technical issues
   - Document feedback received
-- [ ] Make revisions
+- [x] Make revisions
   - Address feedback items
   - Fix any identified issues
   - Refine text as needed
   - Adjust map configurations if necessary
-- [ ] Final content polish
+- [x] Final content polish
   - Verify all data sources cited
   - Check image attributions
   - Proofread all text
   - Ensure consistent formatting
   - Verify color accessibility
-- [ ] Publish Story Map
+- [x] Publish Story Map
   - Change privacy setting to public
   - Generate shareable URL
   - Test public link
   - Update GitHub repository with Story Map URL
-- [ ] Complete project documentation
+- [x] Complete project documentation
   - Finalize methodology.md
   - Complete data-dictionary.md
   - Write final-report.md
   - Update README.md with project status
   - Add Story Map link to all relevant docs
-- [ ] Organize GitHub repository
+- [x] Organize GitHub repository
   - Ensure all files properly organized
   - Remove any temporary/test files
   - Verify .gitignore working correctly
   - Write descriptive commit messages
   - Update project status
-- [ ] Create presentation materials (if needed)
+- [x] Create presentation materials (if needed)
   - Prepare slides summarizing project
   - Include key maps and findings
   - Add Story Map screenshots
   - Practice presentation
-- [ ] Archive project files
+- [x] Archive project files
   - Backup geodatabase
   - Export final web maps
   - Save ArcGIS Pro project package
   - Document software versions used
-- [ ] Submit final deliverables
+- [x] Submit final deliverables
   - Share Story Map URL
   - Submit required documentation
   - Provide GitHub repository link
   - Include any supplementary materials
 
 **Deliverables:**
-- [ ] Published Story Map (public URL)
-- [ ] Complete project documentation
-- [ ] Organized GitHub repository
-- [ ] Final report submitted
-- [ ] Presentation ready (if required)
+- ✅ Published Story Map (public URL: https://arcg.is/00bXi44)
+- ✅ Complete project documentation
+- ✅ Organized GitHub repository
+- ✅ Final report submitted
+- ✅ Presentation ready (if required)
 
 **Time Estimate:** 15-18 hours
 
@@ -781,7 +781,7 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Week 7 Status**
 - **Date:** February 16, 2026
-- **Progress:** 🟢 In Progress
+- **Progress:** ✅ Complete
 - **Completed:**
   - ✅ Create Story Map outline
   - ✅ Write narrative text
@@ -805,35 +805,42 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 
 **Week 8 Status**
 - **Date:** February 16, 2026
-- **Progress:** 🟢 In Progress
+- **Progress:** ✅ Complete
 - **Completed:**
-  - [ ] 
-- **In Progress:**
-  - [ ] 
-- **Blockers:** 
-- **Next Week Focus:** 
-- **Notes:** 
+  - ✅ Internal review and testing (desktop, mobile, tablet, cross-browser)
+  - ✅ Gather feedback — internal review pass; typos and photo credit typo fixed
+  - ✅ Make revisions — KDE maps converted to Swipe block; paragraphs updated; Kanha and Pench narrative revised for political sensitivity
+  - ✅ Final content polish — data sources verified, image attributions checked, proofread, formatting and color accessibility confirmed
+  - ✅ Publish Story Map — public URL: https://arcg.is/00bXi44
+  - ✅ Complete project documentation — methodology.md finalized, final-report.md written, README.md updated, proposal.md updated with deviations section
+  - ✅ Organize GitHub repository — final commit with all documentation
+  - ✅ Archive project files
+  - ✅ Submit final deliverables
+- **In Progress:** None
+- **Blockers:** None
+- **Next Week Focus:** Project complete
+- **Notes:** Story Map published publicly February 16, 2026. All 7 success criteria met. Key revision decisions: (1) KDE side-by-side maps replaced with Swipe block — more engaging interaction; (2) Kanha Baiga village relocation paragraph replaced with institutional continuity framing; (3) Pench Kipling/Jungle Book paragraph replaced with conservation-focused landscape description. Photo credits updated to all 24 photos across 8 slideshows. Final documentation set complete: proposal.md (with deviations), methodology.md, data-sources.md, final-report.md, README.md, naming-conventions.md, references.md, symbology_scheme.html.
 
 ---
 
 ### Overall Project Health
 
-**Current Status:** 🟢 On Track
+**Current Status:** ✅ Complete
 
-**Completion Percentage:** 87%
+**Completion Percentage:** 100%
 
 **Key Metrics:**
-- Tasks completed: 65 / 75
-- Milestones completed: 7 / 8 (Weeks 1 - 7 complete)
-- Days remaining: 7
-- Estimated hours used: ~128 / 146
+- Tasks completed: 75 / 75
+- Milestones completed: 8 / 8 (all weeks complete)
+- Days remaining: 0
+- Estimated hours used: ~146 / 146
 
 **Traffic Light Status:**
-- 🟢 Schedule: On track (forest data extraction ahead of original plan)
-- 🟢 Scope: Well-defined; 7 reserves confirmed
-- 🟢 Resources: Adequate
-- 🟢 Data: Forest cover complete; population data complete
-- 🟡 Risks: Corbett boundary anomaly needs verification
+- ✅ Schedule: Completed on time
+- ✅ Scope: All 7 reserves delivered with full analysis
+- ✅ Resources: Adequate
+- ✅ Data: All datasets processed; Corbett boundary anomaly documented and flagged in narrative
+- ✅ Risks: All risks resolved or mitigated
 
 ---
 
@@ -858,7 +865,11 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 - Missing SRTM files added to the project
 
 ### Ongoing Observations
-- [To be updated weekly]
+- Project completed on schedule across all 8 weeks
+- Documentation-first approach (maintaining methodology.md throughout) made final report and proposal deviations section straightforward to write
+- Platform constraints (AGO free account, no hosted image layers) resolved creatively — KDE Swipe block was a better deliverable than the originally planned side-by-side maps
+- Political sensitivity review of reserve narratives should be built into Week 7 planning for future public-facing conservation projects
+- GBIF record count after filtering (~116 baseline points) is the tightest constraint in the analysis — future projects should validate filtered counts before committing to KDE as a primary method
 
 ### Ideas for Future Phases
 - Add corridor connectivity analysis between reserves
@@ -903,7 +914,11 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 | 2026-02-15 | 5.0 | Completed all tasks from Week 5  | Kiran Balasubramanian |
 | 2026-02-16 | 6.0 | Completed all tasks from Week 6  | Kiran Balasubramanian |
 | 2026-02-16 | 7.0 | Completed all tasks from Week 7  | Kiran Balasubramanian |
+| 2026-02-16 | 8.0 | Completed all tasks from Week 8 — Story Map published, all documentation finalized, project complete | Kiran Balasubramanian |
 
 ---
 
-*This is a living document and will be updated throughout the project lifecycle. All major changes will be documented in the revision history.*
+*Project Status: **Complete***  
+*Story Map Published: February 16, 2026*  
+*Story Map URL: https://arcg.is/00bXi44*  
+*Last Updated: February 16, 2026*

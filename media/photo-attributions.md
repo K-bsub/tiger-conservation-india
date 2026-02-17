@@ -234,10 +234,10 @@ All photos used in this project are properly licensed and attributed.
 - **Filename:** ranthambore_tiger_01.jpg
 - **Source:** Wikimedia Commons
 - **URL:** [https://commons.wikimedia.org/wiki/File:Tigers-at-Ranthambore-National-Park_03.jpg]
-- **Photographer:** [Fitindia]
+- **Photographer:** [Keshav995]
 - **License:** CC BY-SA 4.0
 - **Attribution Required:** Yes
-- **Attribution Text:** "Photo by [Fitindia], CC BY-SA 4.0, via Wikimedia Commons"
+- **Attribution Text:** "Photo by [Keshav995], CC BY-SA 4.0, via Wikimedia Commons"
 - **Download Date:** February 7, 2026
 
 ---

@@ -3,7 +3,10 @@
 **Author:** Kiran Balasubramanian 
 **Date:** February 4, 2026  
 **Course:** GIS Project  
-**Project Type:** ArcGIS Story Map
+**Project Type:** ArcGIS Story Map  
+**Last Updated:** February 16, 2026  
+**Published Story Map:** https://storymaps.arcgis.com/stories/c9e21879e1b2483e81fc79fd357c59b2  
+**Short URL:** https://arcg.is/00bXi44
 
 ---
 
@@ -336,11 +339,11 @@ The modular Story Map design will allow future expansion to include:
 - [x] Review and refine content
 
 ### Phase 6: Finalization (Week 8)
-- [ ] Test all interactive elements
-- [ ] Gather feedback from test audience
-- [ ] Make final revisions
-- [ ] Publish Story Map
-- [ ] Prepare final project report
+- [x] Test all interactive elements
+- [x] Gather feedback from test audience
+- [x] Make final revisions
+- [x] Publish Story Map
+- [x] Prepare final project report
 
 ---
 
@@ -410,6 +413,112 @@ This project will be considered successful if it:
 **Institution/Affiliation:** GIS Course Project  
 **Date Created:** February 4, 2026  
 **Last Updated:** February 16, 2026
+
+---
+
+## Deviations from Original Proposal
+
+This section documents decisions made during execution that differed from the original proposal. All deviations are recorded in full in `docs/methodology.md` Change Log and Decisions sections.
+
+---
+
+### 1. Protected Area Boundaries: WDPA → KBA Global Database
+
+**Proposed:** WDPA via protectedplanet.net (UN Environment Programme)  
+**Actual:** KBA Global Database, BirdLife International / KBA Partnership (February 2026), keybiodiversityareas.org  
+**Reason:** KBA portal provided a more current dataset (September 2025 version) and cleaner polygon geometries for the Indian tiger reserves. WDPA and KBA share significant overlap in underlying data; the KBA source satisfied the same analytical requirements.
+
+---
+
+### 2. iNaturalist: Excluded from Analysis and Story Map
+
+**Proposed:** iNaturalist as a primary supplementary data source combined with GBIF for density and distribution analysis  
+**Actual:** iNaturalist data downloaded and processed (722 records after filtering) but excluded from all spatial analysis and Story Map content  
+**Reason:** iNaturalist automatically offsets coordinates for threatened species by up to ~22 km (~0.2°). This coordinate obscuring makes records unsuitable for kernel density estimation, hot spot analysis, or reserve-level point counting. Merging with GBIF would have degraded GBIF dataset quality without analytical benefit. iNaturalist is not cited in the Story Map credits as it contributed no visible content.
+
+---
+
+### 3. GBIF Coordinate Uncertainty Threshold Relaxed
+
+**Proposed:** Filter to records with coordinate uncertainty >1km excluded (i.e., accept only records with <1km uncertainty)  
+**Actual:** Threshold relaxed to IS NOT NULL (any recorded uncertainty value accepted, no upper limit)  
+**Reason:** At a 1km threshold, only 18 baseline records (2006–2010) remained — insufficient for kernel density estimation. Relaxing to IS NOT NULL recovered 116 baseline and 908 current-period records. Records with high uncertainty produce positional imprecision in KDE outputs but cluster correctly at reserve level for Summarize Within analysis. The 22km iNaturalist offset accepted for the narrative context layer set a precedent for the relaxed threshold. Full justification in methodology.md Decision 3.
+
+---
+
+### 4. Temporal Subsets Aligned to Census Windows
+
+**Proposed:** Temporal subsets not explicitly defined in proposal  
+**Actual:** GBIF occurrence data split into 2006–2010 (baseline) and 2018–2022 (current), aligned with NTCA census periods  
+**Reason:** Census-aligned windows make the Story Map narrative directly comparable to NTCA population estimates. An earlier split of 2006–2012 / 2013–2022 was tested and rejected — it blurred two census cycles in the "current" layer. Full justification in methodology.md Decision 4.
+
+---
+
+### 5. Reserve Selection: Multi-Criterion Threshold vs. Top Quartile
+
+**Proposed:** Identify reserves in the top quartile of population growth  
+**Actual:** Multi-criterion threshold applied: primary criterion ≥50% growth (2006–2022), supporting criterion ≥50 tigers in 2022; Kanha and Kaziranga included on stability/density grounds  
+**Reason:** With only N=6 comparable reserves (Kaziranga excluded from growth ranking due to missing 2006 baseline), a strict 75th percentile cutoff yielded only 2 reserves — insufficient for a 5–7 reserve Story Map. The multi-criterion approach preserved landscape diversity coverage (5 ecological zones) while maintaining analytical rigor. Full justification in methodology.md Decision 5.
+
+---
+
+### 6. Pench Treated as Single Combined Landscape
+
+**Proposed:** Pench listed as a single reserve; state-split not discussed  
+**Actual:** Formally documented as a single MP/Maharashtra combined landscape (Reserve_ID 4) throughout all spatial layers, population tables, and narrative  
+**Reason:** NTCA census reports do not provide consistent state-level splits for Pench across all five census years. Population figures reflect the full trans-boundary survey area. Splitting would require proportional allocation not supported by source data.
+
+---
+
+### 7. Forest Cover: Zonal Statistics Replaced by ISFR 2021 Tabular Extraction
+
+**Proposed:** Apply ArcGIS Zonal Statistics to extract forest cover within reserve boundaries  
+**Actual:** Forest cover values obtained directly from ISFR 2021 Chapter 4 (Table 4.5), which provides VDF/MDF/OF measurements taken from digitized Tiger Reserve boundaries by FSI/WII  
+**Reason:** ISFR 2021 Chapter 4 values are more accurate than a proxy zonal statistics approach on publicly available rasters, as they are measured from authoritative TR boundary digitizations not publicly available. Eliminated the need for FSI raster data request. ArcGIS Zonal Statistics for forest cover was removed from scope.
+
+---
+
+### 8. Kaziranga: No 2006 Baseline — Excluded from Growth Ranking
+
+**Proposed:** All 7 reserves analyzed across full 2006–2022 period  
+**Actual:** Kaziranga has no reserve-level NTCA estimate for 2006; baseline begins 2010. Excluded from percentage growth ranking; included in analysis on density/stability grounds (~8.8 tigers/100 km², among highest in world)  
+**Reason:** No reserve-level data available in NTCA 2006 or 2010 reports; 2010 census was the first to provide a Kaziranga-specific figure. Kaziranga's conservation story is better told through density than growth rate.
+
+---
+
+### 9. Anticipated Finding Not Confirmed: Reserve Size Does Not Predict Success
+
+**Proposed:** "Successful reserves likely to show larger protected area size (>500 km²)"  
+**Actual:** Bubble chart analysis (reserve area vs. 2022 population, sized by growth rate) showed no clear relationship between reserve size and tiger population or growth rate. Kanha, the largest reserve at 2,072 km², has a smaller 2022 population than Corbett (400 km² smaller). Pench achieved the highest growth rate of any reserve at a moderate combined area.  
+**Implication:** The key predictors of tiger recovery appear to be management intensity, prey biomass, and connectivity — not reserve area alone. This finding was featured in Section 6 of the Story Map.
+
+---
+
+### 10. Story Map Structure: 7 Sections vs. 6 Proposed Chapters
+
+**Proposed:** 6-chapter structure (Introduction, Success Stories, Population Trends, Spatial Analysis, Comparative Analysis, Key Findings & Conclusion)  
+**Actual:** 7-section structure with navigation (Introduction, The Overview Map, The Numbers, Where Tigers Are Detected, Reserve Profiles, What the Data Shows, Conclusion & Credits)  
+**Reason:** Separating the Overview Map into its own section improved narrative flow — readers orient spatially before encountering data. "Comparative Analysis" and "Key Findings" were merged into "What the Data Shows" and "Conclusion" for tighter synthesis. Section names were also simplified for nav bar legibility.
+
+---
+
+### 11. KDE Comparison: Swipe Block vs. Side-by-Side Maps
+
+**Proposed:** "Side-by-side comparison: 2006 vs 2022"  
+**Actual:** ArcGIS StoryMaps Swipe block — single interactive element with draggable divider comparing baseline and current KDE rasters  
+**Reason:** StoryMaps Swipe tool provides a more engaging and spatially precise comparison than static side-by-side maps, allowing readers to examine specific locations across both time periods simultaneously. Paragraphs updated to describe the swipe interaction.
+
+---
+
+### 12. Narrative Content: Two Political Sensitivity Revisions
+
+**Kanha — Baiga village relocation:** Original draft included a paragraph acknowledging the contested history of tribal village relocations from Kanha's core zone in the 1970s. Revised to focus on institutional continuity and management longevity to avoid political framing in a conservation-focused Story Map.
+
+**Pench — Kipling / *The Jungle Book*:** Original draft referenced Rudyard Kipling's *The Jungle Book* and its Seeonee/Pench connection. Revised to a conservation-focused landscape description due to concerns about centering a British colonial author in a narrative about Indian conservation achievement.
+
+---
+
+*This deviations section documents the gap between proposal and execution for academic transparency. All analytical decisions are justified in detail in `docs/methodology.md`.*
 
 ---
 

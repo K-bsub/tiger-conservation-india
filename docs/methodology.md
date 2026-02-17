@@ -3,7 +3,9 @@
 **Project:** Identifying Conservation Success Stories: Spatial Analysis of Tiger Population Recovery  
 **Author:** Kiran Balasubramanian  
 **Repository:** https://github.com/K-bsub/tiger-conservation-india  
-**Last Updated:** February 14, 2026
+**Last Updated:** February 16, 2026  
+**Story Map:** https://storymaps.arcgis.com/stories/c9e21879e1b2483e81fc79fd357c59b2  
+**Short URL:** https://arcg.is/00bXi44
 
 ---
 
@@ -41,6 +43,18 @@ This project uses GIS to identify and analyze tiger conservation success stories
 protected areas between 2006 and 2022. The primary deliverable is an ArcGIS Story Map
 presenting spatial and temporal patterns in tiger population recovery across seven featured
 reserves.
+
+**Story Map (published):**
+https://storymaps.arcgis.com/stories/c9e21879e1b2483e81fc79fd357c59b2
+Short URL: https://arcg.is/00bXi44
+
+**Story Map contents:**
+- 7 narrative sections with navigation
+- 9 embedded web maps (overview choropleth, KDE baseline/current swipe, hot spot,
+  6 reserve detail maps)
+- 4 charts (population trends, growth ranking, density comparison, area vs population)
+- 24 photos across 7 reserve slideshows and introduction slideshow
+- Interactive elements: observer bias accordion, methodology button, NTCA reports button
 
 **Seven featured reserves:**
 
@@ -714,6 +728,8 @@ All data sources are publicly available. To reproduce this analysis from scratch
 5. Population data table: `data/processed/tiger_population_2006_2022.xlsx`
 6. Forest data table: `data/processed/forest/isfr_2021_reserve_corridors.xlsx`
 
+**Published Story Map:** https://storymaps.arcgis.com/stories/c9e21879e1b2483e81fc79fd357c59b2  
+**Short URL:** https://arcg.is/00bXi44  
 **GitHub repository:** https://github.com/K-bsub/tiger-conservation-india  
 Large data files (shapefiles, rasters) are not stored in the repository due to size
 constraints. See `data/README.md` for download links and instructions.
@@ -746,7 +762,22 @@ constraints. See `data/README.md` for download links and instructions.
 | 2026-02-15 | 7 | (2) Corbett forest cover anomaly (boundary revision confirmed)
 | 2026-02-15 | 7 | Unexpected findings documented: Ranthambore dispersal source,
 | 2026-02-15 | 7 | Kaziranga at carrying capacity, Ranthambore GBIF observer bias
+| 2026-02-15 | 8 | Symbology scheme finalized — growth category choropleth, KDE green ramp, Gi* diverging palette; all WCAG AA compliant
+| 2026-02-15 | 8 | Web Map 1 published — overview choropleth, Tiger_Reserves_Full, 4 growth categories, regional bookmarks
+| 2026-02-15 | 8 | Web Map 2 published — KDE density comparison (media layers, PNG export workaround for free AGO account)
+| 2026-02-15 | 8 | Web Map 3 published — hot spot analysis, HotSpot_Tiger_GiStar, diverging orange/purple palette
+| 2026-02-15 | 8 | 6 reserve detail maps published — Ranthambore, Pench, Bandipur/Nagarahole, Kanha, Kaziranga, Corbett
+| 2026-02-15 | 8 | 4 charts created — population trends (Chart.js), growth ranking, density comparison, area vs population bubble
+| 2026-02-16 | 8 | KDE Web Map 2 converted to Swipe block in StoryMaps; paragraphs updated to reflect swipe interaction
+| 2026-02-16 | 1 | Story Map narrative written — 2,700 words across 7 sections
+| 2026-02-16 | 1 | Story Map built in ArcGIS StoryMaps — 7 sections, navigation, 9 maps, 4 charts, 24 photos across 7 slideshows
+| 2026-02-16 | 1 | Interactive elements added — introduction slideshow, observer bias accordion, methodology button, NTCA button
+| 2026-02-16 | 7 | Known Limitations: iNaturalist excluded from Story Map credits — data processed but not used in any analysis or visualization
+| 2026-02-16 | 6 | Kanha narrative revised — Baiga village relocation paragraph replaced with institutional continuity framing (political sensitivity)
+| 2026-02-16 | 6 | Pench narrative revised — Kipling paragraph replaced with conservation-focused landscape description (colonial authorship concern)
+| 2026-02-16 | 9 | Story Map published publicly — February 16, 2026
 ---
 
 *Document maintained in: `docs/methodology.md`*  
-*Project repository: https://github.com/K-bsub/tiger-conservation-india*
+*Project repository: https://github.com/K-bsub/tiger-conservation-india*  
+*Story Map: https://arcg.is/00bXi44*
