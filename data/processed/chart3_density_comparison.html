@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chart 3: Tiger Density Comparison 2006 vs 2022</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap');
+
+  :root {
+    --ink:       #1a1a18;
+    --cream:     #f7f4ee;
+    --forest:    #2d5a27;
+    --slate:     #5a6e7a;
+    --mist:      #e8ede5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--ink);
+    padding: 32px 28px;
+  }
+
+  .chart-container {
+    background: #fff;
+    border: 1px solid #e2ddd4;
+    border-top: 4px solid var(--forest);
+    padding: 24px 24px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .chart-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #d4860b;
+    margin-bottom: 4px;
+  }
+
+  .chart-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .chart-sub {
+    font-size: 0.78rem;
+    font-weight: 300;
+    color: var(--slate);
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  .chart-wrap {
+    position: relative;
+    height: 450px;
+  }
+
+  @media (max-width: 768px) {
+    .chart-wrap {
+      height: 550px;
+    }
+  }
+
+  .note {
+    margin-top: 10px;
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--slate);
+    font-style: italic;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="chart-container">
+  <div class="chart-label">Chart 3 · Density</div>
+  <div class="chart-title">Tigers per 100 km² — 2006 vs 2022</div>
+  <div class="chart-sub">Calculated from NTCA population estimates and ISFR 2021 reserve areas.</div>
+  <div class="chart-wrap">
+    <canvas id="densityChart"></canvas>
+  </div>
+  <div class="note">Jim Corbett 2022 density (17.78) may be inflated — KBA boundary smaller than legal TR area.</div>
+</div>
+
+<script>
+const COLORS = {
+  Pench:       '#2d5a27',
+  Bandipur:    '#4a7c3f',
+  Nagarahole:  '#7aad6a',
+  Ranthambore: '#d4860b',
+  Corbett:     '#8b5e3c',
+  Kanha:       '#5a6e7a',
+  Kaziranga:   '#b84c2e',
+};
+
+Chart.defaults.font.family = "'Source Sans 3', sans-serif";
+Chart.defaults.color = '#5a6e7a';
+
+const densityReserves = ['Nagarahole','Jim Corbett','Kaziranga','Bandipur','Kanha','Pench','Ranthambore'];
+const density2006     = [6.77,  11.21, null, 3.81, 4.30, 1.73, 1.81];
+const density2022     = [12.23, 17.78, 8.81, 8.41, 5.07, 4.04, 3.23];
+const dColors2022     = densityReserves.map(r => COLORS[r.replace('Jim Corbett','Corbett')] || '#888');
+
+new Chart(document.getElementById('densityChart'), {
+  type: 'bar',
+  data: {
+    labels: densityReserves,
+    datasets: [
+      {
+        label: '2006',
+        data: density2006,
+        backgroundColor: '#c8b97a55',
+        borderColor: '#c8b97a',
+        borderWidth: 2,
+        borderRadius: 3,
+      },
+      {
+        label: '2022',
+        data: density2022,
+        backgroundColor: dColors2022.map(c => c + 'cc'),
+        borderColor: dColors2022,
+        borderWidth: 2,
+        borderRadius: 3,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { 
+        position: window.innerWidth <= 768 ? 'bottom' : 'top',
+        labels: { boxWidth: 14, font: { size: 12 } } 
+      },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y ?? '—'} tigers/100km²` } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+      y: { title: { display: true, text: 'Tigers per 100 km²', font: { size: 11, weight: '600' } }, grid: { color: '#e8ede5' }, beginAtZero: true }
+    }
+  }
+});
+</script>
+</body>
+</html>

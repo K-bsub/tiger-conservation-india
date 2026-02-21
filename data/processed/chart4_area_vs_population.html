@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chart 4: Reserve Area vs Tiger Population</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap');
+
+  :root {
+    --ink:       #1a1a18;
+    --cream:     #f7f4ee;
+    --forest:    #2d5a27;
+    --slate:     #5a6e7a;
+    --mist:      #e8ede5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--ink);
+    padding: 32px 28px;
+  }
+
+  .chart-container {
+    background: #fff;
+    border: 1px solid #e2ddd4;
+    border-top: 4px solid var(--forest);
+    padding: 24px 24px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .chart-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #d4860b;
+    margin-bottom: 4px;
+  }
+
+  .chart-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .chart-sub {
+    font-size: 0.78rem;
+    font-weight: 300;
+    color: var(--slate);
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  .chart-wrap {
+    position: relative;
+    height: 500px;
+  }
+
+  @media (max-width: 768px) {
+    .chart-wrap {
+      height: 600px;
+    }
+  }
+
+  .note {
+    margin-top: 10px;
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--slate);
+    font-style: italic;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="chart-container">
+  <div class="chart-label">Chart 4 · Size vs Population</div>
+  <div class="chart-title">Reserve Area vs 2022 Population — Sized by Growth Rate</div>
+  <div class="chart-sub">Bubble size represents percent change 2006–2022. Reveals that large area alone does not predict high tiger population.</div>
+  <div class="chart-wrap">
+    <canvas id="scatterChart"></canvas>
+  </div>
+  <div class="note">Kaziranga shown at 2022 population only (no 2006 baseline); bubble sized at median growth rate for display purposes.</div>
+</div>
+
+<script>
+const COLORS = {
+  Pench:       '#2d5a27',
+  Bandipur:    '#4a7c3f',
+  Nagarahole:  '#7aad6a',
+  Ranthambore: '#d4860b',
+  Corbett:     '#8b5e3c',
+  Kanha:       '#5a6e7a',
+  Kaziranga:   '#b84c2e',
+};
+
+Chart.defaults.font.family = "'Source Sans 3', sans-serif";
+Chart.defaults.color = '#5a6e7a';
+
+const scatterData = [
+  { label: 'Jim Corbett', x: 1462.7, y: 260, r: 58.5,  color: COLORS.Corbett },
+  { label: 'Bandipur',    x: 1784.5, y: 150, r: 120.6, color: COLORS.Bandipur },
+  { label: 'Nagarahole',  x: 1152.7, y: 141, r: 80.8,  color: COLORS.Nagarahole },
+  { label: 'Kanha',       x: 2071.5, y: 105, r: 18.0,  color: COLORS.Kanha },
+  { label: 'Kaziranga',   x: 1180.4, y: 104, r: 60.0,  color: COLORS.Kaziranga },
+  { label: 'Pench',       x: 1906.9, y:  77, r: 133.3, color: COLORS.Pench },
+  { label: 'Ranthambore', x: 1765.6, y:  57, r: 78.1,  color: COLORS.Ranthambore },
+];
+
+const scaleBubble = pct => Math.sqrt(Math.abs(pct)) * 1.4;
+
+new Chart(document.getElementById('scatterChart'), {
+  type: 'bubble',
+  data: {
+    datasets: scatterData.map(d => ({
+      label: d.label,
+      data: [{ x: d.x, y: d.y, r: scaleBubble(d.r) }],
+      backgroundColor: d.color + 'aa',
+      borderColor: d.color,
+      borderWidth: 2,
+    }))
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { 
+        position: window.innerWidth <= 768 ? 'bottom' : 'right',
+        labels: { boxWidth: 14, padding: 12, font: { size: 12 } } 
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const d = scatterData[ctx.datasetIndex];
+            const pct = d.label === 'Kaziranga' ? 'n/a (no 2006 baseline)' : `+${d.r}%`;
+            return [`  ${d.label}`, `  Area: ${d.x.toLocaleString()} km²`, `  Pop 2022: ${d.y}`, `  Growth: ${pct}`];
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: 'Reserve Area (km²)', font: { size: 11, weight: '600' } },
+        grid: { color: '#e8ede5' },
+        min: 800, max: 2400
+      },
+      y: {
+        title: { display: true, text: '2022 Tiger Population', font: { size: 11, weight: '600' } },
+        grid: { color: '#e8ede5' },
+        beginAtZero: true
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

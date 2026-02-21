@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chart 2: Tiger Population Growth Rate 2006–2022</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap');
+
+  :root {
+    --ink:       #1a1a18;
+    --cream:     #f7f4ee;
+    --forest:    #2d5a27;
+    --slate:     #5a6e7a;
+    --mist:      #e8ede5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--ink);
+    padding: 32px 28px;
+  }
+
+  .chart-container {
+    background: #fff;
+    border: 1px solid #e2ddd4;
+    border-top: 4px solid var(--forest);
+    padding: 24px 24px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .chart-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #d4860b;
+    margin-bottom: 4px;
+  }
+
+  .chart-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .chart-sub {
+    font-size: 0.78rem;
+    font-weight: 300;
+    color: var(--slate);
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  .chart-wrap {
+    position: relative;
+    height: 450px;
+  }
+
+  @media (max-width: 768px) {
+    .chart-wrap {
+      height: 550px;
+    }
+  }
+
+  .note {
+    margin-top: 10px;
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--slate);
+    font-style: italic;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="chart-container">
+  <div class="chart-label">Chart 2 · Growth Rate</div>
+  <div class="chart-title">Percent Population Change, 2006–2022</div>
+  <div class="chart-sub">Ranked by total percent change. Kaziranga excluded (no 2006 baseline).</div>
+  <div class="chart-wrap">
+    <canvas id="barChart"></canvas>
+  </div>
+  <div class="note">AAGR = Average Annual Growth Rate over 16-year period.</div>
+</div>
+
+<script>
+const COLORS = {
+  Pench:       '#2d5a27',
+  Bandipur:    '#4a7c3f',
+  Nagarahole:  '#7aad6a',
+  Ranthambore: '#d4860b',
+  Corbett:     '#8b5e3c',
+  Kanha:       '#5a6e7a',
+};
+
+Chart.defaults.font.family = "'Source Sans 3', sans-serif";
+Chart.defaults.color = '#5a6e7a';
+
+const growthReserves = ['Pench','Bandipur','Nagarahole','Ranthambore','Jim Corbett','Kanha'];
+const growthValues   = [133.3, 120.6, 80.8, 78.1, 58.5, 18.0];
+const aagr           = [5.44,  5.07,  3.77, 3.67, 2.92, 1.04];
+const growthColors   = growthReserves.map(r => COLORS[r.replace('Jim Corbett','Corbett')] || '#888');
+
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels: growthReserves,
+    datasets: [{
+      label: '% Change 2006–2022',
+      data: growthValues,
+      backgroundColor: growthColors.map(c => c + 'cc'),
+      borderColor: growthColors,
+      borderWidth: 2,
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    indexAxis: 'y',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const i = ctx.dataIndex;
+            return [`  Growth: +${ctx.parsed.x}%`, `  AAGR: +${aagr[i]}%/yr`];
+          }
+        }
+      },
+      datalabels: { display: false }
+    },
+    scales: {
+      x: { title: { display: true, text: '% Change (2006 → 2022)', font: { size: 11, weight: '600' } }, grid: { color: '#e8ede5' } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>
