@@ -325,8 +325,8 @@ Threat_Composite = (RoadDensity_Normalized × 0.35) +
 **Goal:** Identify and download new datasets; determine whether WII corridor spatial data is available
 
 **Tasks:**
-- [ ] Search WII and NTCA websites for downloadable tiger corridor shapefiles
-- [ ] Search Google Scholar / ResearchGate for Jhala et al. papers with corridor maps in supplementary data
+- [x] Search WII and NTCA websites for downloadable tiger corridor shapefiles
+- [x] Search Google Scholar / ResearchGate for Jhala et al. papers with corridor maps in supplementary data
 - [ ] Download Global Human Modification Index raster (figshare link in Section 5.2B)
 - [ ] Begin ESA WorldCover tile downloads (identify required tiles for study area)
 - [ ] Document all downloads in a Phase 2 `data-sources.md` addition
@@ -587,12 +587,14 @@ Follows Phase 1 conventions (`docs/naming-conventions.md`) with Phase 2 addition
 - Date:
 - Progress: 🟢 In Progress
 - Completed:
+  ✅ Search WII and NTCA websites for downloadable tiger corridor shapefiles
 - In Progress:
-  🟢 Search WII and NTCA websites for downloadable tiger corridor shapefiles
+  🟢 Download Global Human Modification Index raster (figshare link in Section 5.2B)
 - Blockers:
-- Decision — WII corridors: [ ] Available / [ ] Not available
+- Decision — WII corridors: [x] Available / [ ] Not available
 - Next Week Focus:
 - Notes:
+  Skipping Jhala et al. papers with corridor maps because primary data available
 
 *(Repeat template for Weeks 2–8)*
 
@@ -624,4 +626,4 @@ Follows Phase 1 conventions (`docs/naming-conventions.md`) with Phase 2 addition
 
 *Phase 2 builds on: https://arcg.is/00bXi44*
 *GitHub repository: https://github.com/K-bsub/tiger-conservation-india*
-*Last Updated: February 22, 2026*
+*Last Updated: March 1, 2026*
