@@ -327,17 +327,17 @@ Threat_Composite = (RoadDensity_Normalized × 0.35) +
 **Tasks:**
 - [x] Search WII and NTCA websites for downloadable tiger corridor shapefiles
 - [x] Search Google Scholar / ResearchGate for Jhala et al. papers with corridor maps in supplementary data
-- [ ] Download Global Human Modification Index raster (figshare link in Section 5.2B)
-- [ ] Begin ESA WorldCover tile downloads (identify required tiles for study area)
-- [ ] Document all downloads in a Phase 2 `data-sources.md` addition
+- [x] Download Global Human Modification Index raster (figshare link in Section 5.2B)
+- [x] Begin ESA WorldCover tile downloads (identify required tiles for study area)
+- [x] Document all downloads in a Phase 2 `data-sources.md` addition
 
 **Decision point:** If WII corridor boundaries are found → use them as authoritative corridor zones. If not → proceed to least-cost path modeling in Week 4.
 
 **Time estimate:** 2 hours
 
 **Deliverables:**
-- [ ] Download status for all new datasets
-- [ ] Decision recorded: WII corridors available / not available
+- ✅ Download status for all new datasets
+- ✅ Decision recorded: WII corridors available / not available
 
 ---
 
@@ -585,16 +585,43 @@ Follows Phase 1 conventions (`docs/naming-conventions.md`) with Phase 2 addition
 
 **Week 1 Status**
 - Date:
-- Progress: 🟢 In Progress
+- Progress: ✅ Complete
 - Completed:
   ✅ Search WII and NTCA websites for downloadable tiger corridor shapefiles
+  ✅ Download Global Human Modification Index raster (figshare link in Section 5.2B)
+  ✅ Begin ESA WorldCover tile downloads (identify required tiles for study area)
+  ✅ Document all downloads in a Phase 2 `data-sources.md` addition
 - In Progress:
-  🟢 Download Global Human Modification Index raster (figshare link in Section 5.2B)
 - Blockers:
-- Decision — WII corridors: [x] Available / [ ] Not available
-- Next Week Focus:
-- Notes:
-  Skipping Jhala et al. papers with corridor maps because primary data available
+- Decision — WII corridors: ✅ Available
+  - 764 polylines in KML mix PA boundary lines (named) and corridor centerlines
+    (`Name = 'Placemark'`). Selected by attribute to isolate corridors. Manual
+    naming applied for all 6 study corridors. LCP modeling not required.
+    Jhala et al. supplementary digitization contingency skipped.
+- **Next Week Focus:** Complete ESA WorldCover mosaic (verify 14-tile coverage
+  against all 6 corridor buffers); clip mosaic to `Reserve_Buffer_50km`;
+  reproject ESA WorldCover and gHM to UTM 43N; begin OSM road/settlement
+  kernel density surfaces; start composite threat index
+- **Notes:**
+  - Jhala et al. papers with corridor maps skipped — NTCA KML provides
+    authoritative corridor geometry for all 6 study corridors
+  - ESA WorldCover original downloader URL (worldcover2021.esa.int/downloader)
+    is broken; tiles downloaded successfully via AWS S3 public bucket instead
+  - ESA WorldCover tile list revised upward from 9 → 14 tiles after visual QC
+    of mosaic against 50km reserve buffers revealed gaps at Kanha east,
+    Corbett east, Kaziranga north and west
+  - Recommend Clip → Project sequence for ESA WorldCover (not Project → Clip)
+    to avoid processing full-India raster at 10m resolution
+
+**Week 2 Status**
+- Date:
+- Progress: 🟢 In Progress
+- Completed:
+- In Progress:
+  🟢 Finish ESA WorldCover tile downloads (tiles covering India study area)
+- Blockers:
+- **Next Week Focus:** 
+- **Notes:**
 
 *(Repeat template for Weeks 2–8)*
 
@@ -603,7 +630,7 @@ Follows Phase 1 conventions (`docs/naming-conventions.md`) with Phase 2 addition
 ### Overall Project Health
 
 **Current Status:** 🟢 In Progress
-**Completion:** 0%
+**Completion:** 14.3%
 **Key open decision:** WII corridor boundary availability (determines Week 4 branch)
 
 ---
@@ -626,4 +653,4 @@ Follows Phase 1 conventions (`docs/naming-conventions.md`) with Phase 2 addition
 
 *Phase 2 builds on: https://arcg.is/00bXi44*
 *GitHub repository: https://github.com/K-bsub/tiger-conservation-india*
-*Last Updated: March 1, 2026*
+*Last Updated: March 22, 2026*

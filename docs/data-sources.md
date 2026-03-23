@@ -676,6 +676,266 @@ For the Singh & Sen (2015) paper, search ResearchGate or Google Scholar for:
 
 ---
 
+## Phase 2 Data Sources — Corridor Connectivity & Threat Mapping
+
+**Phase 2 Project:** Under Pressure: Mapping the Corridors and Threats That Shape
+India's Tiger Landscapes  
+**Added:** March 22, 2026  
+**Note:** All Phase 1 data sources (Sections 1–7) are reused in Phase 2 without
+re-download. This section documents new datasets acquired specifically for Phase 2.
+
+---
+
+## 10. Tiger Corridor Spatial Data
+
+### 10.1 NTCA Decision Support System — PA/TR/Corridor KML
+
+Authoritative spatial boundaries for Protected Areas, Tiger Reserves, and tiger
+movement corridors across India, published by NTCA for use in evaluating
+infrastructure development projects near tiger habitat.
+
+**Full Citation:**
+> National Tiger Conservation Authority. (2022). *PA_TR_Corridor_Final* [KML
+> Dataset]. Decision Support System, National Tiger Conservation Authority,
+> Ministry of Environment, Forests and Climate Change, Government of India,
+> New Delhi. Last updated July 2022. Available at: https://ntca.gov.in/dss/
+
+- **Access URL:** https://ntca.gov.in/dss/
+- **Direct download:** https://ntca.gov.in/wp-content/uploads/2022/07/PA_TR_Corridor_Final.zip
+- **Access Method:** Direct ZIP download; no login required
+- **Downloaded:** February 22, 2026
+- **Data Currency:** July 2022
+- **File (raw):** `data/raw/ntca/PA_TR_Corridor_Final/PA_TR_Corridor_Final.kml`
+- **Coordinate System (raw):** WGS 1984 Geographic (EPSG:4326)
+- **License:** Government of India; attribution required; research/education use
+
+**Contents of KML:**
+- `Polylines` layer — 764 features mixing PA boundary outlines (named) and
+  corridor centerlines (unnamed; `Name = 'Placemark'`)
+- `Polygons` layer — Protected area boundary polygons (redundant with KBA data)
+
+**Processing steps (Phase 2):**
+1. Converted KML to feature class using ArcGIS Pro **KML To Layer** tool
+2. Selected all features where `Name = 'Placemark'` to isolate corridor centerlines
+   from named PA boundary polylines
+3. Exported selection to `tiger_project.gdb/Connectivity/NTCA_Corridors_Raw`
+4. Added fields `Corridor_Name` (Text, 100) and `Corridor_ID` (Short Integer)
+5. Manually assigned corridor names for all 6 study corridors using
+   Select by Location against reserve boundaries
+6. Dissolved by `Corridor_Name` to merge fragmented segments per corridor
+7. Buffered 5 km to create `NTCA_Corridors_Buffered_5km` (zone polygons
+   for zonal statistics and threat analysis)
+
+**6 study corridors confirmed present:**
+
+| Corridor_ID | Corridor_Name | Reserves Connected |
+|---|---|---|
+| 1 | Corbett–Rajaji | Jim Corbett NP ↔ Rajaji NP |
+| 2 | Kaziranga–Karbi Anglong | Kaziranga NP ↔ Karbi Anglong hills |
+| 3 | Kanha–Pench | Kanha NP ↔ Pench TR |
+| 4 | Kanha/Pench–Satpura | Kanha/Pench ↔ Satpura TR |
+| 5 | Ranthambore–Mukundra | Ranthambore TR ↔ Mukundra Hills TR |
+| 6 | Bandipur–Nagarahole | Bandipur NP ↔ Nagarahole NP ↔ BRT WLS |
+
+**Known Issues / Limitations:**
+- **Corridor geometry type:** Centerlines (polylines), not polygon zones —
+  buffered to 5 km for zonal analysis; buffer width is an analytical choice,
+  not an authoritative boundary
+- **Unnamed features:** Corridor centerlines carry no name attribute in the
+  source KML (`Name = 'Placemark'`); names assigned manually in Phase 2
+  based on spatial proximity to reserves
+- **Data currency:** July 2022 — corridor boundaries may not reflect the most
+  recent WII corridor delineations
+- **Fragmented geometry:** Some corridors encoded as multiple disconnected
+  segments in the KML; dissolved to single multi-part features per corridor
+- **Not peer-reviewed spatial data:** KML intended for infrastructure clearance
+  screening, not published corridor research — treat as authoritative for
+  approximate extents only; cross-reference with ISFR 2021 tabular corridor
+  data (already in `data/processed/forest/isfr_2021_reserve_corridors.xlsx`)
+
+---
+
+## 11. Land Cover Data
+
+### 11.1 ESA WorldCover 2021 — 10m Global Land Cover
+
+High-resolution land cover classification used as the primary land cover layer
+for Phase 2 corridor quality and threat analysis, replacing the Global Forest
+Watch tree cover layer (Section 4.1) for inter-reserve landscape characterization.
+
+**Full Citation:**
+> Zanaga, D., Van De Kerchove, R., Daems, D., De Keersmaecker, W., Brockmann,
+> C., Kirches, G., Wevers, J., Cartus, O., Santoro, M., Fritz, S., Lesiv, M.,
+> Herold, M., Tsendbazar, N.E., Xu, P., Ramoino, F., & Arino, O. (2022).
+> *ESA WorldCover 10 m 2021 v200*. https://doi.org/10.5281/zenodo.7254221
+
+- **Access URL:** https://esa-worldcover.org/en/data-access
+- **Access Method:** Direct GeoTIFF download via AWS public S3 bucket
+  (`s3://esa-worldcover/`); no account required
+- **Tile URL pattern:**
+  `https://esa-worldcover.s3.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_{TILE}_Map.tif`
+- **Downloaded:** March 21-22, 2026
+- **Product version:** WorldCover 2021 v200
+- **Data year:** 2020
+- **Resolution:** 10 meters
+- **Coordinate System (raw):** WGS 1984 Geographic (EPSG:4326)
+- **Format:** Cloud Optimized GeoTIFF (COG), 8-bit unsigned integer
+- **License:** CC BY 4.0 — attribution required
+
+**Tiles downloaded (19 tiles):**
+
+| Tile | Coverage | Reserves/corridors covered |
+|---|---|---|
+| N09E075 | 9–12°N, 75–78°E | Bandipur, Nagarahole (south) |
+| N12E075 | 12–15°N, 75–78°E | Bandipur, Nagarahole (north), BRT corridor |
+| N21E075 | 21–24°N, 75–78°E | Ranthambore (west buffer) |
+| N21E078 | 21–24°N, 78–81°E | Ranthambore (west buffer) |
+| N24E075 | 24–27°N, 75–78°E | Ranthambore, Mukundra corridor |
+| N27E075 | 27–30°N, 75–78°E | Ranthambore buffer north, Corbett west |
+| N21E078 | 21–24°N, 78–81°E | Kanha, Pench, Kanha–Pench corridor |
+| N21E081 | 21–24°N, 81–84°E | Kanha buffer east |
+| N24E075 | 24–27°N, 75–78°E | Central India north |
+| N24E078 | 24–27°N, 78–81°E | Central India north |
+| N24E081 | 24–27°N, 81–84°E | Central India east |
+| N27E075 | 27–30°N, 75–78°E | Jim Corbett |
+| N27E078 | 27–30°N, 78–81°E | Jim Corbett |
+| N27E081 | 27–30°N, 81–84°E | Corbett buffer east |
+| N27E090 | 27–30°N, 90–93°E | Corbett buffer east |
+| N30E075 | 30–33°N, 75–78°E | Rajaji NP (Corbett–Rajaji corridor north end) |
+| N24E090 | 24–27°N, 90–93°E | Kaziranga buffer west |
+| N24E093 | 24–27°N, 93–96°E | Kaziranga, Karbi Anglong corridor |
+| N27E093 | 27–30°N, 93–96°E | Kaziranga buffer north |
+
+**Files:**
+- Raw tiles: `data/raw/esa_worldcover/ESA_WorldCover_10m_2021_v200_{TILE}_Map.tif`
+- Mosaic: `ESA_WorldCover_India_Mosaic` (WGS84, 8-bit unsigned, 1 band)
+- Analysis-ready: `tiger_project.gdb/Threats/ESA_WorldCover_UTM43N`
+  (clipped to `Reserve_Buffer_50km`, reprojected UTM 43N, nearest neighbor)
+
+**Land cover classes:**
+
+| Value | Class | Relevance to corridor analysis |
+|---|---|---|
+| 10 | Tree cover | Core tiger habitat / high corridor quality |
+| 20 | Shrubland | Marginal habitat |
+| 30 | Grassland | Marginal — important prey habitat |
+| 40 | Cropland | Human pressure / movement barrier |
+| 50 | Built-up | High barrier / threat |
+| 60 | Bare / sparse vegetation | Semi-arid matrix (Ranthambore) |
+| 80 | Permanent water bodies | Physical barrier |
+| 90 | Herbaceous wetland | Kaziranga floodplain context |
+| 95 | Mangroves | Coastal — not relevant to study area |
+| 100 | Moss and lichen | High altitude — not relevant |
+
+**Known Issues / Limitations:**
+- **Overall accuracy:** 76.7% (Wageningen University independent validation) —
+  lower than SRTM or census data; interpret land cover patterns at landscape
+  scale, not individual pixel level
+- **Tree cover ≠ forest quality:** Class 10 includes plantations and degraded
+  forest alongside natural forest — cannot distinguish dense natural forest
+  from monoculture plantation without additional data
+- **Temporal gap:** 2021 land cover; some recent land use changes post-2021
+  not captured
+- **Resampling:** Nearest neighbor used for UTM 43N reprojection to preserve
+  categorical class integrity — pixel boundaries shift slightly but class
+  values are not interpolated
+- **Supersedes GFW layer for Phase 2:** ESA WorldCover preferred over Global
+  Forest Watch (Section 4.1) for inter-reserve analysis due to full land cover
+  classification vs. tree cover only, and higher thematic detail
+
+---
+
+## 12. Human Pressure Data
+
+### 12.1 Global Human Modification Index (gHM)
+
+A composite raster quantifying cumulative human modification of terrestrial
+land surfaces, combining infrastructure, agriculture, urbanization, and
+human population density into a single continuous index (0–1 scale). Used
+as a pre-computed human pressure layer to complement road and settlement
+kernel density analysis.
+
+**Full Citation:**
+> Kennedy, C.M., Oakleaf, J.R., Theobald, D.M., Baruch-Mordo, S., &
+> Kiesecker, J. (2019). Managing the middle: A shift in conservation
+> priorities based on the global human modification gradient. *Global Change
+> Biology*, 25(3), 811–826. https://doi.org/10.1111/gcb.14549
+
+**Dataset citation:**
+> Kennedy, C.M., Oakleaf, J.R., Theobald, D.M., Baruch-Mordo, S., &
+> Kiesecker, J. (2019). *Global Human Modification* [Dataset]. figshare.
+> https://figshare.com/articles/dataset/Global_Human_Modification/7283087
+
+- **Access URL:** https://figshare.com/articles/dataset/Global_Human_Modification/7283087
+- **Access Method:** Direct GeoTIFF download from figshare; no account required
+- **Downloaded:** March 2026
+- **Data year:** 2016 (most recent available at time of download)
+- **Resolution:** ~1 km (0.009 decimal degrees)
+- **Coordinate System (raw):** WGS 1984 Geographic (EPSG:4326)
+- **Value range:** 0.0 (no modification) to 1.0 (complete modification)
+- **Format:** GeoTIFF, 32-bit float
+- **License:** CC BY 4.0 — attribution required
+
+**Files:**
+- Raw: `data/raw/human_modification/gHM.tif`
+- Analysis-ready: `tiger_project.gdb/Threats/HumanMod_Index_UTM43N`
+  (clipped to `Reserve_Buffer_50km`, reprojected UTM 43N, bilinear resampling,
+  1000m cell size)
+
+**Index components (from Kennedy et al. 2019):**
+Built environments, agriculture (cropland, pasture), transportation
+infrastructure, mining and energy production, and human population density.
+
+**Interpretation for study area:**
+
+| gHM Value | Interpretation | Expected locations |
+|---|---|---|
+| 0.0–0.1 | Very low modification | Reserve interiors, dense forest |
+| 0.1–0.3 | Low modification | Buffer zones, forest edge |
+| 0.3–0.6 | Moderate modification | Agricultural matrix, rural areas |
+| 0.6–0.8 | High modification | Peri-urban, intensive agriculture |
+| 0.8–1.0 | Very high modification | Urban areas, industrial zones |
+
+**Known Issues / Limitations:**
+- **Data currency:** 2016 baseline — a decade old at time of use; significant
+  infrastructure development in India since 2016 (road expansion, urbanization)
+  not captured
+- **Resolution:** 1 km — too coarse to detect narrow corridor pinch points or
+  individual road crossings; supplemented by OSM road KDE at same resolution
+- **Global composite:** Index weights calibrated globally, not optimized for
+  Indian tiger landscape context — local road and settlement KDE surfaces
+  (Section 7.1) may better capture fine-scale threats
+- **Bilinear resampling used:** gHM is a continuous index (not categorical),
+  so bilinear resampling is appropriate for reprojection — contrast with
+  ESA WorldCover (nearest neighbor)
+- **Not suitable for:** Sub-kilometer threat assessment or individual feature
+  identification; suitable for landscape-scale corridor quality ranking
+
+---
+
+## 13. Phase 2 Reproduce This Dataset
+
+New datasets only — all Phase 1 datasets reproduced per Section 8.
+
+1. **NTCA Corridor KML** — Download `PA_TR_Corridor_Final.zip` from
+   https://ntca.gov.in/dss/ and convert using ArcGIS Pro KML To Layer tool
+2. **ESA WorldCover 2021** — Download 15 tiles via AWS S3 public bucket using
+   URL pattern in Section 11.1; no account required
+3. **Global Human Modification Index** — Download `gHM.tif` from
+   https://figshare.com/articles/dataset/Global_Human_Modification/7283087
+
+---
+
+## 14. Phase 2 License Summary
+
+| Dataset | License | Attribution Required | Commercial Use |
+|---|---|---|---|
+| NTCA Corridor KML | Government of India | Yes | Research/education |
+| ESA WorldCover 2021 | CC BY 4.0 | Yes (Zanaga et al. 2022) | Allowed |
+| Global Human Modification Index | CC BY 4.0 | Yes (Kennedy et al. 2019) | Allowed |
+
+---
+
 ## Story Map Attribution Block
 
 Use this in the Story Map "Data Sources" or "Credits" section:
@@ -707,6 +967,43 @@ naturalearthdata.com; DataMeet India (CC BY 4.0), github.com/datameet/maps.
 Roads & Settlements: OpenStreetMap contributors (ODbL),
 download.geofabrik.de.
 ```
+
+---
+
+## Phase 2 Story Map Attribution Block
+
+Use this in the Phase 2 Story Map "Data Sources" or "Credits" section:
+
+```
+Data Sources:
+
+Tiger Corridors: National Tiger Conservation Authority Decision Support
+System, PA_TR_Corridor_Final KML (July 2022), ntca.gov.in/dss/.
+Corridor names assigned based on ISFR 2021 Chapter 4 corridor documentation
+(Forest Survey of India, 2022).
+
+Land Cover: Zanaga et al. (2022). ESA WorldCover 10 m 2021 v200.
+doi:10.5281/zenodo.7254221. © ESA WorldCover project 2021 / Contains
+modified Copernicus Sentinel data (2021) processed by ESA WorldCover
+consortium.
+
+Human Modification: Kennedy et al. (2019). Global Human Modification Index.
+Global Change Biology, 25(3), 811–826. doi:10.1111/gcb.14549. Dataset via
+figshare.com.
+
+Roads & Settlements: OpenStreetMap contributors (ODbL),
+download.geofabrik.de. [Reused from Phase 1]
+
+Forest Cover (corridor quality): Forest Survey of India, India State of
+Forest Report 2021, Chapter 4, Tables 4.9/4.10 — forest cover in tiger
+corridors. [Reused from Phase 1]
+```
+
+---
+
+*Phase 2 data sources appended to: `docs/data-sources.md`*  
+*Phase 2 project: Under Pressure — Corridor Connectivity & Threat Mapping*  
+*Project repository: https://github.com/K-bsub/tiger-conservation-india*
 
 ---
 
