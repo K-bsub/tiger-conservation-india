@@ -6,8 +6,6 @@
   <title>Tiger Conservation — Detection Density, 2006 vs 2022</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <!-- side-by-side swipe plugin -->
-  <script src="https://unpkg.com/leaflet-side-by-side@2.2.0/layout.js"></script>
 
   <style>
     :root {
@@ -25,14 +23,13 @@
       border-top: 1px solid #d4cfc4; border-bottom: 1px solid #d4cfc4;
     }
 
-    /* Period labels pinned top-left and top-right of the map */
     .period-tag {
       position: absolute; top: 14px; z-index: 500;
       background: rgba(255,255,255,0.92); padding: 6px 12px; border-radius: 4px;
       font-size: 0.82rem; font-weight: 600; color: var(--forest);
       box-shadow: 0 1px 4px rgba(0,0,0,0.2); pointer-events: none;
     }
-    .period-tag.left  { left: 14px; }
+    .period-tag.left  { left: 56px; }
     .period-tag.right { right: 14px; }
     .period-tag span { display: block; font-weight: 400; font-size: 0.72rem; color: var(--slate); }
 
@@ -67,6 +64,8 @@
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- side-by-side plugin (correct package + path) -->
+  <script src="https://unpkg.com/leaflet-side-by-side@2.2.0/leaflet-side-by-side.min.js"></script>
 
   <script>
     // ============================================================
@@ -87,7 +86,7 @@
     }).addTo(map);
 
     // ============================================================
-    // 3. RESERVES underneath (context). Lighter, outline-emphasis.
+    // 3. RESERVES underneath (context).
     // ============================================================
     function colorFor(category) {
       switch (category) {
@@ -128,33 +127,31 @@
       .catch(err => console.error('Reserves load failed:', err));
 
     // ============================================================
-    // 4. KDE IMAGE OVERLAYS — pin each PNG to its shared bounds.
-    //    Bounds format: [[south, west], [north, east]] — the exact
-    //    extent you read off both rasters (identical for both).
+    // 4. KDE IMAGE OVERLAYS — now using Mercator-reprojected PNGs.
+    //    The images were pre-warped from WGS84 to Web Mercator so
+    //    they align correctly with Leaflet's Mercator basemap.
+    //    Bounds are still given as latlng corners (Leaflet projects
+    //    them); because the image is pre-warped, alignment is correct.
     // ============================================================
     const kdeBounds = [[-3.096002, 64.827237], [30.181980, 94.455125]];
 
-    const baselineLayer = L.imageOverlay('data/kde_baseline.png', kdeBounds, { opacity: 0.85 }).addTo(map);
-    const currentLayer  = L.imageOverlay('data/kde_current.png',  kdeBounds, { opacity: 0.85 }).addTo(map);
+    const baselineLayer = L.imageOverlay('data/kde_baseline_merc.png', kdeBounds, { opacity: 0.85 }).addTo(map);
+    const currentLayer  = L.imageOverlay('data/kde_current_merc.png',  kdeBounds, { opacity: 0.85 }).addTo(map);
 
     // ============================================================
-    // 5. SIDE-BY-SIDE SWIPE — draggable divider between the two.
-    //    Left of the handle shows baseline; right shows current.
+    // 5. SIDE-BY-SIDE SWIPE
     // ============================================================
     L.control.sideBySide(baselineLayer, currentLayer).addTo(map);
 
     // ============================================================
-    // 6. LEGEND — shared KDE density ramp (5-class green).
+    // 6. LEGEND
     // ============================================================
     const legend = L.control({ position: 'bottomright' });
     legend.onAdd = function () {
       const div = L.DomUtil.create('div', 'legend');
       const rows = [
-        ['#F7FCF5', 'Very low'],
-        ['#BAE4B3', 'Low'],
-        ['#74C476', 'Moderate'],
-        ['#31A354', 'High'],
-        ['#006D2C', 'Very high']
+        ['#F7FCF5', 'Very low'], ['#BAE4B3', 'Low'], ['#74C476', 'Moderate'],
+        ['#31A354', 'High'], ['#006D2C', 'Very high']
       ];
       div.innerHTML = '<h4>Detection Density</h4>' +
         rows.map(([c, label]) =>
