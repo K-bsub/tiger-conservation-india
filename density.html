@@ -33,11 +33,10 @@
     .period-tag.right { right: 14px; }
     .period-tag span { display: block; font-weight: 400; font-size: 0.72rem; color: var(--slate); }
 
-    /* The draggable divider handle */
     #swipe-handle {
       position: absolute; top: 0; bottom: 0; width: 4px;
-      background: rgba(255,255,255,0.9); box-shadow: 0 0 4px rgba(0,0,0,0.5);
-      z-index: 600; cursor: ew-resize; left: 50%;
+      background: rgba(255,255,255,0.95); box-shadow: 0 0 6px rgba(0,0,0,0.5);
+      z-index: 600; cursor: ew-resize; left: 50%; touch-action: none;
     }
     #swipe-handle::after {
       content: '⟺'; position: absolute; top: 50%; left: 50%;
@@ -139,76 +138,72 @@
       .catch(err => console.error('Reserves load failed:', err));
 
     // ============================================================
-    // 4. KDE OVERLAYS (Mercator-warped PNGs).
-    //    Baseline underneath, current on top. We clip the CURRENT
-    //    overlay's right portion so baseline shows on the left.
+    // 4. KDE OVERLAYS — properly reprojected (Web Mercator) PNGs,
+    //    with exact bounds computed by rasterio.
     // ============================================================
-    const kdeBounds = [[-3.096002, 64.827237], [30.181980, 94.455125]];
-    const baselineLayer = L.imageOverlay('data/kde_baseline_merc.png', kdeBounds, { opacity: 0.85 }).addTo(map);
-    const currentLayer  = L.imageOverlay('data/kde_current_merc.png',  kdeBounds, { opacity: 0.85 }).addTo(map);
+    const kdeBounds = [[-3.095943, 64.827237], [30.181980, 94.453029]];
+    const baselineLayer = L.imageOverlay('data/kde_baseline_3857.png', kdeBounds, { opacity: 0.85 }).addTo(map);
+    const currentLayer  = L.imageOverlay('data/kde_current_3857.png',  kdeBounds, { opacity: 0.85 }).addTo(map);
 
     // ============================================================
-    // 5. SELF-CONTAINED SWIPE — no plugin.
-    //    The handle's x-position sets a CSS clip on the current
-    //    overlay's <img>, so only the RIGHT side of it shows.
-    //    Re-applied on move, zoom, and drag.
+    // 5. SWIPE — clip the current overlay at the divider.
+    //    Drag DISABLES map panning while held, and stops event
+    //    propagation so the map never moves.
     // ============================================================
     const handle = document.getElementById('swipe-handle');
     const mapEl = document.getElementById('map');
-    let dividerX = null;  // pixels from left of map container
+    let dividerX = null;
 
     function clipCurrent() {
       const img = currentLayer.getElement();
       if (!img) return;
       const mapRect = mapEl.getBoundingClientRect();
       if (dividerX === null) dividerX = mapRect.width / 2;
-      // image position relative to the map container
       const imgRect = img.getBoundingClientRect();
       const imgLeftInMap = imgRect.left - mapRect.left;
-      // clip-path inset: hide everything left of (dividerX) within the image
       const clipLeftPx = Math.max(0, dividerX - imgLeftInMap);
       img.style.clipPath = `inset(0 0 0 ${clipLeftPx}px)`;
     }
-
     function positionHandle() {
       if (dividerX === null) dividerX = mapEl.getBoundingClientRect().width / 2;
       handle.style.left = dividerX + 'px';
     }
-
     function update() { positionHandle(); clipCurrent(); }
 
-    // Drag logic
-    let dragging = false;
-    handle.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
-    document.addEventListener('mouseup', () => dragging = false);
-    document.addEventListener('mousemove', e => {
-      if (!dragging) return;
+    function startDrag(e) {
+      // Stop the event reaching Leaflet, and turn off map dragging.
+      L.DomEvent.stopPropagation(e);
+      L.DomEvent.preventDefault(e);
+      map.dragging.disable();
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', endDrag);
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('touchend', endDrag);
+    }
+    function onMove(e) {
       const mapRect = mapEl.getBoundingClientRect();
-      dividerX = Math.min(Math.max(0, e.clientX - mapRect.left), mapRect.width);
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      dividerX = Math.min(Math.max(0, clientX - mapRect.left), mapRect.width);
       update();
-    });
-    // Touch support
-    handle.addEventListener('touchstart', e => { dragging = true; }, { passive: true });
-    document.addEventListener('touchend', () => dragging = false);
-    document.addEventListener('touchmove', e => {
-      if (!dragging) return;
-      const mapRect = mapEl.getBoundingClientRect();
-      dividerX = Math.min(Math.max(0, e.touches[0].clientX - mapRect.left), mapRect.width);
-      update();
-    }, { passive: true });
+      if (e.cancelable) e.preventDefault();
+    }
+    function endDrag() {
+      map.dragging.enable();
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', endDrag);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', endDrag);
+    }
+    handle.addEventListener('mousedown', startDrag);
+    handle.addEventListener('touchstart', startDrag, { passive: false });
 
-    // Re-clip whenever the map moves/zooms (image shifts position)
+    // Re-clip when the map moves/zooms (image position changes)
     map.on('move zoom moveend zoomend viewreset', clipCurrent);
-    // Initial application once overlays have rendered
     currentLayer.on('load', update);
-    setTimeout(update, 400);   // safety: apply after first paint
-  </script>
+    setTimeout(update, 400);
 
-  <div style="display:none"></div>
-
-  <script>
     // ============================================================
-    // 6. LEGEND  (separate script block so map var is in scope)
+    // 6. LEGEND
     // ============================================================
     const legend = L.control({ position: 'bottomright' });
     legend.onAdd = function () {
