@@ -206,7 +206,7 @@
         });
 
         // --- 6c. Frame India tightly (matches ArcGIS overview extent) ---
-        map.fitBounds([[6.5, 68], [32, 90]], { padding: [20, 20] });
+        map.setView([21.5, 80], 5);
       })
       .catch(err => {
         console.error('Failed to load reserves:', err);
