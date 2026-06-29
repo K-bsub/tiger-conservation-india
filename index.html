@@ -5,19 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tiger Conservation — Overview Map</title>
 
-  <!-- ============================================================
-       LEAFLET CSS — the map library's stylesheet (loaded from CDN).
-       Must come before our own styles. No install needed.
-  ============================================================ -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
     :root {
-      /* Your symbology hex codes — ported from symbology_scheme.html */
-      --high:     #225522;   /* High growth */
-      --moderate: #78AA50;   /* Moderate growth */
-      --stable:   #B4C378;   /* Stable */
-      --capacity: #C8AF64;   /* Stable / At capacity */
+      --high:     #225522;
+      --moderate: #78AA50;
+      --stable:   #B4C378;
+      --capacity: #C8AF64;
       --ink:      #1a1a18;
       --cream:    #f7f4ee;
       --slate:    #5a6070;
@@ -36,8 +31,6 @@
     header h1 { color: var(--high); font-size: 1.5rem; }
     header p  { color: var(--slate); font-size: 0.95rem; margin-top: 4px; }
 
-    /* THE MAP CONTAINER — Leaflet needs an explicit height or the map
-       renders 0px tall and you see nothing. #1 beginner gotcha. */
     #map {
       height: 600px;
       max-width: 1100px;
@@ -46,7 +39,6 @@
       border-radius: 4px;
     }
 
-    /* Legend box */
     .legend {
       background: white;
       padding: 12px 14px;
@@ -59,7 +51,6 @@
     .legend .row { display: flex; align-items: center; gap: 8px; }
     .legend .swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.2); flex-shrink: 0; }
 
-    /* Popup styling */
     .reserve-popup h3 { color: var(--high); font-size: 1rem; margin-bottom: 6px; }
     .reserve-popup table { font-size: 0.82rem; border-collapse: collapse; }
     .reserve-popup td { padding: 2px 8px 2px 0; vertical-align: top; }
@@ -76,36 +67,29 @@
 
   <div id="map"></div>
 
-  <!-- LEAFLET JS — the library itself. Must load before our script. -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
     // ============================================================
-    // 1. CREATE THE MAP
-    //    L.map('map') attaches Leaflet to <div id="map">.
-    //    setView([lat, lng], zoom) centers it. [22, 80] is central
-    //    India; zoom 5 shows the whole country.
+    // 1. CREATE THE MAP — centered on India, zoom 5.
     // ============================================================
     const map = L.map('map').setView([22, 80], 5);
 
     // ============================================================
-    // 2. ADD THE BASEMAP (Esri free tiles — your chosen provider)
-    //    A "tile layer" is the background imagery. Esri serves these
-    //    free, no API key. {z}/{x}/{y} are filled in as you pan/zoom.
+    // 2. BASEMAP — Esri Light Gray Canvas. Neutral background that
+    //    lets the reserve colors stand out (terrain was too busy).
     // ============================================================
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Tiles &copy; Esri',
-      maxZoom: 13
+      maxZoom: 16
     }).addTo(map);
 
-    // A labels overlay on top (place names, boundaries)
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 13
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 16
     }).addTo(map);
 
     // ============================================================
-    // 3. COLOR FUNCTION — growth category → hex color.
-    //    Strings match the data exactly (verified).
+    // 3. COLOR FUNCTION — growth category → hex.
     // ============================================================
     function colorFor(category) {
       switch (category) {
@@ -118,24 +102,22 @@
     }
 
     // ============================================================
-    // 4. STYLE FUNCTION — Leaflet calls this per polygon.
-    //    Mirrors your ArcGIS symbology: 85% fill, dark 1.5px outline.
+    // 4. POLYGON STYLE — true reserve boundaries.
     // ============================================================
     function styleReserve(feature) {
       return {
         fillColor: colorFor(feature.properties.Growth_Category),
-        fillOpacity: 0.85,
+        fillOpacity: 0.9,
         color: '#1E1E1E',
-        weight: 1.5,
+        weight: 2,
         opacity: 1
       };
     }
 
     // ============================================================
-    // 5. POPUP BUILDER — HTML shown when a reserve is clicked.
+    // 5. POPUP BUILDER — shared by polygon AND marker.
     // ============================================================
-    function popupFor(feature) {
-      const p = feature.properties;
+    function popupFor(p) {
       const pct = Math.round(p.Pct_Change);
       const density = p.Density_2022 ? p.Density_2022.toFixed(1) : '—';
       return `
@@ -154,23 +136,45 @@
     }
 
     // ============================================================
-    // 6. LOAD THE GEOJSON AND ADD IT TO THE MAP
-    //    fetch() downloads the file; L.geoJSON() turns it into layers.
-    //    fitBounds() auto-zooms to the reserves' extent.
+    // 6. LOAD GEOJSON → add polygons AND circle markers.
+    //    Polygons show true extent; markers make each reserve
+    //    findable at country scale where polygons are tiny.
     // ============================================================
     fetch('data/tiger_reserves.geojson')
       .then(response => response.json())
       .then(data => {
-        const layer = L.geoJSON(data, {
+
+        // --- 6a. Polygons (choropleth) ---
+        const polyLayer = L.geoJSON(data, {
           style: styleReserve,
           onEachFeature: (feature, lyr) => {
-            lyr.bindPopup(popupFor(feature));
-            lyr.on('mouseover', () => lyr.setStyle({ weight: 3 }));
-            lyr.on('mouseout',  () => lyr.setStyle({ weight: 1.5 }));
+            lyr.bindPopup(popupFor(feature.properties));
+            lyr.on('mouseover', () => lyr.setStyle({ weight: 3.5 }));
+            lyr.on('mouseout',  () => lyr.setStyle({ weight: 2 }));
           }
         }).addTo(map);
 
-        map.fitBounds(layer.getBounds(), { padding: [40, 40] });
+        // --- 6b. Circle markers (one per reserve, at its centroid) ---
+        data.features.forEach(feature => {
+          const p = feature.properties;
+          const lat = p.FIRST_SitLat;
+          const lng = p.FIRST_SitLong;
+          if (lat == null || lng == null) return;
+
+          const marker = L.circleMarker([lat, lng], {
+            radius: 7,
+            fillColor: colorFor(p.Growth_Category),
+            fillOpacity: 1,
+            color: '#ffffff',     // white ring so markers pop on any background
+            weight: 2
+          }).addTo(map);
+
+          marker.bindPopup(popupFor(p));
+          marker.bindTooltip(p.Reserve_Name, { direction: 'top', offset: [0, -8] });
+        });
+
+        // --- 6c. Zoom to fit all reserves ---
+        map.fitBounds(polyLayer.getBounds(), { padding: [40, 40] });
       })
       .catch(err => {
         console.error('Failed to load reserves:', err);
@@ -178,7 +182,7 @@
       });
 
     // ============================================================
-    // 7. LEGEND — custom Leaflet control, bottom-right.
+    // 7. LEGEND — bottom-right.
     // ============================================================
     const legend = L.control({ position: 'bottomright' });
     legend.onAdd = function () {
