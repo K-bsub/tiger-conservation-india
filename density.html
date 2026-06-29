@@ -33,6 +33,20 @@
     .period-tag.right { right: 14px; }
     .period-tag span { display: block; font-weight: 400; font-size: 0.72rem; color: var(--slate); }
 
+    /* The draggable divider handle */
+    #swipe-handle {
+      position: absolute; top: 0; bottom: 0; width: 4px;
+      background: rgba(255,255,255,0.9); box-shadow: 0 0 4px rgba(0,0,0,0.5);
+      z-index: 600; cursor: ew-resize; left: 50%;
+    }
+    #swipe-handle::after {
+      content: '⟺'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff; border: 1px solid #ccc; border-radius: 50%;
+      width: 34px; height: 34px; line-height: 32px; text-align: center;
+      font-size: 16px; color: var(--slate); box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
     .legend {
       background: white; padding: 12px 14px; border-radius: 4px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.2); font-size: 0.8rem; line-height: 1.7; max-width: 230px;
@@ -53,7 +67,7 @@
 
   <header>
     <h1>Tiger Detection Density: 2006–2010 vs 2018–2022</h1>
-    <p>Kernel density estimation of GBIF tiger detections, 20&nbsp;km search radius. <strong>Drag the slider</strong>
+    <p>Kernel density estimation of GBIF tiger detections, 20&nbsp;km search radius. <strong>Drag the divider</strong>
        to compare the baseline period (left) against the current period (right). Density values are not directly
        comparable between periods — shared class breaks show relative spatial pattern, not absolute counts.</p>
   </header>
@@ -61,11 +75,10 @@
   <div id="map">
     <div class="period-tag left">2006–2010<span>Baseline</span></div>
     <div class="period-tag right">2018–2022<span>Current</span></div>
+    <div id="swipe-handle"></div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- side-by-side plugin: verified entry file is index.js (package main) -->
-  <script src="https://unpkg.com/leaflet-side-by-side@2.2.0/index.js"></script>
 
   <script>
     // ============================================================
@@ -86,7 +99,7 @@
     }).addTo(map);
 
     // ============================================================
-    // 3. RESERVES underneath (context).
+    // 3. RESERVES underneath
     // ============================================================
     function colorFor(category) {
       switch (category) {
@@ -106,7 +119,6 @@
       'Nagarahole National Park':       { direction: 'left',  offset: [-14, 0] },
       'Bandipur National Park':         { direction: 'right', offset: [14, 8]  }
     };
-
     fetch('data/tiger_reserves.geojson')
       .then(r => r.json())
       .then(data => {
@@ -127,31 +139,76 @@
       .catch(err => console.error('Reserves load failed:', err));
 
     // ============================================================
-    // 4. KDE IMAGE OVERLAYS — now using Mercator-reprojected PNGs.
-    //    The images were pre-warped from WGS84 to Web Mercator so
-    //    they align correctly with Leaflet's Mercator basemap.
-    //    Bounds are still given as latlng corners (Leaflet projects
-    //    them); because the image is pre-warped, alignment is correct.
+    // 4. KDE OVERLAYS (Mercator-warped PNGs).
+    //    Baseline underneath, current on top. We clip the CURRENT
+    //    overlay's right portion so baseline shows on the left.
     // ============================================================
     const kdeBounds = [[-3.096002, 64.827237], [30.181980, 94.455125]];
-
     const baselineLayer = L.imageOverlay('data/kde_baseline_merc.png', kdeBounds, { opacity: 0.85 }).addTo(map);
     const currentLayer  = L.imageOverlay('data/kde_current_merc.png',  kdeBounds, { opacity: 0.85 }).addTo(map);
 
     // ============================================================
-    // 5. SIDE-BY-SIDE SWIPE
-    //    Guard: if the plugin didn't load, say so clearly instead
-    //    of silently stacking the two overlays.
+    // 5. SELF-CONTAINED SWIPE — no plugin.
+    //    The handle's x-position sets a CSS clip on the current
+    //    overlay's <img>, so only the RIGHT side of it shows.
+    //    Re-applied on move, zoom, and drag.
     // ============================================================
-    if (typeof L.control.sideBySide === 'function') {
-      L.control.sideBySide(baselineLayer, currentLayer).addTo(map);
-    } else {
-      console.error('side-by-side plugin did NOT load — check the CDN <script> tag.');
-      alert('The swipe plugin failed to load. The two density layers are stacked (current on top). Check the browser console.');
+    const handle = document.getElementById('swipe-handle');
+    const mapEl = document.getElementById('map');
+    let dividerX = null;  // pixels from left of map container
+
+    function clipCurrent() {
+      const img = currentLayer.getElement();
+      if (!img) return;
+      const mapRect = mapEl.getBoundingClientRect();
+      if (dividerX === null) dividerX = mapRect.width / 2;
+      // image position relative to the map container
+      const imgRect = img.getBoundingClientRect();
+      const imgLeftInMap = imgRect.left - mapRect.left;
+      // clip-path inset: hide everything left of (dividerX) within the image
+      const clipLeftPx = Math.max(0, dividerX - imgLeftInMap);
+      img.style.clipPath = `inset(0 0 0 ${clipLeftPx}px)`;
     }
 
+    function positionHandle() {
+      if (dividerX === null) dividerX = mapEl.getBoundingClientRect().width / 2;
+      handle.style.left = dividerX + 'px';
+    }
+
+    function update() { positionHandle(); clipCurrent(); }
+
+    // Drag logic
+    let dragging = false;
+    handle.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
+    document.addEventListener('mouseup', () => dragging = false);
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      const mapRect = mapEl.getBoundingClientRect();
+      dividerX = Math.min(Math.max(0, e.clientX - mapRect.left), mapRect.width);
+      update();
+    });
+    // Touch support
+    handle.addEventListener('touchstart', e => { dragging = true; }, { passive: true });
+    document.addEventListener('touchend', () => dragging = false);
+    document.addEventListener('touchmove', e => {
+      if (!dragging) return;
+      const mapRect = mapEl.getBoundingClientRect();
+      dividerX = Math.min(Math.max(0, e.touches[0].clientX - mapRect.left), mapRect.width);
+      update();
+    }, { passive: true });
+
+    // Re-clip whenever the map moves/zooms (image shifts position)
+    map.on('move zoom moveend zoomend viewreset', clipCurrent);
+    // Initial application once overlays have rendered
+    currentLayer.on('load', update);
+    setTimeout(update, 400);   // safety: apply after first paint
+  </script>
+
+  <div style="display:none"></div>
+
+  <script>
     // ============================================================
-    // 6. LEGEND
+    // 6. LEGEND  (separate script block so map var is in scope)
     // ============================================================
     const legend = L.control({ position: 'bottomright' });
     legend.onAdd = function () {
