@@ -190,8 +190,8 @@
           }
         }).addTo(map);
 
-        // Fixed India-centric view
-        map.setView([21.5, 80], 5);
+        // Frame India, adapting to the container size
+        map.fitBounds([[7, 69], [31, 89]], { padding: [10, 10] });
       })
       .catch(err => {
         console.error('Failed to load reserves:', err);
