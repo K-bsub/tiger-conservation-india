@@ -802,6 +802,7 @@ Watch tree cover layer (Section 4.1) for inter-reserve landscape characterizatio
 | N27E081 | 27–30°N, 81–84°E | Corbett buffer east |
 | N27E090 | 27–30°N, 90–93°E | Corbett buffer east |
 | N30E075 | 30–33°N, 75–78°E | Rajaji NP (Corbett–Rajaji corridor north end) |
+| N30E078 | 30–33°N, 81–84°E | Rajaji NP (Corbett–Rajaji corridor north end) |
 | N24E090 | 24–27°N, 90–93°E | Kaziranga buffer west |
 | N24E093 | 24–27°N, 93–96°E | Kaziranga, Karbi Anglong corridor |
 | N27E093 | 27–30°N, 93–96°E | Kaziranga buffer north |

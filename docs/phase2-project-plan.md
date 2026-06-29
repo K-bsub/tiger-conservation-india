@@ -346,13 +346,13 @@ Threat_Composite = (RoadDensity_Normalized × 0.35) +
 **Goal:** Process ESA WorldCover tiles into a clipped, projected land cover raster for the study area
 
 **Tasks:**
-- [ ] Finish ESA WorldCover tile downloads (tiles covering India study area)
-- [ ] Mosaic tiles in ArcGIS Pro → `ESA_WorldCover_India_Mosaic`
-- [ ] Clip to `Reserve_Buffer_50km` → `ESA_WorldCover_Clipped`
-- [ ] Reproject to UTM 43N → `ESA_WorldCover_UTM43N`
-- [ ] Verify class distribution: check pixel counts for forest, cropland, built-up classes
-- [ ] Process Human Modification Index: clip and reproject to match study area
-- [ ] Document processing steps in Phase 2 `methodology.md`
+- [x] Finish ESA WorldCover tile downloads (tiles covering India study area)
+- [x] Mosaic tiles in ArcGIS Pro → `ESA_WorldCover_India_Mosaic`
+- [x] Clip to `Reserve_Buffer_50km` → `ESA_WorldCover_Clipped`
+- [x] Reproject to UTM 43N → `ESA_WorldCover_UTM43N`
+- [x] Verify class distribution: check pixel counts for forest, cropland, built-up classes
+- [x] Process Human Modification Index: clip and reproject to match study area
+- [x] Document processing steps in Phase 2 `methodology.md`
 
 **Output feature classes / rasters:**
 - `ESA_WorldCover_UTM43N` (10m, UTM 43N)
@@ -614,16 +614,50 @@ Follows Phase 1 conventions (`docs/naming-conventions.md`) with Phase 2 addition
     to avoid processing full-India raster at 10m resolution
 
 **Week 2 Status**
+- Date: March 2026
+- Progress: ✅ Complete
+- Completed:
+  ✅ Finish ESA WorldCover tile downloads (tiles covering India study area)
+  ✅ Mosaic tiles in ArcGIS Pro → `ESA_WorldCover_India_Mosaic`
+  ✅ Clip to `Reserve_Buffer_50km` → `ESA_WorldCover_Clipped`
+  ✅ Reproject to UTM 43N → `ESA_WorldCover_UTM43N`
+  ✅ Verify class distribution: check pixel counts for forest, cropland, built-up classes
+  ✅ Process Human Modification Index: clip and reproject to match study area
+  ✅ Document processing steps in Phase 2 `methodology.md`
+- In Progress:
+- Blockers:
+- **Next Week Focus:**
+  - Import and clip `roads_major.shp` to `Reserve_Buffer_50km` → `Roads_StudyArea`
+  - Import and clip `settlements.shp` to `Reserve_Buffer_50km` → `Settlements_StudyArea`
+  - Run Kernel Density on roads (line KDE, 10km search radius, 1km cell) → `Threat_RoadDensity_KDE`
+  - Run Kernel Density on settlements (point KDE, 15km search radius, 1km cell) → `Threat_SettlementDensity_KDE`
+  - Normalize road density, settlement density, and gHM rasters to 0–1
+  - Combine into `Threat_Composite_Index` (weighted sum — roads 35%, settlements 30%, gHM 35%)
+  - Classify composite using Natural Breaks (5 classes) → `Threat_Composite_Classified`
+- **Notes:**
+  - ESA WorldCover tile list revised from 9 → 15 tiles after visual QC
+    against Reserve_Buffer_50km revealed gaps at Kanha east, Corbett east,
+    Kaziranga north and west
+  - Original ESA downloader (worldcover2021.esa.int/downloader) broken;
+    all tiles downloaded via AWS S3 public bucket instead — identical product
+  - Clip → Project sequence used for ESA WorldCover (not Project → Clip)
+    to avoid processing full-India 10m raster; documented in
+    phase2-methodology.md Decision 2
+  - phase2-methodology.md created covering Sections 4.1–4.3 and full
+    analysis methods (Sections 5.1–5.5); placeholder rows for class
+    distribution table to be filled after Summarize Raster
+
+**Week 3 Status**
 - Date:
 - Progress: 🟢 In Progress
+  🟢 Import and clip `roads_major.shp` to `Reserve_Buffer_50km` → `Roads_StudyArea`
 - Completed:
 - In Progress:
-  🟢 Finish ESA WorldCover tile downloads (tiles covering India study area)
 - Blockers:
 - **Next Week Focus:** 
 - **Notes:**
 
-*(Repeat template for Weeks 2–8)*
+*(Repeat template for Weeks 4–8)*
 
 ---
 

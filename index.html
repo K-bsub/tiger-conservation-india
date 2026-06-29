@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiger Conservation Story — Build Check</title>
+  <style>
+    body {
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+      max-width: 720px;
+      margin: 60px auto;
+      padding: 0 24px;
+      color: #1a1a18;
+      background: #f7f4ee;
+      line-height: 1.6;
+    }
+    h1 { color: #225522; font-size: 1.8rem; }
+    .status {
+      padding: 14px 18px;
+      border-radius: 4px;
+      margin: 12px 0;
+      border-left: 4px solid #ccc;
+      background: white;
+    }
+    .ok { border-left-color: #225522; }
+    .fail { border-left-color: #B30000; }
+    .pending { border-left-color: #b07d20; }
+    code {
+      background: #edeae3;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 0.85rem;
+    }
+    .label { font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>🐯 Tiger Conservation Story — Build Check</h1>
+  <p>If you can read this at your GitHub Pages URL, <strong>hosting works.</strong>
+     The checks below confirm your data files are reachable.</p>
+
+  <div id="page-status" class="status ok">
+    <span class="label">✅ Page loaded:</span> GitHub Pages is serving this file correctly.
+  </div>
+
+  <div id="data-status" class="status pending">
+    <span class="label">⏳ Checking data files…</span>
+  </div>
+
+  <div id="detail" class="status" style="border-left-color:#5a6070; font-size:0.9rem;"></div>
+
+  <p style="margin-top:32px; font-size:0.9rem; color:#5a6070;">
+    This is a temporary build-check page. Once confirmed, we replace it with the real story.
+  </p>
+
+  <script>
+    // List of all 7 data files we expect to find in /data
+    const files = [
+      'data/tiger_reserves.geojson',
+      'data/hotspot.geojson',
+      'data/gbif_points.geojson',
+      'data/settlements.geojson',
+      'data/roads_major.geojson',
+      'data/kde_baseline.png',
+      'data/kde_current.png'
+    ];
+
+    async function checkFiles() {
+      const results = [];
+      for (const f of files) {
+        try {
+          const res = await fetch(f, { method: 'HEAD' });
+          results.push({ file: f, ok: res.ok, status: res.status });
+        } catch (e) {
+          results.push({ file: f, ok: false, status: 'error' });
+        }
+      }
+
+      const allOk = results.every(r => r.ok);
+      const statusDiv = document.getElementById('data-status');
+      const detailDiv = document.getElementById('detail');
+
+      if (allOk) {
+        statusDiv.className = 'status ok';
+        statusDiv.innerHTML = '<span class="label">✅ All 7 data files found and reachable.</span> Ready for Step 3.';
+      } else {
+        statusDiv.className = 'status fail';
+        statusDiv.innerHTML = '<span class="label">⚠️ Some data files could not be found.</span> See details below — check filenames and the <code>data/</code> folder.';
+      }
+
+      detailDiv.innerHTML = results.map(r =>
+        `${r.ok ? '✅' : '❌'} <code>${r.file}</code> ${r.ok ? '' : '(' + r.status + ')'}`
+      ).join('<br>');
+    }
+
+    checkFiles();
+  </script>
+</body>
+</html>
