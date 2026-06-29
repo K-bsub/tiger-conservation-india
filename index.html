@@ -25,18 +25,20 @@
     }
     header {
       padding: 24px 28px 16px;
-      max-width: 1100px;
-      margin: 0 auto;
+      /* full width now — no max-width cap */
+      margin: 0;
     }
     header h1 { color: var(--high); font-size: 1.5rem; }
     header p  { color: var(--slate); font-size: 0.95rem; margin-top: 4px; }
 
+    /* FULL WIDTH + TALLER. Height uses the viewport so it's ~2x the
+       previous 620px on most screens, and fills left-to-right. */
     #map {
-      height: 620px;
-      max-width: 1100px;
-      margin: 8px auto 32px;
-      border: 1px solid #d4cfc4;
-      border-radius: 4px;
+      height: 88vh;          /* nearly full viewport height */
+      width: 100%;           /* full width */
+      margin: 8px 0 32px;
+      border-top: 1px solid #d4cfc4;
+      border-bottom: 1px solid #d4cfc4;
     }
 
     .legend {
@@ -51,18 +53,18 @@
     .legend .row { display: flex; align-items: center; gap: 8px; }
     .legend .swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.2); flex-shrink: 0; }
 
-    /* Permanent reserve labels — light, no border, sits beside the marker */
+    /* Reserve labels — now anchored to polygons */
     .reserve-label {
       background: rgba(255,255,255,0.82);
       border: none !important;
       box-shadow: none !important;
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       font-weight: 600;
       color: var(--ink);
       padding: 1px 5px;
       white-space: nowrap;
     }
-    .reserve-label::before { display: none !important; }  /* hide tooltip arrow */
+    .reserve-label::before { display: none !important; }
 
     .reserve-popup h3 { color: var(--high); font-size: 1rem; margin-bottom: 6px; }
     .reserve-popup table { font-size: 0.82rem; border-collapse: collapse; }
@@ -84,17 +86,16 @@
 
   <script>
     // ============================================================
-    // 1. CREATE THE MAP — India-centric, with a soft boundary so
-    //    users can't wander off to Vietnam, and a min zoom.
+    // 1. CREATE THE MAP
     // ============================================================
     const map = L.map('map', {
-      maxBounds: [[2, 64], [37, 96]],   // soft wall around the region
-      maxBoundsViscosity: 0.7,           // resist dragging past it
+      maxBounds: [[2, 64], [37, 96]],
+      maxBoundsViscosity: 0.7,
       minZoom: 4
-    }).setView([22, 80], 5);
+    }).setView([21.5, 80], 5);
 
     // ============================================================
-    // 2. BASEMAP — Esri Light Gray Canvas (neutral).
+    // 2. BASEMAP — Esri Light Gray Canvas
     // ============================================================
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Tiles &copy; Esri',
@@ -152,60 +153,44 @@
         </div>`;
     }
 
-    // Label placement overrides for the two close pairs, so permanent
-    // labels don't stack. Keyed by Reserve_Name.
+    // Per-reserve label placement so the two close pairs don't collide.
     const labelDirection = {
-      'Nagarahole National Park':       { direction: 'left',  offset: [-8, -4] },
-      'Bandipur National Park':         { direction: 'right', offset: [8, 8] },
-      'Kanha National Park':            { direction: 'right', offset: [8, -4] },
-      'Pench Tiger Reserve (Combined)': { direction: 'left',  offset: [-8, 8] }
+      'Nagarahole National Park':       { direction: 'left'  },
+      'Bandipur National Park':         { direction: 'right' },
+      'Kanha National Park':            { direction: 'right' },
+      'Pench Tiger Reserve (Combined)': { direction: 'left'  }
     };
 
     // ============================================================
-    // 6. LOAD GEOJSON → polygons + circle markers + labels.
+    // 6. LOAD GEOJSON → polygons + labels (no markers).
     // ============================================================
     fetch('data/tiger_reserves.geojson')
       .then(response => response.json())
       .then(data => {
 
-        // --- 6a. Polygons ---
         L.geoJSON(data, {
           style: styleReserve,
           onEachFeature: (feature, lyr) => {
-            lyr.bindPopup(popupFor(feature.properties));
+            const p = feature.properties;
+
+            // Popup on the polygon
+            lyr.bindPopup(popupFor(p));
+
+            // Permanent label anchored to the polygon centre
+            const placement = labelDirection[p.Reserve_Name] || { direction: 'right' };
+            lyr.bindTooltip(p.Reserve_Name, {
+              permanent: true,
+              direction: placement.direction,
+              className: 'reserve-label'
+            });
+
+            // Hover emphasis
             lyr.on('mouseover', () => lyr.setStyle({ weight: 3.5 }));
             lyr.on('mouseout',  () => lyr.setStyle({ weight: 2 }));
           }
         }).addTo(map);
 
-        // --- 6b. Markers + permanent labels ---
-        data.features.forEach(feature => {
-          const p = feature.properties;
-          const lat = p.FIRST_SitLat, lng = p.FIRST_SitLong;
-          if (lat == null || lng == null) return;
-
-          const marker = L.circleMarker([lat, lng], {
-            radius: 7,
-            fillColor: colorFor(p.Growth_Category),
-            fillOpacity: 1,
-            color: '#ffffff',
-            weight: 2
-          }).addTo(map);
-
-          marker.bindPopup(popupFor(p));
-
-          // Permanent label, with per-reserve placement for the close pairs
-          const placement = labelDirection[p.Reserve_Name]
-                          || { direction: 'right', offset: [8, 0] };
-          marker.bindTooltip(p.Reserve_Name, {
-            permanent: true,
-            direction: placement.direction,
-            offset: placement.offset,
-            className: 'reserve-label'
-          });
-        });
-
-        // --- 6c. Frame India tightly (matches ArcGIS overview extent) ---
+        // Fixed India-centric view
         map.setView([21.5, 80], 5);
       })
       .catch(err => {
