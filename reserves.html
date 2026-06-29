@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiger Conservation — Reserve Profiles</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    :root {
+      --high: #225522; --moderate: #78AA50; --stable: #B4C378; --capacity: #C8AF64;
+      --ink: #1a1a18; --cream: #f7f4ee; --slate: #5a6070; --forest: #225522; --mist: #edeae3;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Source Sans 3', system-ui, sans-serif; color: var(--ink); background: var(--cream); }
+    header { padding: 24px 28px 12px; }
+    header h1 { color: var(--forest); font-size: 1.5rem; }
+    header p  { color: var(--slate); font-size: 0.95rem; margin-top: 4px; max-width: 760px; }
+
+    /* Controls bar */
+    .controls { padding: 0 28px 12px; display: flex; align-items: center; gap: 12px; }
+    .controls label { font-weight: 600; font-size: 0.9rem; color: var(--slate); }
+    .controls select {
+      font-family: inherit; font-size: 0.95rem; padding: 7px 12px;
+      border: 1px solid #d4cfc4; border-radius: 4px; background: white; color: var(--ink); cursor: pointer;
+    }
+
+    /* Layout: map + side stats panel */
+    .layout { display: flex; gap: 0; align-items: stretch; height: 80vh; margin: 0 0 32px; }
+    #map { flex: 1; border: 1px solid #d4cfc4; }
+    .panel {
+      width: 320px; flex-shrink: 0; background: white; border: 1px solid #d4cfc4; border-left: none;
+      padding: 22px; overflow-y: auto;
+    }
+    .panel h2 { color: var(--forest); font-size: 1.2rem; margin-bottom: 2px; }
+    .panel .sub { color: var(--slate); font-size: 0.82rem; margin-bottom: 16px; }
+    .panel .cat {
+      display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 3px 9px;
+      border-radius: 3px; margin-bottom: 16px; color: white;
+    }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat { background: var(--mist); border-radius: 4px; padding: 10px 12px; }
+    .stat .label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate); }
+    .stat .value { font-size: 1.15rem; font-weight: 600; color: var(--ink); margin-top: 2px; }
+    .stat .value small { font-size: 0.7rem; font-weight: 400; color: var(--slate); }
+    .stat.full { grid-column: 1 / -1; }
+    .pop-change { font-size: 1.4rem; font-weight: 700; }
+
+    .legend-inline { margin-top: 18px; font-size: 0.75rem; color: var(--slate); line-height: 1.7; }
+    .legend-inline .row { display: flex; align-items: center; gap: 8px; }
+    .legend-inline .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+
+    .reserve-label {
+      background: rgba(255,255,255,0.85); border: none !important; box-shadow: none !important;
+      font-size: 0.72rem; font-weight: 600; color: var(--ink); padding: 1px 5px;
+    }
+    .reserve-label::before { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Reserve Profiles</h1>
+    <p>Select a reserve to view its population recovery, habitat characteristics, and the tiger detection
+       records and hot spot clusters in its vicinity.</p>
+  </header>
+
+  <div class="controls">
+    <label for="reserve-select">Reserve:</label>
+    <select id="reserve-select"></select>
+  </div>
+
+  <div class="layout">
+    <div id="map"></div>
+    <div class="panel" id="panel"><!-- filled by JS --></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // ============================================================
+    // 1. MAP
+    // ============================================================
+    const map = L.map('map', { zoomSnap: 0.25, minZoom: 4 }).setView([22, 80], 5);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri', maxZoom: 16
+    }).addTo(map);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 16
+    }).addTo(map);
+
+    function colorFor(c) {
+      return { 'High growth':'#225522','Moderate growth':'#78AA50','Stable':'#B4C378','Stable / At capacity':'#C8AF64' }[c] || '#cccccc';
+    }
+    const giStyle = {
+      '3':{color:'#B30000',r:7},'2':{color:'#E34A33',r:6},'1':{color:'#FC8D59',r:5},
+      '0':{color:'#CCCCCC',r:3},'-1':{color:'#9E9AC8',r:5},'-2':{color:'#756BB1',r:6},'-3':{color:'#3F007D',r:8}
+    };
+
+    // Haversine distance (km) between two [lat,lng]
+    function distKm(a, b) {
+      const R = 6371, toRad = x => x*Math.PI/180;
+      const dLat = toRad(b[0]-a[0]), dLng = toRad(b[1]-a[1]);
+      const s = Math.sin(dLat/2)**2 + Math.cos(toRad(a[0]))*Math.cos(toRad(b[0]))*Math.sin(dLng/2)**2;
+      return 2*R*Math.asin(Math.sqrt(s));
+    }
+
+    // Holders for loaded data
+    let reservesData, gbifData, hotspotData;
+    let reserveLayer, gbifLayer, hotspotLayer;   // current map layers
+    const FILTER_KM = 80;   // points within this distance of the reserve centroid
+
+    // ============================================================
+    // 2. LOAD ALL THREE DATASETS, then build the selector.
+    // ============================================================
+    Promise.all([
+      fetch('data/tiger_reserves.geojson').then(r=>r.json()),
+      fetch('data/gbif_points.geojson').then(r=>r.json()),
+      fetch('data/hotspot.geojson').then(r=>r.json())
+    ]).then(([res, gbif, hot]) => {
+      reservesData = res; gbifData = gbif; hotspotData = hot;
+
+      // Populate dropdown (sorted by % change, descending)
+      const sel = document.getElementById('reserve-select');
+      const feats = [...res.features].sort((a,b) => (b.properties.Pct_Change||0) - (a.properties.Pct_Change||0));
+      feats.forEach(f => {
+        const opt = document.createElement('option');
+        opt.value = f.properties.Reserve_ID;
+        opt.textContent = f.properties.Reserve_Name;
+        sel.appendChild(opt);
+      });
+      sel.addEventListener('change', () => showReserve(+sel.value));
+
+      // Show the first (highest-growth) reserve
+      showReserve(+sel.value);
+    });
+
+    // ============================================================
+    // 3. showReserve(id) — the core update function.
+    //    Clears old layers, draws the selected reserve + its nearby
+    //    points, zooms in, and fills the stats panel.
+    // ============================================================
+    function showReserve(reserveId) {
+      const feature = reservesData.features.find(f => f.properties.Reserve_ID === reserveId);
+      const p = feature.properties;
+      const center = [p.FIRST_SitLat, p.FIRST_SitLong];
+
+      // --- clear previous layers ---
+      [reserveLayer, gbifLayer, hotspotLayer].forEach(l => { if (l) map.removeLayer(l); });
+
+      // --- reserve polygon ---
+      reserveLayer = L.geoJSON(feature, {
+        style: { fillColor: colorFor(p.Growth_Category), fillOpacity: 0.5, color:'#1E1E1E', weight: 2 }
+      }).addTo(map);
+
+      // --- nearby hotspot points (within FILTER_KM) ---
+      const hotNear = { type:'FeatureCollection', features: hotspotData.features.filter(f => {
+        const [lng,lat] = f.geometry.coordinates; return distKm(center,[lat,lng]) <= FILTER_KM;
+      })};
+      hotspotLayer = L.geoJSON(hotNear, {
+        pointToLayer: (f,ll) => {
+          const s = giStyle[String(f.properties.Gi_Bin)] || giStyle['0'];
+          return L.circleMarker(ll, { radius:s.r, fillColor:s.color, fillOpacity:f.properties.Gi_Bin===0?0.4:0.9, color:'#fff', weight:0.6 });
+        }
+      }).addTo(map);
+
+      // --- nearby GBIF points (within FILTER_KM) ---
+      const gbifNear = { type:'FeatureCollection', features: gbifData.features.filter(f => {
+        const [lng,lat] = f.geometry.coordinates; return distKm(center,[lat,lng]) <= FILTER_KM;
+      })};
+      gbifLayer = L.geoJSON(gbifNear, {
+        pointToLayer: (f,ll) => L.circleMarker(ll, { radius:3, fillColor:'#505050', fillOpacity:0.5, color:'#fff', weight:0.4 })
+      });
+      // GBIF off by default (hotspots are the headline); user can't toggle here,
+      // but we keep it light. Add it under hotspots:
+      gbifLayer.addTo(map); gbifLayer.bringToBack();
+
+      // --- zoom to the reserve + its points ---
+      const bounds = reserveLayer.getBounds().extend(hotspotLayer.getBounds());
+      map.flyToBounds(bounds.pad(0.4), { duration: 0.6, maxZoom: 10 });
+
+      // --- fill stats panel ---
+      fillPanel(p, gbifNear.features.length, hotNear.features.length);
+    }
+
+    // ============================================================
+    // 4. fillPanel — render the side stats panel for a reserve.
+    // ============================================================
+    function fillPanel(p, gbifCount, hotCount) {
+      const pct = Math.round(p.Pct_Change);
+      const pctStr = isNaN(pct) ? '—' : (pct>=0?'+':'') + pct + '%';
+      const dens = p.Density_2022 ? p.Density_2022.toFixed(1) : '—';
+      const area = p.Area_sqkm ? Math.round(p.Area_sqkm).toLocaleString() : '—';
+      const forest = p.Forest_Pct ? p.Forest_Pct.toFixed(1) + '%' : '—';
+      const elev = (p.Elev_Min!=null && p.Elev_Max!=null) ? `${p.Elev_Min}–${p.Elev_Max} m` : '—';
+
+      document.getElementById('panel').innerHTML = `
+        <h2>${p.Reserve_Name}</h2>
+        <div class="sub">${p.State || ''} · ${p.Landscape || ''}</div>
+        <span class="cat" style="background:${colorFor(p.Growth_Category)}">${p.Growth_Category}</span>
+
+        <div class="stat-grid">
+          <div class="stat full">
+            <div class="label">Population change 2006 → 2022</div>
+            <div class="pop-change" style="color:${pct>=0?'#225522':'#B30000'}">${pctStr}</div>
+            <div class="value"><small>${p.Pop_2006 ?? '—'} → ${p.Pop_2022 ?? '—'} tigers</small></div>
+          </div>
+          <div class="stat"><div class="label">Density 2022</div><div class="value">${dens}<small> /100 km²</small></div></div>
+          <div class="stat"><div class="label">Reserve area</div><div class="value">${area}<small> km²</small></div></div>
+          <div class="stat"><div class="label">Forest cover</div><div class="value">${forest}</div></div>
+          <div class="stat"><div class="label">Elevation</div><div class="value" style="font-size:0.95rem">${elev}</div></div>
+          <div class="stat"><div class="label">GBIF records nearby</div><div class="value">${gbifCount}</div></div>
+          <div class="stat"><div class="label">Hot spot points</div><div class="value">${hotCount}</div></div>
+        </div>
+
+        <div class="legend-inline">
+          <div style="font-weight:600;text-transform:uppercase;font-size:0.68rem;letter-spacing:0.05em;margin-bottom:6px;">On the map</div>
+          <div class="row"><span class="dot" style="background:#B30000"></span> Hot spot (red = significant cluster)</div>
+          <div class="row"><span class="dot" style="background:#3F007D"></span> Cold spot (purple)</div>
+          <div class="row"><span class="dot" style="background:#505050;opacity:0.5"></span> GBIF detection record</div>
+          <div style="margin-top:8px;font-style:italic;">Points within ${FILTER_KM} km of the reserve centre.</div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
