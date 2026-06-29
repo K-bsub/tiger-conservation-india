@@ -23,19 +23,13 @@
       color: var(--ink);
       background: var(--cream);
     }
-    header {
-      padding: 24px 28px 16px;
-      /* full width now — no max-width cap */
-      margin: 0;
-    }
+    header { padding: 24px 28px 16px; }
     header h1 { color: var(--high); font-size: 1.5rem; }
     header p  { color: var(--slate); font-size: 0.95rem; margin-top: 4px; }
 
-    /* FULL WIDTH + TALLER. Height uses the viewport so it's ~2x the
-       previous 620px on most screens, and fills left-to-right. */
     #map {
-      height: 88vh;          /* nearly full viewport height */
-      width: 100%;           /* full width */
+      height: 88vh;
+      width: 100%;
       margin: 8px 0 32px;
       border-top: 1px solid #d4cfc4;
       border-bottom: 1px solid #d4cfc4;
@@ -53,7 +47,6 @@
     .legend .row { display: flex; align-items: center; gap: 8px; }
     .legend .swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.2); flex-shrink: 0; }
 
-    /* Reserve labels — now anchored to polygons */
     .reserve-label {
       background: rgba(255,255,255,0.82);
       border: none !important;
@@ -86,13 +79,22 @@
 
   <script>
     // ============================================================
-    // 1. CREATE THE MAP
+    // 1. CREATE THE MAP — ONE fixed view. No fitBounds anywhere, so
+    //    nothing competes. Adjust the ZOOM number below to taste:
+    //      5.5  = current setting
+    //      5.8  = tighter on India
+    //      5.2  = wider
+    //    Center [22.5, 82] balances Kaziranga (NE) vs Bandipur (S).
     // ============================================================
+    const INDIA_CENTER = [22.5, 82];
+    const INDIA_ZOOM   = 5.5;
+
     const map = L.map('map', {
       maxBounds: [[2, 64], [37, 96]],
       maxBoundsViscosity: 0.7,
-      minZoom: 4
-    }).setView([21.5, 80], 5);
+      minZoom: 4,
+      zoomSnap: 0.1            // allows fractional zoom like 5.5
+    }).setView(INDIA_CENTER, INDIA_ZOOM);
 
     // ============================================================
     // 2. BASEMAP — Esri Light Gray Canvas
@@ -153,7 +155,6 @@
         </div>`;
     }
 
-    // Per-reserve label placement so the two close pairs don't collide.
     const labelDirection = {
       'Nagarahole National Park':       { direction: 'left'  },
       'Bandipur National Park':         { direction: 'right' },
@@ -162,36 +163,26 @@
     };
 
     // ============================================================
-    // 6. LOAD GEOJSON → polygons + labels (no markers).
+    // 6. LOAD GEOJSON → polygons + labels. (Does NOT change the view.)
     // ============================================================
     fetch('data/tiger_reserves.geojson')
       .then(response => response.json())
       .then(data => {
-
         L.geoJSON(data, {
           style: styleReserve,
           onEachFeature: (feature, lyr) => {
             const p = feature.properties;
-
-            // Popup on the polygon
             lyr.bindPopup(popupFor(p));
-
-            // Permanent label anchored to the polygon centre
             const placement = labelDirection[p.Reserve_Name] || { direction: 'right' };
             lyr.bindTooltip(p.Reserve_Name, {
               permanent: true,
               direction: placement.direction,
               className: 'reserve-label'
             });
-
-            // Hover emphasis
             lyr.on('mouseover', () => lyr.setStyle({ weight: 3.5 }));
             lyr.on('mouseout',  () => lyr.setStyle({ weight: 2 }));
           }
         }).addTo(map);
-
-        // Frame India, adapting to the container size
-        map.fitBounds([[7, 69], [31, 89]], { padding: [10, 10] });
       })
       .catch(err => {
         console.error('Failed to load reserves:', err);
