@@ -18,7 +18,6 @@
     header h1 { color: var(--forest); font-size: 1.5rem; }
     header p  { color: var(--slate); font-size: 0.95rem; margin-top: 4px; max-width: 760px; }
 
-    /* Controls bar */
     .controls { padding: 0 28px 12px; display: flex; align-items: center; gap: 12px; }
     .controls label { font-weight: 600; font-size: 0.9rem; color: var(--slate); }
     .controls select {
@@ -26,8 +25,7 @@
       border: 1px solid #d4cfc4; border-radius: 4px; background: white; color: var(--ink); cursor: pointer;
     }
 
-    /* Layout: map + side stats panel */
-    .layout { display: flex; gap: 0; align-items: stretch; height: 80vh; margin: 0 0 32px; }
+    .layout { display: flex; height: 80vh; margin: 0 0 32px; }
     #map { flex: 1; border: 1px solid #d4cfc4; }
     .panel {
       width: 320px; flex-shrink: 0; background: white; border: 1px solid #d4cfc4; border-left: none;
@@ -51,9 +49,10 @@
     .legend-inline .row { display: flex; align-items: center; gap: 8px; }
     .legend-inline .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
 
+    /* Reserve label with halo so it reads on satellite imagery */
     .reserve-label {
-      background: rgba(255,255,255,0.85); border: none !important; box-shadow: none !important;
-      font-size: 0.72rem; font-weight: 600; color: var(--ink); padding: 1px 5px;
+      background: rgba(0,0,0,0.55); border: none !important; box-shadow: none !important;
+      font-size: 0.74rem; font-weight: 600; color: #fff; padding: 2px 6px; border-radius: 3px;
     }
     .reserve-label::before { display: none !important; }
   </style>
@@ -63,7 +62,7 @@
   <header>
     <h1>Reserve Profiles</h1>
     <p>Select a reserve to view its population recovery, habitat characteristics, and the tiger detection
-       records and hot spot clusters in its vicinity.</p>
+       records and hot spot clusters in its vicinity. Switch basemaps (top-right) to see terrain and vegetation.</p>
   </header>
 
   <div class="controls">
@@ -73,22 +72,44 @@
 
   <div class="layout">
     <div id="map"></div>
-    <div class="panel" id="panel"><!-- filled by JS --></div>
+    <div class="panel" id="panel"></div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
     // ============================================================
-    // 1. MAP
+    // 1. MAP + BASEMAPS (satellite default, topo + gray as options)
     // ============================================================
     const map = L.map('map', { zoomSnap: 0.25, minZoom: 4 }).setView([22, 80], 5);
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri', maxZoom: 16
-    }).addTo(map);
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 16
-    }).addTo(map);
+
+    // Satellite imagery (terrain + vegetation color, real)
+    const imagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Imagery &copy; Esri', maxZoom: 17
+    });
+    // Light labels to overlay on imagery (place names, roads)
+    const imageryLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 17, opacity: 0.9
+    });
+    const imageryGroup = L.layerGroup([imagery, imageryLabels]);
+
+    // Topographic (terrain shading + vegetation tints + full labels)
+    const topo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri', maxZoom: 17
+    });
+
+    // Light gray (the clean option from earlier maps)
+    const gray = L.layerGroup([
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16 }),
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16 })
+    ]);
+
+    imageryGroup.addTo(map);  // default
+    L.control.layers({
+      'Satellite (imagery)': imageryGroup,
+      'Topographic (terrain)': topo,
+      'Light gray': gray
+    }, null, { position: 'topright', collapsed: false }).addTo(map);
 
     function colorFor(c) {
       return { 'High growth':'#225522','Moderate growth':'#78AA50','Stable':'#B4C378','Stable / At capacity':'#C8AF64' }[c] || '#cccccc';
@@ -98,7 +119,6 @@
       '0':{color:'#CCCCCC',r:3},'-1':{color:'#9E9AC8',r:5},'-2':{color:'#756BB1',r:6},'-3':{color:'#3F007D',r:8}
     };
 
-    // Haversine distance (km) between two [lat,lng]
     function distKm(a, b) {
       const R = 6371, toRad = x => x*Math.PI/180;
       const dLat = toRad(b[0]-a[0]), dLng = toRad(b[1]-a[1]);
@@ -106,13 +126,12 @@
       return 2*R*Math.asin(Math.sqrt(s));
     }
 
-    // Holders for loaded data
     let reservesData, gbifData, hotspotData;
-    let reserveLayer, gbifLayer, hotspotLayer;   // current map layers
-    const FILTER_KM = 80;   // points within this distance of the reserve centroid
+    let reserveLayer, gbifLayer, hotspotLayer;
+    const FILTER_KM = 80;
 
     // ============================================================
-    // 2. LOAD ALL THREE DATASETS, then build the selector.
+    // 2. LOAD DATA, build selector
     // ============================================================
     Promise.all([
       fetch('data/tiger_reserves.geojson').then(r=>r.json()),
@@ -120,72 +139,73 @@
       fetch('data/hotspot.geojson').then(r=>r.json())
     ]).then(([res, gbif, hot]) => {
       reservesData = res; gbifData = gbif; hotspotData = hot;
-
-      // Populate dropdown (sorted by % change, descending)
       const sel = document.getElementById('reserve-select');
-      const feats = [...res.features].sort((a,b) => (b.properties.Pct_Change||0) - (a.properties.Pct_Change||0));
-      feats.forEach(f => {
-        const opt = document.createElement('option');
-        opt.value = f.properties.Reserve_ID;
-        opt.textContent = f.properties.Reserve_Name;
-        sel.appendChild(opt);
-      });
+      [...res.features].sort((a,b)=>(b.properties.Pct_Change||0)-(a.properties.Pct_Change||0))
+        .forEach(f => {
+          const o = document.createElement('option');
+          o.value = f.properties.Reserve_ID; o.textContent = f.properties.Reserve_Name;
+          sel.appendChild(o);
+        });
       sel.addEventListener('change', () => showReserve(+sel.value));
-
-      // Show the first (highest-growth) reserve
       showReserve(+sel.value);
     });
 
     // ============================================================
-    // 3. showReserve(id) — the core update function.
-    //    Clears old layers, draws the selected reserve + its nearby
-    //    points, zooms in, and fills the stats panel.
+    // 3. showReserve — outline-only polygon, tighter zoom
     // ============================================================
     function showReserve(reserveId) {
       const feature = reservesData.features.find(f => f.properties.Reserve_ID === reserveId);
       const p = feature.properties;
       const center = [p.FIRST_SitLat, p.FIRST_SitLong];
 
-      // --- clear previous layers ---
       [reserveLayer, gbifLayer, hotspotLayer].forEach(l => { if (l) map.removeLayer(l); });
 
-      // --- reserve polygon ---
+      // Outline-only reserve (no fill) — bold white-cased boundary so it
+      // reads on satellite imagery. Two stacked outlines = halo effect.
       reserveLayer = L.geoJSON(feature, {
-        style: { fillColor: colorFor(p.Growth_Category), fillOpacity: 0.5, color:'#1E1E1E', weight: 2 }
+        style: { fill: false, color: '#ffffff', weight: 5, opacity: 0.9 }
       }).addTo(map);
+      const inner = L.geoJSON(feature, {
+        style: { fill: false, color: '#1E1E1E', weight: 2, opacity: 1 }
+      }).addTo(map);
+      reserveLayer._innerOutline = inner;  // track so we remove it too
 
-      // --- nearby hotspot points (within FILTER_KM) ---
-      const hotNear = { type:'FeatureCollection', features: hotspotData.features.filter(f => {
-        const [lng,lat] = f.geometry.coordinates; return distKm(center,[lat,lng]) <= FILTER_KM;
+      // nearby hotspots
+      const hotNear = { type:'FeatureCollection', features: hotspotData.features.filter(f=>{
+        const [lng,lat]=f.geometry.coordinates; return distKm(center,[lat,lng])<=FILTER_KM;
       })};
       hotspotLayer = L.geoJSON(hotNear, {
-        pointToLayer: (f,ll) => {
-          const s = giStyle[String(f.properties.Gi_Bin)] || giStyle['0'];
-          return L.circleMarker(ll, { radius:s.r, fillColor:s.color, fillOpacity:f.properties.Gi_Bin===0?0.4:0.9, color:'#fff', weight:0.6 });
+        pointToLayer: (f,ll)=>{
+          const s = giStyle[String(f.properties.Gi_Bin)]||giStyle['0'];
+          return L.circleMarker(ll,{radius:s.r,fillColor:s.color,fillOpacity:f.properties.Gi_Bin===0?0.4:0.9,color:'#fff',weight:0.8});
         }
       }).addTo(map);
 
-      // --- nearby GBIF points (within FILTER_KM) ---
-      const gbifNear = { type:'FeatureCollection', features: gbifData.features.filter(f => {
-        const [lng,lat] = f.geometry.coordinates; return distKm(center,[lat,lng]) <= FILTER_KM;
+      // nearby GBIF (faint)
+      const gbifNear = { type:'FeatureCollection', features: gbifData.features.filter(f=>{
+        const [lng,lat]=f.geometry.coordinates; return distKm(center,[lat,lng])<=FILTER_KM;
       })};
       gbifLayer = L.geoJSON(gbifNear, {
-        pointToLayer: (f,ll) => L.circleMarker(ll, { radius:3, fillColor:'#505050', fillOpacity:0.5, color:'#fff', weight:0.4 })
-      });
-      // GBIF off by default (hotspots are the headline); user can't toggle here,
-      // but we keep it light. Add it under hotspots:
-      gbifLayer.addTo(map); gbifLayer.bringToBack();
+        pointToLayer:(f,ll)=>L.circleMarker(ll,{radius:3,fillColor:'#ffffff',fillOpacity:0.6,color:'#333',weight:0.5})
+      }).addTo(map);
+      gbifLayer.bringToBack();
 
-      // --- zoom to the reserve + its points ---
-      const bounds = reserveLayer.getBounds().extend(hotspotLayer.getBounds());
-      map.flyToBounds(bounds.pad(0.4), { duration: 0.6, maxZoom: 10 });
+      // tighter zoom: less padding, allow closer maxZoom
+      const bounds = reserveLayer.getBounds();
+      map.flyToBounds(bounds.pad(0.25), { duration: 0.6, maxZoom: 12 });
 
-      // --- fill stats panel ---
       fillPanel(p, gbifNear.features.length, hotNear.features.length);
     }
 
+    // remove helper: also clear the inner outline
+    const _origRemove = map.removeLayer.bind(map);
+    map.removeLayer = function(l) {
+      if (l && l._innerOutline) _origRemove(l._innerOutline);
+      return _origRemove(l);
+    };
+
     // ============================================================
-    // 4. fillPanel — render the side stats panel for a reserve.
+    // 4. fillPanel
     // ============================================================
     function fillPanel(p, gbifCount, hotCount) {
       const pct = Math.round(p.Pct_Change);
@@ -199,7 +219,6 @@
         <h2>${p.Reserve_Name}</h2>
         <div class="sub">${p.State || ''} · ${p.Landscape || ''}</div>
         <span class="cat" style="background:${colorFor(p.Growth_Category)}">${p.Growth_Category}</span>
-
         <div class="stat-grid">
           <div class="stat full">
             <div class="label">Population change 2006 → 2022</div>
@@ -213,12 +232,11 @@
           <div class="stat"><div class="label">GBIF records nearby</div><div class="value">${gbifCount}</div></div>
           <div class="stat"><div class="label">Hot spot points</div><div class="value">${hotCount}</div></div>
         </div>
-
         <div class="legend-inline">
           <div style="font-weight:600;text-transform:uppercase;font-size:0.68rem;letter-spacing:0.05em;margin-bottom:6px;">On the map</div>
           <div class="row"><span class="dot" style="background:#B30000"></span> Hot spot (red = significant cluster)</div>
           <div class="row"><span class="dot" style="background:#3F007D"></span> Cold spot (purple)</div>
-          <div class="row"><span class="dot" style="background:#505050;opacity:0.5"></span> GBIF detection record</div>
+          <div class="row"><span class="dot" style="background:#fff;border:1px solid #333"></span> GBIF detection record</div>
           <div style="margin-top:8px;font-style:italic;">Points within ${FILTER_KM} km of the reserve centre.</div>
         </div>
       `;
