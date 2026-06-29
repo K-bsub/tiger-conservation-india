@@ -64,8 +64,8 @@
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- side-by-side plugin (correct package + path) -->
-  <script src="https://unpkg.com/leaflet-side-by-side@2.2.0/leaflet-side-by-side.min.js"></script>
+  <!-- side-by-side plugin: verified entry file is index.js (package main) -->
+  <script src="https://unpkg.com/leaflet-side-by-side@2.2.0/index.js"></script>
 
   <script>
     // ============================================================
@@ -140,8 +140,15 @@
 
     // ============================================================
     // 5. SIDE-BY-SIDE SWIPE
+    //    Guard: if the plugin didn't load, say so clearly instead
+    //    of silently stacking the two overlays.
     // ============================================================
-    L.control.sideBySide(baselineLayer, currentLayer).addTo(map);
+    if (typeof L.control.sideBySide === 'function') {
+      L.control.sideBySide(baselineLayer, currentLayer).addTo(map);
+    } else {
+      console.error('side-by-side plugin did NOT load — check the CDN <script> tag.');
+      alert('The swipe plugin failed to load. The two density layers are stacked (current on top). Check the browser console.');
+    }
 
     // ============================================================
     // 6. LEGEND
