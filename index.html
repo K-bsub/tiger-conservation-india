@@ -32,7 +32,7 @@
     header p  { color: var(--slate); font-size: 0.95rem; margin-top: 4px; }
 
     #map {
-      height: 600px;
+      height: 620px;
       max-width: 1100px;
       margin: 8px auto 32px;
       border: 1px solid #d4cfc4;
@@ -50,6 +50,19 @@
     .legend h4 { margin-bottom: 6px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate); }
     .legend .row { display: flex; align-items: center; gap: 8px; }
     .legend .swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.2); flex-shrink: 0; }
+
+    /* Permanent reserve labels — light, no border, sits beside the marker */
+    .reserve-label {
+      background: rgba(255,255,255,0.82);
+      border: none !important;
+      box-shadow: none !important;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--ink);
+      padding: 1px 5px;
+      white-space: nowrap;
+    }
+    .reserve-label::before { display: none !important; }  /* hide tooltip arrow */
 
     .reserve-popup h3 { color: var(--high); font-size: 1rem; margin-bottom: 6px; }
     .reserve-popup table { font-size: 0.82rem; border-collapse: collapse; }
@@ -71,13 +84,17 @@
 
   <script>
     // ============================================================
-    // 1. CREATE THE MAP — centered on India, zoom 5.
+    // 1. CREATE THE MAP — India-centric, with a soft boundary so
+    //    users can't wander off to Vietnam, and a min zoom.
     // ============================================================
-    const map = L.map('map').setView([22, 80], 5);
+    const map = L.map('map', {
+      maxBounds: [[2, 64], [37, 96]],   // soft wall around the region
+      maxBoundsViscosity: 0.7,           // resist dragging past it
+      minZoom: 4
+    }).setView([22, 80], 5);
 
     // ============================================================
-    // 2. BASEMAP — Esri Light Gray Canvas. Neutral background that
-    //    lets the reserve colors stand out (terrain was too busy).
+    // 2. BASEMAP — Esri Light Gray Canvas (neutral).
     // ============================================================
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Tiles &copy; Esri',
@@ -89,7 +106,7 @@
     }).addTo(map);
 
     // ============================================================
-    // 3. COLOR FUNCTION — growth category → hex.
+    // 3. COLOR FUNCTION
     // ============================================================
     function colorFor(category) {
       switch (category) {
@@ -102,7 +119,7 @@
     }
 
     // ============================================================
-    // 4. POLYGON STYLE — true reserve boundaries.
+    // 4. POLYGON STYLE
     // ============================================================
     function styleReserve(feature) {
       return {
@@ -115,7 +132,7 @@
     }
 
     // ============================================================
-    // 5. POPUP BUILDER — shared by polygon AND marker.
+    // 5. POPUP BUILDER
     // ============================================================
     function popupFor(p) {
       const pct = Math.round(p.Pct_Change);
@@ -135,17 +152,24 @@
         </div>`;
     }
 
+    // Label placement overrides for the two close pairs, so permanent
+    // labels don't stack. Keyed by Reserve_Name.
+    const labelDirection = {
+      'Nagarahole National Park':       { direction: 'left',  offset: [-8, -4] },
+      'Bandipur National Park':         { direction: 'right', offset: [8, 8] },
+      'Kanha National Park':            { direction: 'right', offset: [8, -4] },
+      'Pench Tiger Reserve (Combined)': { direction: 'left',  offset: [-8, 8] }
+    };
+
     // ============================================================
-    // 6. LOAD GEOJSON → add polygons AND circle markers.
-    //    Polygons show true extent; markers make each reserve
-    //    findable at country scale where polygons are tiny.
+    // 6. LOAD GEOJSON → polygons + circle markers + labels.
     // ============================================================
     fetch('data/tiger_reserves.geojson')
       .then(response => response.json())
       .then(data => {
 
-        // --- 6a. Polygons (choropleth) ---
-        const polyLayer = L.geoJSON(data, {
+        // --- 6a. Polygons ---
+        L.geoJSON(data, {
           style: styleReserve,
           onEachFeature: (feature, lyr) => {
             lyr.bindPopup(popupFor(feature.properties));
@@ -154,27 +178,35 @@
           }
         }).addTo(map);
 
-        // --- 6b. Circle markers (one per reserve, at its centroid) ---
+        // --- 6b. Markers + permanent labels ---
         data.features.forEach(feature => {
           const p = feature.properties;
-          const lat = p.FIRST_SitLat;
-          const lng = p.FIRST_SitLong;
+          const lat = p.FIRST_SitLat, lng = p.FIRST_SitLong;
           if (lat == null || lng == null) return;
 
           const marker = L.circleMarker([lat, lng], {
             radius: 7,
             fillColor: colorFor(p.Growth_Category),
             fillOpacity: 1,
-            color: '#ffffff',     // white ring so markers pop on any background
+            color: '#ffffff',
             weight: 2
           }).addTo(map);
 
           marker.bindPopup(popupFor(p));
-          marker.bindTooltip(p.Reserve_Name, { direction: 'top', offset: [0, -8] });
+
+          // Permanent label, with per-reserve placement for the close pairs
+          const placement = labelDirection[p.Reserve_Name]
+                          || { direction: 'right', offset: [8, 0] };
+          marker.bindTooltip(p.Reserve_Name, {
+            permanent: true,
+            direction: placement.direction,
+            offset: placement.offset,
+            className: 'reserve-label'
+          });
         });
 
-        // --- 6c. Zoom to fit all reserves ---
-        map.fitBounds(polyLayer.getBounds(), { padding: [40, 40] });
+        // --- 6c. Frame India tightly (matches ArcGIS overview extent) ---
+        map.fitBounds([[6.5, 68], [32, 90]], { padding: [20, 20] });
       })
       .catch(err => {
         console.error('Failed to load reserves:', err);
@@ -182,7 +214,7 @@
       });
 
     // ============================================================
-    // 7. LEGEND — bottom-right.
+    // 7. LEGEND
     // ============================================================
     const legend = L.control({ position: 'bottomright' });
     legend.onAdd = function () {
