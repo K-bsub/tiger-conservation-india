@@ -3,98 +3,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tiger Conservation Story — Build Check</title>
+  <title>Tiger Conservation — Overview Map</title>
+
+  <!-- ============================================================
+       LEAFLET CSS — the map library's stylesheet (loaded from CDN).
+       Must come before our own styles. No install needed.
+  ============================================================ -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
   <style>
+    :root {
+      /* Your symbology hex codes — ported from symbology_scheme.html */
+      --high:     #225522;   /* High growth */
+      --moderate: #78AA50;   /* Moderate growth */
+      --stable:   #B4C378;   /* Stable */
+      --capacity: #C8AF64;   /* Stable / At capacity */
+      --ink:      #1a1a18;
+      --cream:    #f7f4ee;
+      --slate:    #5a6070;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Source Sans 3', system-ui, sans-serif;
-      max-width: 720px;
-      margin: 60px auto;
-      padding: 0 24px;
-      color: #1a1a18;
-      background: #f7f4ee;
-      line-height: 1.6;
+      color: var(--ink);
+      background: var(--cream);
     }
-    h1 { color: #225522; font-size: 1.8rem; }
-    .status {
-      padding: 14px 18px;
+    header {
+      padding: 24px 28px 16px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header h1 { color: var(--high); font-size: 1.5rem; }
+    header p  { color: var(--slate); font-size: 0.95rem; margin-top: 4px; }
+
+    /* THE MAP CONTAINER — Leaflet needs an explicit height or the map
+       renders 0px tall and you see nothing. #1 beginner gotcha. */
+    #map {
+      height: 600px;
+      max-width: 1100px;
+      margin: 8px auto 32px;
+      border: 1px solid #d4cfc4;
       border-radius: 4px;
-      margin: 12px 0;
-      border-left: 4px solid #ccc;
+    }
+
+    /* Legend box */
+    .legend {
       background: white;
+      padding: 12px 14px;
+      border-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      font-size: 0.82rem;
+      line-height: 1.7;
     }
-    .ok { border-left-color: #225522; }
-    .fail { border-left-color: #B30000; }
-    .pending { border-left-color: #b07d20; }
-    code {
-      background: #edeae3;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-family: 'Source Code Pro', monospace;
-      font-size: 0.85rem;
-    }
-    .label { font-weight: 600; }
+    .legend h4 { margin-bottom: 6px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate); }
+    .legend .row { display: flex; align-items: center; gap: 8px; }
+    .legend .swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.2); flex-shrink: 0; }
+
+    /* Popup styling */
+    .reserve-popup h3 { color: var(--high); font-size: 1rem; margin-bottom: 6px; }
+    .reserve-popup table { font-size: 0.82rem; border-collapse: collapse; }
+    .reserve-popup td { padding: 2px 8px 2px 0; vertical-align: top; }
+    .reserve-popup td:first-child { color: var(--slate); }
+    .reserve-popup .big { font-weight: 600; color: var(--ink); }
   </style>
 </head>
 <body>
-  <h1>🐯 Tiger Conservation Story — Build Check</h1>
-  <p>If you can read this at your GitHub Pages URL, <strong>hosting works.</strong>
-     The checks below confirm your data files are reachable.</p>
 
-  <div id="page-status" class="status ok">
-    <span class="label">✅ Page loaded:</span> GitHub Pages is serving this file correctly.
-  </div>
+  <header>
+    <h1>India's Tiger Conservation Success Stories</h1>
+    <p>Seven reserves, shaded by population growth category (2006–2022). Click any reserve for detail.</p>
+  </header>
 
-  <div id="data-status" class="status pending">
-    <span class="label">⏳ Checking data files…</span>
-  </div>
+  <div id="map"></div>
 
-  <div id="detail" class="status" style="border-left-color:#5a6070; font-size:0.9rem;"></div>
-
-  <p style="margin-top:32px; font-size:0.9rem; color:#5a6070;">
-    This is a temporary build-check page. Once confirmed, we replace it with the real story.
-  </p>
+  <!-- LEAFLET JS — the library itself. Must load before our script. -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
-    // List of all 7 data files we expect to find in /data
-    const files = [
-      'data/tiger_reserves.geojson',
-      'data/hotspot.geojson',
-      'data/gbif_points.geojson',
-      'data/settlements.geojson',
-      'data/roads_major.geojson',
-      'data/kde_baseline.png',
-      'data/kde_current.png'
-    ];
+    // ============================================================
+    // 1. CREATE THE MAP
+    //    L.map('map') attaches Leaflet to <div id="map">.
+    //    setView([lat, lng], zoom) centers it. [22, 80] is central
+    //    India; zoom 5 shows the whole country.
+    // ============================================================
+    const map = L.map('map').setView([22, 80], 5);
 
-    async function checkFiles() {
-      const results = [];
-      for (const f of files) {
-        try {
-          const res = await fetch(f, { method: 'HEAD' });
-          results.push({ file: f, ok: res.ok, status: res.status });
-        } catch (e) {
-          results.push({ file: f, ok: false, status: 'error' });
-        }
+    // ============================================================
+    // 2. ADD THE BASEMAP (Esri free tiles — your chosen provider)
+    //    A "tile layer" is the background imagery. Esri serves these
+    //    free, no API key. {z}/{x}/{y} are filled in as you pan/zoom.
+    // ============================================================
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri',
+      maxZoom: 13
+    }).addTo(map);
+
+    // A labels overlay on top (place names, boundaries)
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 13
+    }).addTo(map);
+
+    // ============================================================
+    // 3. COLOR FUNCTION — growth category → hex color.
+    //    Strings match the data exactly (verified).
+    // ============================================================
+    function colorFor(category) {
+      switch (category) {
+        case 'High growth':           return '#225522';
+        case 'Moderate growth':       return '#78AA50';
+        case 'Stable':                return '#B4C378';
+        case 'Stable / At capacity':  return '#C8AF64';
+        default:                      return '#cccccc';
       }
-
-      const allOk = results.every(r => r.ok);
-      const statusDiv = document.getElementById('data-status');
-      const detailDiv = document.getElementById('detail');
-
-      if (allOk) {
-        statusDiv.className = 'status ok';
-        statusDiv.innerHTML = '<span class="label">✅ All 7 data files found and reachable.</span> Ready for Step 3.';
-      } else {
-        statusDiv.className = 'status fail';
-        statusDiv.innerHTML = '<span class="label">⚠️ Some data files could not be found.</span> See details below — check filenames and the <code>data/</code> folder.';
-      }
-
-      detailDiv.innerHTML = results.map(r =>
-        `${r.ok ? '✅' : '❌'} <code>${r.file}</code> ${r.ok ? '' : '(' + r.status + ')'}`
-      ).join('<br>');
     }
 
-    checkFiles();
+    // ============================================================
+    // 4. STYLE FUNCTION — Leaflet calls this per polygon.
+    //    Mirrors your ArcGIS symbology: 85% fill, dark 1.5px outline.
+    // ============================================================
+    function styleReserve(feature) {
+      return {
+        fillColor: colorFor(feature.properties.Growth_Category),
+        fillOpacity: 0.85,
+        color: '#1E1E1E',
+        weight: 1.5,
+        opacity: 1
+      };
+    }
+
+    // ============================================================
+    // 5. POPUP BUILDER — HTML shown when a reserve is clicked.
+    // ============================================================
+    function popupFor(feature) {
+      const p = feature.properties;
+      const pct = Math.round(p.Pct_Change);
+      const density = p.Density_2022 ? p.Density_2022.toFixed(1) : '—';
+      return `
+        <div class="reserve-popup">
+          <h3>${p.Reserve_Name}</h3>
+          <table>
+            <tr><td>State</td><td class="big">${p.State || '—'}</td></tr>
+            <tr><td>Landscape</td><td>${p.Landscape || '—'}</td></tr>
+            <tr><td>Tigers 2006</td><td class="big">${p.Pop_2006 ?? '—'}</td></tr>
+            <tr><td>Tigers 2022</td><td class="big">${p.Pop_2022 ?? '—'}</td></tr>
+            <tr><td>Change</td><td class="big">${isNaN(pct) ? '—' : '+' + pct + '%'}</td></tr>
+            <tr><td>Density</td><td>${density} / 100 km²</td></tr>
+            <tr><td>Category</td><td>${p.Growth_Category}</td></tr>
+          </table>
+        </div>`;
+    }
+
+    // ============================================================
+    // 6. LOAD THE GEOJSON AND ADD IT TO THE MAP
+    //    fetch() downloads the file; L.geoJSON() turns it into layers.
+    //    fitBounds() auto-zooms to the reserves' extent.
+    // ============================================================
+    fetch('data/tiger_reserves.geojson')
+      .then(response => response.json())
+      .then(data => {
+        const layer = L.geoJSON(data, {
+          style: styleReserve,
+          onEachFeature: (feature, lyr) => {
+            lyr.bindPopup(popupFor(feature));
+            lyr.on('mouseover', () => lyr.setStyle({ weight: 3 }));
+            lyr.on('mouseout',  () => lyr.setStyle({ weight: 1.5 }));
+          }
+        }).addTo(map);
+
+        map.fitBounds(layer.getBounds(), { padding: [40, 40] });
+      })
+      .catch(err => {
+        console.error('Failed to load reserves:', err);
+        alert('Could not load tiger_reserves.geojson — check the data/ path.');
+      });
+
+    // ============================================================
+    // 7. LEGEND — custom Leaflet control, bottom-right.
+    // ============================================================
+    const legend = L.control({ position: 'bottomright' });
+    legend.onAdd = function () {
+      const div = L.DomUtil.create('div', 'legend');
+      div.innerHTML = `
+        <h4>Growth Category</h4>
+        <div class="row"><span class="swatch" style="background:#225522"></span> High growth</div>
+        <div class="row"><span class="swatch" style="background:#78AA50"></span> Moderate growth</div>
+        <div class="row"><span class="swatch" style="background:#B4C378"></span> Stable</div>
+        <div class="row"><span class="swatch" style="background:#C8AF64"></span> Stable / At capacity</div>
+      `;
+      return div;
+    };
+    legend.addTo(map);
   </script>
 </body>
 </html>
