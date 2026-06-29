@@ -49,10 +49,10 @@
     .legend-inline .row { display: flex; align-items: center; gap: 8px; }
     .legend-inline .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
 
-    /* Reserve label with halo so it reads on satellite imagery */
+    /* Reserve label — cyan to match the boundary, dark backing for legibility on imagery */
     .reserve-label {
-      background: rgba(0,0,0,0.55); border: none !important; box-shadow: none !important;
-      font-size: 0.74rem; font-weight: 600; color: #fff; padding: 2px 6px; border-radius: 3px;
+      background: rgba(0,26,26,0.75); border: none !important; box-shadow: none !important;
+      font-size: 0.92rem; font-weight: 700; color: #00f5ff; padding: 3px 8px; border-radius: 3px;
     }
     .reserve-label::before { display: none !important; }
   </style>
@@ -160,15 +160,20 @@
 
       [reserveLayer, gbifLayer, hotspotLayer].forEach(l => { if (l) map.removeLayer(l); });
 
-      // Outline-only reserve (no fill) — bold white-cased boundary so it
-      // reads on satellite imagery. Two stacked outlines = halo effect.
+      // Outline-only reserve (no fill). Dark halo underneath + bright
+      // cyan on top — pops on satellite imagery, doesn't clash with red hotspots.
       reserveLayer = L.geoJSON(feature, {
-        style: { fill: false, color: '#ffffff', weight: 5, opacity: 0.9 }
+        style: { fill: false, color: '#001a1a', weight: 6, opacity: 0.7 }
       }).addTo(map);
       const inner = L.geoJSON(feature, {
-        style: { fill: false, color: '#1E1E1E', weight: 2, opacity: 1 }
+        style: { fill: false, color: '#00f5ff', weight: 2.5, opacity: 1 }
       }).addTo(map);
       reserveLayer._innerOutline = inner;  // track so we remove it too
+
+      // Cyan name label, centered on the reserve
+      inner.bindTooltip(p.Reserve_Name, {
+        permanent: true, direction: 'top', className: 'reserve-label', offset: [0, -4]
+      }).openTooltip();
 
       // nearby hotspots
       const hotNear = { type:'FeatureCollection', features: hotspotData.features.filter(f=>{
@@ -234,6 +239,7 @@
         </div>
         <div class="legend-inline">
           <div style="font-weight:600;text-transform:uppercase;font-size:0.68rem;letter-spacing:0.05em;margin-bottom:6px;">On the map</div>
+          <div class="row"><span class="dot" style="background:#00f5ff;border:1px solid #001a1a"></span> Reserve boundary</div>
           <div class="row"><span class="dot" style="background:#B30000"></span> Hot spot (red = significant cluster)</div>
           <div class="row"><span class="dot" style="background:#3F007D"></span> Cold spot (purple)</div>
           <div class="row"><span class="dot" style="background:#fff;border:1px solid #333"></span> GBIF detection record</div>
