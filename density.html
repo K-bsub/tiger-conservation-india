@@ -141,7 +141,7 @@
     // 4. KDE OVERLAYS — properly reprojected (Web Mercator) PNGs,
     //    with exact bounds computed by rasterio.
     // ============================================================
-    const kdeBounds = [[-3.095943, 64.827237], [30.181980, 94.453029]];
+    const kdeBounds = [[-2.190818, 64.124430], [31.212050, 96.866477]];
     const baselineLayer = L.imageOverlay('data/kde_baseline_3857.png', kdeBounds, { opacity: 0.85 }).addTo(map);
     const currentLayer  = L.imageOverlay('data/kde_current_3857.png',  kdeBounds, { opacity: 0.85 }).addTo(map);
 
