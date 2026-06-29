@@ -79,12 +79,9 @@
 
   <script>
     // ============================================================
-    // 1. CREATE THE MAP — ONE fixed view. No fitBounds anywhere, so
-    //    nothing competes. Adjust the ZOOM number below to taste:
-    //      5.5  = current setting
-    //      5.8  = tighter on India
-    //      5.2  = wider
-    //    Center [22.5, 82] balances Kaziranga (NE) vs Bandipur (S).
+    // 1. CREATE THE MAP — ONE fixed view. Adjust to taste:
+    //      INDIA_ZOOM  6.2 = current   |  higher = tighter
+    //      INDIA_CENTER [lat, lng]     |  raise lng to shift east
     // ============================================================
     const INDIA_CENTER = [20, 82];
     const INDIA_ZOOM   = 6.2;
@@ -93,7 +90,7 @@
       maxBounds: [[2, 64], [37, 96]],
       maxBoundsViscosity: 0.7,
       minZoom: 4,
-      zoomSnap: 0.1            // allows fractional zoom like 5.5
+      zoomSnap: 0.1
     }).setView(INDIA_CENTER, INDIA_ZOOM);
 
     // ============================================================
@@ -155,15 +152,24 @@
         </div>`;
     }
 
-    const labelDirection = {
-      'Nagarahole National Park':       { direction: 'left'  },
-      'Bandipur National Park':         { direction: 'right' },
-      'Kanha National Park':            { direction: 'right' },
-      'Pench Tiger Reserve (Combined)': { direction: 'left'  }
+    // ============================================================
+    //   LABEL PLACEMENT — per reserve: direction + pixel offset so
+    //   the label clears the polygon. offset = [x, y]:
+    //     +x = right, -x = left, +y = down, -y = up.
+    //   Tune any value here to nudge an individual label.
+    // ============================================================
+    const labelPlacement = {
+      'Jim Corbett National Park':      { direction: 'right', offset: [14, 0]  },
+      'Kaziranga National Park':        { direction: 'right', offset: [14, 0]  },
+      'Ranthambore Tiger Reserve':      { direction: 'right', offset: [14, 0]  },
+      'Kanha National Park':            { direction: 'right', offset: [16, 0]  },
+      'Pench Tiger Reserve (Combined)': { direction: 'left',  offset: [-16, 6] },
+      'Nagarahole National Park':       { direction: 'left',  offset: [-14, 0] },
+      'Bandipur National Park':         { direction: 'right', offset: [14, 8]  }
     };
 
     // ============================================================
-    // 6. LOAD GEOJSON → polygons + labels. (Does NOT change the view.)
+    // 6. LOAD GEOJSON → polygons + labels.
     // ============================================================
     fetch('data/tiger_reserves.geojson')
       .then(response => response.json())
@@ -173,12 +179,16 @@
           onEachFeature: (feature, lyr) => {
             const p = feature.properties;
             lyr.bindPopup(popupFor(p));
-            const placement = labelDirection[p.Reserve_Name] || { direction: 'right' };
+
+            const place = labelPlacement[p.Reserve_Name]
+                        || { direction: 'right', offset: [14, 0] };
             lyr.bindTooltip(p.Reserve_Name, {
               permanent: true,
-              direction: placement.direction,
+              direction: place.direction,
+              offset: place.offset,
               className: 'reserve-label'
             });
+
             lyr.on('mouseover', () => lyr.setStyle({ weight: 3.5 }));
             lyr.on('mouseout',  () => lyr.setStyle({ weight: 2 }));
           }
