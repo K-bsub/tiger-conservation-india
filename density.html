@@ -141,26 +141,18 @@
     // 4. KDE OVERLAYS — properly reprojected (Web Mercator) PNGs,
     //    with exact bounds computed by rasterio.
     // ============================================================
-    const kdeBounds = [[-2.190818, 64.124430], [31.212050, 96.866477]];
+    const kdeBounds = [[-3.549071, 63.227400], [31.729370, 97.517963]];
     const baselineLayer = L.imageOverlay('data/kde_baseline_3857.png', kdeBounds, { opacity: 0.85 }).addTo(map);
     const currentLayer  = L.imageOverlay('data/kde_current_3857.png',  kdeBounds, { opacity: 0.85 }).addTo(map);
 
-    // ===== TEMP DIAGNOSTIC: red dots at TRUE reserve centroids =====
-    // These mark where each reserve actually is. Compare to where the
-    // density blob sits. Tells us the exact offset to correct.
-    const trueCentroids = [
-      ['Bandipur', 11.775, 76.490],
-      ['Kanha', 22.177, 80.752],
-      ['Kaziranga', 26.659, 93.380],
-      ['Corbett', 29.521, 78.955],
-      ['Ranthambore', 26.018, 76.516]
-    ];
-    trueCentroids.forEach(([name, lat, lng]) => {
-      L.circleMarker([lat, lng], {
-        radius: 6, color: '#ff0000', weight: 2, fillColor: '#ff0000', fillOpacity: 0.9
-      }).addTo(map).bindTooltip(name + ' (true)', { permanent: false });
+    // ===== TEMP DIAGNOSTIC (remove after confirming) =====
+    [['Bandipur',11.775,76.490],['Kanha',22.177,80.752],['Kaziranga',26.659,93.380],
+     ['Corbett',29.521,78.955],['Ranthambore',26.018,76.516],['Pench',21.771,79.309]
+    ].forEach(([name,lat,lng]) => {
+      L.circleMarker([lat,lng], {radius:5,color:'#ff0000',weight:2,fillColor:'#ff0000',fillOpacity:0.9})
+        .addTo(map).bindTooltip(name,{permanent:false});
     });
-    // ===== END TEMP DIAGNOSTIC =====
+    // ===== END TEMP =====
 
     // ============================================================
     // 5. SWIPE — clip the current overlay at the divider.
