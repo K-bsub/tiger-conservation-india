@@ -147,6 +147,13 @@
           sel.appendChild(o);
         });
       sel.addEventListener('change', () => showReserve(+sel.value));
+
+      // Pre-select from ?reserve=<Reserve_ID> if present and valid
+      const params = new URLSearchParams(window.location.search);
+      const requested = params.get('reserve');
+      if (requested && [...sel.options].some(o => o.value === requested)) {
+        sel.value = requested;
+      }
       showReserve(+sel.value);
     });
 
