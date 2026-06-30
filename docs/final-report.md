@@ -5,8 +5,9 @@
 **Date Completed:** February 16, 2026  
 **Course:** GIS Project  
 **Repository:** https://github.com/K-bsub/tiger-conservation-india  
-**Published Story Map:** https://storymaps.arcgis.com/stories/c9e21879e1b2483e81fc79fd357c59b2  
-**Short URL:** https://arcg.is/00bXi44
+**Live Story (current):** https://k-bsub.github.io/tiger-conservation-india/  
+**Originally published (ArcGIS Story Map):** https://storymaps.arcgis.com/stories/c9e21879e1b2483e81fc79fd357c59b2  
+**Short URL (original):** https://arcg.is/00bXi44
 
 ---
 
@@ -192,13 +193,17 @@ connectivity are stronger predictors of conservation success than reserve area a
 ## 5. Deliverables
 
 ### Primary Deliverable
-- ✅ **Published ArcGIS Story Map** — https://arcg.is/00bXi44
+- ✅ **Published ArcGIS Story Map** — https://arcg.is/00bXi44 *(original, Feb 2026)*
   - 7 narrative sections with navigation
   - 9 embedded web maps
   - 4 charts (population trends, growth ranking, density comparison, bubble chart)
   - 24 photos across 8 slideshows
   - Interactive Swipe block (KDE baseline vs. current)
   - Observer bias accordion, methodology and NTCA buttons
+- ✅ **Rebuilt static site (Phase 1b)** — https://k-bsub.github.io/tiger-conservation-india/ *(current live version)*
+  - Same 7-section narrative, rebuilt with Leaflet maps + Chart.js on GitHub Pages
+  - Free and permanent — no hosted services, no recurring cost
+  - See `docs/phase1b-storymap-rebuild-proposal.md` for rationale and build plan
 
 ### Secondary Deliverables — Project Documentation
 - ✅ `docs/proposal.md` — Project proposal with deviations section added
@@ -445,4 +450,4 @@ OpenStreetMap contributors. (2026). *OpenStreetMap Data* [Dataset]. Open Databas
 
 *Document stored in: `docs/final-report.md`*  
 *Project repository: https://github.com/K-bsub/tiger-conservation-india*  
-*Story Map: https://arcg.is/00bXi44*
+*Live story: https://k-bsub.github.io/tiger-conservation-india/ (original ArcGIS version: https://arcg.is/00bXi44)*

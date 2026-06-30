@@ -3,8 +3,9 @@
 **Project:** Identifying Conservation Success Stories: Spatial Analysis of Tiger Population Recovery in India's Protected Areas (2006–2022)
 **Author:** Kiran Balasubramanian
 **Document type:** Migration / rebuild proposal
-**Status:** Proposed — awaiting go-ahead to begin Step 1
+**Status:** ✅ Complete — published at https://k-bsub.github.io/tiger-conservation-india/
 **Created:** June 19, 2026
+**Completed:** June 2026
 
 ---
 

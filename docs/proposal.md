@@ -3,10 +3,10 @@
 **Author:** Kiran Balasubramanian 
 **Date:** February 4, 2026  
 **Course:** GIS Project  
-**Project Type:** ArcGIS Story Map  
+**Project Type:** ArcGIS Story Map *(rebuilt as a static Leaflet/GitHub Pages site — see Phase 1b)*  
 **Last Updated:** February 16, 2026  
-**Published Story Map:** https://storymaps.arcgis.com/stories/c9e21879e1b2483e81fc79fd357c59b2  
-**Short URL:** https://arcg.is/00bXi44
+**Live Story (current):** https://k-bsub.github.io/tiger-conservation-india/  
+**Originally published (ArcGIS Story Map):** https://arcg.is/00bXi44
 
 ---
 

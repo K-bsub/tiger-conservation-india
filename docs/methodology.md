@@ -4,8 +4,8 @@
 **Author:** Kiran Balasubramanian  
 **Repository:** https://github.com/K-bsub/tiger-conservation-india  
 **Last Updated:** February 16, 2026  
-**Story Map:** https://storymaps.arcgis.com/stories/c9e21879e1b2483e81fc79fd357c59b2  
-**Short URL:** https://arcg.is/00bXi44
+**Live Story:** https://k-bsub.github.io/tiger-conservation-india/  
+**Original (ArcGIS Story Map):** https://arcg.is/00bXi44
 
 ---
 
@@ -44,9 +44,9 @@ protected areas between 2006 and 2022. The primary deliverable is an ArcGIS Stor
 presenting spatial and temporal patterns in tiger population recovery across seven featured
 reserves.
 
-**Story Map (published):**
-https://storymaps.arcgis.com/stories/c9e21879e1b2483e81fc79fd357c59b2
-Short URL: https://arcg.is/00bXi44
+**Live Story (current):**
+https://k-bsub.github.io/tiger-conservation-india/
+Originally published as an ArcGIS Story Map: https://arcg.is/00bXi44
 
 **Story Map contents:**
 - 7 narrative sections with navigation
@@ -728,8 +728,8 @@ All data sources are publicly available. To reproduce this analysis from scratch
 5. Population data table: `data/processed/tiger_population_2006_2022.xlsx`
 6. Forest data table: `data/processed/forest/isfr_2021_reserve_corridors.xlsx`
 
-**Published Story Map:** https://storymaps.arcgis.com/stories/c9e21879e1b2483e81fc79fd357c59b2  
-**Short URL:** https://arcg.is/00bXi44  
+**Live Story:** https://k-bsub.github.io/tiger-conservation-india/  
+**Original (ArcGIS Story Map):** https://arcg.is/00bXi44  
 **GitHub repository:** https://github.com/K-bsub/tiger-conservation-india  
 Large data files (shapefiles, rasters) are not stored in the repository due to size
 constraints. See `data/README.md` for download links and instructions.
@@ -780,4 +780,4 @@ constraints. See `data/README.md` for download links and instructions.
 
 *Document maintained in: `docs/methodology.md`*  
 *Project repository: https://github.com/K-bsub/tiger-conservation-india*  
-*Story Map: https://arcg.is/00bXi44*
+*Live story: https://k-bsub.github.io/tiger-conservation-india/ (original: https://arcg.is/00bXi44)*

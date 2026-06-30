@@ -919,6 +919,6 @@ Highlight successful tiger conservation efforts in India through spatial analysi
 ---
 
 *Project Status: **Complete***  
-*Story Map Published: February 16, 2026*  
-*Story Map URL: https://arcg.is/00bXi44*  
-*Last Updated: February 16, 2026*
+*Story Map Published (original, ArcGIS): February 16, 2026 — https://arcg.is/00bXi44*  
+*Rebuilt as static site (GitHub Pages): June 2026 — https://k-bsub.github.io/tiger-conservation-india/*  
+*Last Updated: June 2026*

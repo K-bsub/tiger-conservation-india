@@ -1,13 +1,15 @@
 # Tiger Conservation Success Stories: India's Protected Areas (2006-2022)
 
-An ArcGIS Story Map analyzing spatial and temporal patterns of tiger population recovery in India's national parks and tiger reserves.
+An interactive web story analyzing spatial and temporal patterns of tiger population recovery in India's national parks and tiger reserves. Spatial analysis performed in ArcGIS Pro; presented as a free, permanent static site (Leaflet + Chart.js on GitHub Pages).
 
 ## Project Overview
 
 This project examines tiger conservation success in India by mapping population changes across seven major protected areas from 2006 to 2022. Using official NTCA census data, GBIF occurrence records, and GIS spatial analysis, it identifies reserves with the strongest recovery trends and documents the habitat and management conditions associated with conservation success.
 
-**[View Live Story Map](https://arcg.is/00bXi44)**  
-Full URL: https://storymaps.arcgis.com/stories/c9e21879e1b2483e81fc79fd357c59b2
+**[View Live Story](https://k-bsub.github.io/tiger-conservation-india/)**  
+Live URL: https://k-bsub.github.io/tiger-conservation-india/
+
+*Originally published as an ArcGIS Story Map (since rebuilt as a free, permanent static site — see [Phase 1b rebuild](docs/phase1b-storymap-rebuild-proposal.md)).*
 
 India's national tiger population grew from ~1,411 tigers in 2006 to 3,682 in 2022 — a 161% increase over 16 years. The seven featured reserves demonstrate that this recovery spans five distinct ecological landscapes.
 
@@ -23,14 +25,14 @@ India's national tiger population grew from ~1,411 tigers in 2006 to 3,682 in 20
 | Kanha NP | 89 | 105 | +18% |
 | Kaziranga NP | 103 (2010) | 104 | stable |
 
-## Story Map Contents
+## Story Contents
 
-- 7 narrative sections with navigation
-- 9 embedded web maps (overview choropleth, KDE swipe comparison, hot spot analysis, 6 reserve detail maps)
-- 4 charts (population trends, growth ranking, density comparison, area vs. population bubble chart)
-- 24 photos across 8 slideshows
-- Interactive Swipe block comparing 2006-2010 vs. 2018-2022 detection density
-- Observer bias accordion explaining GBIF spatial limitations
+- 7 narrative sections with a sticky navigation bar
+- 9 embedded interactive Leaflet maps (overview choropleth, KDE swipe comparison, hot spot analysis, 7 reserve detail maps via a shared reserve selector)
+- 4 Chart.js charts (population trends, growth ranking, density comparison, area vs. population bubble chart)
+- 22 photos across 8 slideshows, each with per-image caption and attribution
+- Leaflet side-by-side swipe comparing 2006–2010 vs. 2018–2022 detection density
+- Observer-bias note explaining GBIF spatial limitations
 
 ## Study Area
 
@@ -48,12 +50,18 @@ Seven tiger reserves across five ecological landscapes:
 
 ## Tools and Technologies
 
+**Spatial analysis (Phase 1):**
 - **ArcGIS Pro** — Spatial analysis, kernel density estimation, hot spot analysis (Getis-Ord Gi*), zonal statistics
-- **ArcGIS Online** — Web map hosting and publishing
-- **ArcGIS StoryMaps** — Narrative presentation and interactive maps
-- **Chart.js** — Population trend and comparative charts
-- **Python** - Data processing automation
+- **Python** — Data processing automation
 - **Microsoft Excel** — NTCA data extraction and tabular processing
+
+**Presentation layer (Phase 1b rebuild):**
+- **Leaflet.js** — Interactive maps (GeoJSON, `leaflet.markercluster`, `leaflet-side-by-side` swipe)
+- **Chart.js** — Population trend and comparative charts
+- **Hand-built HTML/CSS/JS** — Scrollytelling narrative shell
+- **GitHub Pages** — Free, permanent static hosting
+
+> The project was originally published as an ArcGIS Story Map (ArcGIS Online + ArcGIS StoryMaps). It was rebuilt on free, static infrastructure after the hosted feature services were suspended by an ArcGIS Online credit overdraft. See [docs/phase1b-storymap-rebuild-proposal.md](docs/phase1b-storymap-rebuild-proposal.md) for the full rationale.
 
 ## Repository Structure
 
@@ -66,15 +74,24 @@ tiger-conservation-india/
 │   ├── naming-conventions.md Feature class and field naming standards
 │   ├── references.md         Full bibliography
 │   ├── final-report.md       Project final report
+│   ├── phase1b-storymap-rebuild-proposal.md   Static-site rebuild plan
 │   └── symbology_scheme.html Web map symbology reference (WCAG AA compliant)
+├── index.html                The story (landing page — narrative shell)
+├── overview.html             Overview choropleth map
+├── detections.html           Hot spot (Gi*) + GBIF points map
+├── density.html              KDE swipe comparison map
+├── reserves.html             Reserve detail map (selector; ?reserve=ID)
 ├── data/
 │   ├── raw/                  Original downloaded datasets (not in repo -- see below)
-│   ├── processed/            Extracted tables and cleaned datasets
+│   ├── processed/            Extracted tables, cleaned datasets, and chart HTML
 │   │   ├── tiger_population_2006_2022.xlsx
-│   │   └── forest/isfr_2021_reserve_corridors.xlsx
+│   │   ├── forest/isfr_2021_reserve_corridors.xlsx
+│   │   └── chart1–4_*.html   Chart.js charts embedded in the story
+│   ├── *.geojson             Map layers (reserves, hotspot, GBIF points)
+│   ├── kde_*_3857.png        KDE raster overlays for the swipe map
 │   └── geodatabase/          ArcGIS Pro geodatabase (not in repo -- see below)
 ├── media/
-│   ├── photos/reserves/      24 reserve and tiger photos (CC BY-SA 4.0 / Unsplash)
+│   ├── photos_processed/     22 reserve and tiger photos (CC BY-SA 4.0 / Unsplash)
 │   ├── charts/               Chart PNG exports
 │   └── photo-attributions.md Photo license documentation
 └── README.md
@@ -114,7 +131,7 @@ All data sources are publicly available. To reproduce from scratch:
 1. Read the [project proposal](docs/proposal.md) for scope and objectives
 2. See [methodology](docs/methodology.md) for full technical documentation
 3. Read the [final report](docs/final-report.md) for results and findings
-4. View the [live Story Map](https://arcg.is/00bXi44)
+4. View the [live story](https://k-bsub.github.io/tiger-conservation-india/)
 
 ## Author
 
@@ -141,5 +158,6 @@ Map content and visualizations: Creative Commons Attribution 4.0 International
 ---
 
 *Project Status: **Complete***  
-*Story Map Published: February 16, 2026*  
-*Last Updated: February 16, 2026*
+*Originally published (ArcGIS Story Map): February 16, 2026*  
+*Rebuilt as static site (GitHub Pages): June 2026*  
+*Live: https://k-bsub.github.io/tiger-conservation-india/*
