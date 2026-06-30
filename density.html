@@ -150,7 +150,23 @@
     function fitReserves() {
       if (!reserveBounds) return;
       map.invalidateSize();
-      map.fitBounds(reserveBounds, { padding: [40, 40] });
+      // Pad the reserve bounds outward by ~50 km so the KDE density
+      // surfaces (computed within 50 km buffers) are fully visible,
+      // not clipped at the frame edge. ~0.45° ≈ 50 km.
+      const widened = L.latLngBounds(
+        [reserveBounds.getSouth() - 0.45, reserveBounds.getWest() - 0.45],
+        [reserveBounds.getNorth() + 0.45, reserveBounds.getEast() + 0.45]
+      );
+      map.fitBounds(widened, { padding: [50, 50] });
+    }
+    const fitContainer = document.getElementById('map');
+    if (window.ResizeObserver) {
+      let rafId = null;
+      const ro = new ResizeObserver(() => {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => { fitReserves(); update(); });
+      });
+      ro.observe(fitContainer);
     }
 
     // ============================================================

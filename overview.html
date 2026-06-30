@@ -220,9 +220,21 @@
     function fitReserves() {
       if (!reserveBounds) return;
       map.invalidateSize();
-      map.fitBounds(reserveBounds, { padding: [40, 40] });
+      map.fitBounds(reserveBounds, { padding: [70, 70] });
     }
-    // Re-fit on resize / orientation change (mobile, iframe settling)
+
+    // Re-fit whenever the map container actually changes size. A
+    // ResizeObserver is reliable inside iframes (including lazy-load
+    // expansion) where window 'load'/'resize' can fire too early.
+    const mapContainer = document.getElementById('map');
+    if (window.ResizeObserver) {
+      let rafId = null;
+      const ro = new ResizeObserver(() => {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(fitReserves);
+      });
+      ro.observe(mapContainer);
+    }
     window.addEventListener('resize', fitReserves);
     window.addEventListener('load', fitReserves);
 

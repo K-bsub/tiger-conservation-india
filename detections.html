@@ -143,7 +143,16 @@
     function fitReserves() {
       if (!reserveBounds) return;
       map.invalidateSize();
-      map.fitBounds(reserveBounds, { padding: [40, 40] });
+      map.fitBounds(reserveBounds, { padding: [70, 70] });
+    }
+    const mapContainer = document.getElementById('map');
+    if (window.ResizeObserver) {
+      let rafId = null;
+      const ro = new ResizeObserver(() => {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(fitReserves);
+      });
+      ro.observe(mapContainer);
     }
     window.addEventListener('resize', fitReserves);
     window.addEventListener('load', fitReserves);
