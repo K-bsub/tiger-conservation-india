@@ -54,6 +54,52 @@
     }
 
     /* ============================================================
+       STICKY NAV
+       ============================================================ */
+    .storynav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(247,244,238,0.96);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--rule);
+    }
+    .storynav .nav-inner {
+      max-width: var(--widemaxw);
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      padding: 10px 16px;
+    }
+    .storynav a {
+      text-decoration: none;
+      color: var(--slate);
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 4px;
+      white-space: nowrap;
+      transition: color 0.2s, background 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+    .storynav a:hover { color: var(--forest); background: var(--mist); }
+    .storynav a.active {
+      color: var(--forest);
+      border-bottom-color: var(--forest);
+    }
+    @media (max-width: 760px) {
+      .storynav .nav-inner {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .storynav a { font-size: 0.82rem; padding: 8px 11px; }
+    }
+
+    /* ============================================================
        HERO
        ============================================================ */
     .hero {
@@ -128,7 +174,7 @@
     /* ============================================================
        SECTION STRUCTURE
        ============================================================ */
-    section { padding: 64px 28px; }
+    section { padding: 64px 28px; scroll-margin-top: 64px; }
     .reading {
       max-width: var(--maxw);
       margin: 0 auto;
@@ -148,10 +194,12 @@
     }
     h2.section-title {
       font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+      font-weight: 600;
+      font-size: clamp(1.4rem, 2.8vw, 1.9rem);
       color: var(--forest);
-      line-height: 1.15;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
       margin-bottom: 28px;
     }
     h3.reserve-title {
@@ -188,8 +236,9 @@
        MAP + CHART EMBEDS (iframes)
        ============================================================ */
     .embed {
-      margin: 36px auto;
-      max-width: var(--widemaxw);
+      margin: 48px auto;
+      width: min(96vw, 1500px);
+      max-width: 96vw;
     }
     .embed iframe {
       width: 100%;
@@ -198,9 +247,9 @@
       background: #fff;
       display: block;
     }
-    .embed.map iframe    { height: 600px; }
-    .embed.chart iframe  { height: 460px; }
-    .embed.reserve iframe{ height: 640px; }
+    .embed.map iframe    { height: 85vh; min-height: 640px; }
+    .embed.chart iframe  { height: 80vh; min-height: 600px; }
+    .embed.reserve iframe{ height: 88vh; min-height: 700px; }
     .embed .caption {
       font-size: 0.82rem;
       color: var(--slate);
@@ -214,8 +263,9 @@
        ============================================================ */
     .slideshow {
       position: relative;
-      max-width: var(--widemaxw);
-      margin: 0 auto 36px;
+      width: min(96vw, 1500px);
+      max-width: 96vw;
+      margin: 0 auto 48px;
       background: #000;
       border-radius: 4px;
       overflow: hidden;
@@ -340,9 +390,10 @@
     @media (max-width: 700px) {
       body { font-size: 1.02rem; }
       section { padding: 48px 20px; }
-      .embed.map iframe    { height: 460px; }
-      .embed.reserve iframe{ height: 560px; }
-      .embed.chart iframe  { height: 380px; }
+      .embed, .slideshow { width: 100vw; max-width: 100vw; }
+      .embed.map iframe    { height: 70vh; min-height: 440px; }
+      .embed.reserve iframe{ height: 75vh; min-height: 520px; }
+      .embed.chart iframe  { height: 65vh; min-height: 400px; }
       .slideshow button.nav { width: 38px; height: 38px; font-size: 1.2rem; }
     }
   </style>
@@ -353,30 +404,44 @@
   <!-- HERO                                                       -->
   <!-- ========================================================== -->
   <header class="hero">
-    <img src="media/photos_processed/reserves/tigers/tiger_generic_01.jpg" alt="A wild Bengal tiger in its natural habitat">
+    <img src="media/photos_processed/tigers/tiger_generic_01.jpg" alt="A wild Bengal tiger in its natural habitat">
     <div class="hero-content">
       <h1>Identifying Conservation Success Stories</h1>
       <p class="subtitle">Spatial Analysis of Tiger Population Recovery in India's Protected Areas, 2006–2022</p>
-      <p class="byline">Kiran Balasubramanian · February 16, 2026</p>
+      <p class="byline">Kiran Balasubramanian · June 29, 2026</p>
     </div>
     <div class="scroll-cue">Scroll ↓</div>
   </header>
+
+  <!-- ========================================================== -->
+  <!-- STICKY NAV                                                 -->
+  <!-- ========================================================== -->
+  <nav class="storynav" id="storynav">
+    <div class="nav-inner">
+      <a href="#introduction">Introduction</a>
+      <a href="#overview">The Overview Map</a>
+      <a href="#numbers">The Numbers</a>
+      <a href="#detected">Where Tigers Are Detected</a>
+      <a href="#profiles">Reserve Profiles</a>
+      <a href="#data-shows">What the Data Shows</a>
+      <a href="#conclusion">Conclusion</a>
+    </div>
+  </nav>
 
   <!-- ========================================================== -->
   <!-- 1. INTRODUCTION                                            -->
   <!-- ========================================================== -->
   <section id="introduction">
     <div class="reading reveal">
-      <div class="section-label">Introduction</div>
-      <h2 class="section-title">A predator brought back from the edge</h2>
+      <h2 class="section-title">Introduction</h2>
       <p>At the start of the twentieth century, an estimated 100,000 wild tigers roamed Asia. By 1973, fewer than 1,800 remained in India alone — and the trajectory was unmistakably downward. Poaching, habitat loss, and the collapse of prey populations had driven one of the world's most iconic predators to the edge of extinction within a single human lifetime. That year, the Indian government launched Project Tiger: a coordinated national program to protect core habitats, relocate villages from reserve interiors, and invest in the forest department infrastructure needed to enforce protection at scale. What followed is one of the most consequential wildlife conservation interventions ever attempted.</p>
     </div>
 
     <!-- Intro slideshow: 2 images -->
     <div class="slideshow reveal" data-slideshow>
       <div class="slides">
-        <img src="media/photos_processed/reserves/tigers/tiger_generic_02.jpg" alt="Bengal tiger walking through forest">
-        <img src="media/photos_processed/reserves/tigers/tiger_generic_03.jpg" alt="Bengal tiger resting in grassland">
+        <img src="media/photos_processed/tigers/tiger_generic_02.jpg" alt="Bengal tiger walking through forest">
+        <img src="media/photos_processed/tigers/tiger_generic_03.jpg" alt="Bengal tiger resting in grassland">
       </div>
       <button class="nav prev" aria-label="Previous image">‹</button>
       <button class="nav next" aria-label="Next image">›</button>
@@ -394,8 +459,7 @@
   <!-- ========================================================== -->
   <section id="overview">
     <div class="reading reveal">
-      <div class="section-label">The Overview Map</div>
-      <h2 class="section-title">Seven reserves, five landscapes, one recovery</h2>
+      <h2 class="section-title">The Overview Map</h2>
     </div>
 
     <div class="embed map reveal">
@@ -413,8 +477,7 @@
   <!-- ========================================================== -->
   <section id="numbers">
     <div class="reading reveal">
-      <div class="section-label">The Numbers</div>
-      <h2 class="section-title">Seven trajectories, two ways to measure success</h2>
+      <h2 class="section-title">The Numbers</h2>
     </div>
 
     <div class="embed chart reveal">
@@ -440,8 +503,7 @@
   <!-- ========================================================== -->
   <section id="detected">
     <div class="reading reveal">
-      <div class="section-label">Where Tigers Are Detected</div>
-      <h2 class="section-title">Density, clustering, and the bias of where we look</h2>
+      <h2 class="section-title">Where Tigers Are Detected</h2>
       <p>The swipe map below shows kernel density estimates of tiger occurrence records from the Global Biodiversity Information Facility (GBIF): a global repository of georeferenced wildlife observations contributed by researchers, institutions, and citizen scientists. Drag the divider left or right to compare 2006–2010 (baseline) against 2018–2022 (current period). Darker green indicates higher concentrations of tiger detections. Both sides use identical classification breaks, making them directly comparable — a darker area on the right than the left at the same location represents a genuine increase in detection density, not a rescaling artifact.</p>
       <p>Sliding the divider across the seven reserves makes the contrast between periods immediately visible. The 2006–2010 baseline shows sparse, tight kernels — reflecting both a lower tiger population and the relatively limited number of GBIF records from that period (116 occurrence points after filtering). The 2018–2022 current period shows noticeably larger and more diffuse green areas, particularly at Corbett, Kanha, and Kaziranga, consistent with expanded detection effort accompanying a growing population.</p>
     </div>
@@ -471,8 +533,7 @@
   <!-- ========================================================== -->
   <section id="profiles">
     <div class="reading reveal">
-      <div class="section-label">Reserve Profiles</div>
-      <h2 class="section-title">Seven reserves, up close</h2>
+      <h2 class="section-title">Reserve Profiles</h2>
     </div>
 
     <!-- ---------- Ranthambore ---------- -->
@@ -538,7 +599,11 @@
     </div>
     <div class="embed reserve reveal">
       <iframe src="reserves.html?reserve=1" loading="lazy" title="Reserve detail map for Bandipur"></iframe>
-      <div class="caption">Bandipur shown. Use the dropdown in the map to switch to Nagarahole.</div>
+      <div class="caption">Bandipur National Park</div>
+    </div>
+    <div class="embed reserve reveal">
+      <iframe src="reserves.html?reserve=2" loading="lazy" title="Reserve detail map for Nagarahole"></iframe>
+      <div class="caption">Nagarahole National Park</div>
     </div>
     <div class="reading reveal">
       <p>In the Nilgiri Biosphere Reserve of southern Karnataka, two national parks share a boundary and, effectively, a tiger population. Bandipur and Nagarahole together form one of India's most productive tiger landscapes — nearly 3,000 square kilometers of contiguous Western Ghats forest where tigers, elephants, gaur, and leopards coexist at densities rarely seen elsewhere in the country. Bandipur grew from 68 tigers in 2006 to 150 in 2022; Nagarahole from 78 to 141. Together, the complex added 145 tigers over sixteen years.</p>
@@ -616,8 +681,7 @@
   <!-- ========================================================== -->
   <section id="data-shows">
     <div class="reading reveal">
-      <div class="section-label">What the Data Shows</div>
-      <h2 class="section-title">Density completes the picture — and area does not predict it</h2>
+      <h2 class="section-title">What the Data Shows</h2>
     </div>
 
     <div class="embed chart reveal">
@@ -643,8 +707,7 @@
   <!-- ========================================================== -->
   <section id="conclusion">
     <div class="reading reveal">
-      <div class="section-label">Conclusion</div>
-      <h2 class="section-title">The work is hard. It is also possible.</h2>
+      <h2 class="section-title">Conclusion</h2>
       <p>India's tiger recovery is not complete. Habitats remain fragmented between reserves, corridors are under pressure from roads and agricultural expansion, human-wildlife conflict at reserve boundaries imposes real costs on communities living alongside protected areas, and climate change is beginning to alter the prey distributions and hydrological cycles that tiger ecosystems depend on. The 3,682 tigers counted in 2022 are more than double the 2006 baseline — but they inhabit a landscape under sustained and intensifying pressure. The work of the next sixteen years will be harder than the work of the last.</p>
       <p>What the seven reserves documented here demonstrate, however, is that the work is possible. In landscapes as different as the Brahmaputra floodplain and the Aravalli Hills, in states with very different governance capacities and land use pressures, sustained protection produces measurable recovery. The monitoring framework that makes this analysis possible — systematic camera trap surveys, rigorous statistical methods, publicly reported results — is itself a conservation tool, creating the accountability loop that keeps management focused and resources allocated. India has built something rare in global conservation: a large-scale, long-term, evidence-driven recovery program that works. The tigers in these seven reserves are the evidence.</p>
       <div class="btn-row">
@@ -751,6 +814,30 @@
           if (e.key === 'ArrowRight') go(idx + 1);
         });
       });
+    })();
+    // ---- Scroll-spy: highlight active nav tab ----
+    (function () {
+      const links = [...document.querySelectorAll('.storynav a')];
+      const map = {};
+      links.forEach(a => {
+        const id = a.getAttribute('href').slice(1);
+        const sec = document.getElementById(id);
+        if (sec) map[id] = a;
+      });
+      const sections = Object.keys(map).map(id => document.getElementById(id));
+      if (!('IntersectionObserver' in window) || !sections.length) return;
+
+      const spy = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            links.forEach(l => l.classList.remove('active'));
+            const active = map[e.target.id];
+            if (active) active.classList.add('active');
+          }
+        });
+      }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+
+      sections.forEach(s => spy.observe(s));
     })();
   </script>
 </body>
