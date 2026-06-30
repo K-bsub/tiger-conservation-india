@@ -92,7 +92,7 @@
     // ============================================================
     const map = L.map('map', {
       maxBounds: [[2, 64], [37, 96]], maxBoundsViscosity: 0.7, minZoom: 4, zoomSnap: 0.1
-    }).setView([20, 82], 6.2);
+    }).setView([20, 82], 5);   // temporary; replaced by fitBounds once reserves load
 
     // ============================================================
     // 2. BASEMAP
@@ -125,10 +125,11 @@
       'Nagarahole National Park':       { direction: 'left',  offset: [-14, 0] },
       'Bandipur National Park':         { direction: 'right', offset: [14, 8]  }
     };
+    let reserveBounds = null;
     fetch('data/tiger_reserves.geojson')
       .then(r => r.json())
       .then(data => {
-        L.geoJSON(data, {
+        const layer = L.geoJSON(data, {
           style: (feature) => ({
             fillColor: colorFor(feature.properties.Growth_Category),
             fillOpacity: 0.35, color: '#1E1E1E', weight: 1.5, opacity: 0.9
@@ -141,8 +142,16 @@
             });
           }
         }).addTo(map);
+        reserveBounds = layer.getBounds();
+        fitReserves();
       })
       .catch(err => console.error('Reserves load failed:', err));
+
+    function fitReserves() {
+      if (!reserveBounds) return;
+      map.invalidateSize();
+      map.fitBounds(reserveBounds, { padding: [40, 40] });
+    }
 
     // ============================================================
     // 4. KDE OVERLAYS — properly reprojected (Web Mercator) PNGs,
@@ -211,8 +220,8 @@
 
     // Keep the swipe aligned if the container resizes (e.g. inside an
     // iframe that settles its height after load, or window resize).
-    window.addEventListener('resize', () => { map.invalidateSize(); update(); });
-    window.addEventListener('load', () => { map.invalidateSize(); update(); });
+    window.addEventListener('resize', () => { fitReserves(); update(); });
+    window.addEventListener('load', () => { fitReserves(); update(); });
 
     // ============================================================
     // 6. LEGEND

@@ -75,7 +75,7 @@
     // ============================================================
     const map = L.map('map', {
       maxBounds: [[2, 64], [37, 96]], maxBoundsViscosity: 0.7, minZoom: 4, zoomSnap: 0.1
-    }).setView([20, 82], 6.2);
+    }).setView([20, 82], 5);   // temporary; replaced by fitBounds once reserves load
 
     // ============================================================
     // 2. BASEMAP
@@ -128,10 +128,25 @@
       }
     });
 
+    let reserveBounds = null;
+
     fetch('data/tiger_reserves.geojson')
       .then(r => r.json())
-      .then(data => { reservesLayer.addData(data); reservesLayer.addTo(map); })
+      .then(data => {
+        reservesLayer.addData(data);
+        reservesLayer.addTo(map);
+        reserveBounds = reservesLayer.getBounds();
+        fitReserves();
+      })
       .catch(err => console.error('Reserves load failed:', err));
+
+    function fitReserves() {
+      if (!reserveBounds) return;
+      map.invalidateSize();
+      map.fitBounds(reserveBounds, { padding: [40, 40] });
+    }
+    window.addEventListener('resize', fitReserves);
+    window.addEventListener('load', fitReserves);
 
     // ============================================================
     // 4. HOT SPOT STYLING — Gi_Bin (−3..+3) → color + size.

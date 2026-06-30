@@ -93,19 +93,16 @@
 
   <script>
     // ============================================================
-    // 1. CREATE THE MAP — ONE fixed view. Adjust to taste:
-    //      INDIA_ZOOM  6.2 = current   |  higher = tighter
-    //      INDIA_CENTER [lat, lng]     |  raise lng to shift east
+    // 1. CREATE THE MAP — view is fit to the reserve bounds once
+    //    the GeoJSON loads (see section 6), so all 7 reserves show
+    //    on any screen size. No fixed zoom.
     // ============================================================
-    const INDIA_CENTER = [20, 82];
-    const INDIA_ZOOM   = 6.2;
-
     const map = L.map('map', {
       maxBounds: [[2, 64], [37, 96]],
       maxBoundsViscosity: 0.7,
       minZoom: 4,
       zoomSnap: 0.1
-    }).setView(INDIA_CENTER, INDIA_ZOOM);
+    }).setView([20, 82], 5);   // temporary; replaced by fitBounds on load
 
     // ============================================================
     // 2. BASEMAP — Esri Light Gray Canvas
@@ -185,10 +182,12 @@
     // ============================================================
     // 6. LOAD GEOJSON → polygons + labels.
     // ============================================================
+    let reserveBounds = null;
+
     fetch('data/tiger_reserves.geojson')
       .then(response => response.json())
       .then(data => {
-        L.geoJSON(data, {
+        const layer = L.geoJSON(data, {
           style: styleReserve,
           onEachFeature: (feature, lyr) => {
             const p = feature.properties;
@@ -207,11 +206,25 @@
             lyr.on('mouseout',  () => lyr.setStyle({ weight: 2 }));
           }
         }).addTo(map);
+
+        // Fit to all reserves with padding so every one is visible,
+        // on any screen size. Padding leaves room for labels.
+        reserveBounds = layer.getBounds();
+        fitReserves();
       })
       .catch(err => {
         console.error('Failed to load reserves:', err);
         alert('Could not load tiger_reserves.geojson — check the data/ path.');
       });
+
+    function fitReserves() {
+      if (!reserveBounds) return;
+      map.invalidateSize();
+      map.fitBounds(reserveBounds, { padding: [40, 40] });
+    }
+    // Re-fit on resize / orientation change (mobile, iframe settling)
+    window.addEventListener('resize', fitReserves);
+    window.addEventListener('load', fitReserves);
 
     // ============================================================
     // 7. LEGEND
