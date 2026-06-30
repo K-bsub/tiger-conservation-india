@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiger Conservation — Overview Map</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    :root {
+      --high:     #225522;
+      --moderate: #78AA50;
+      --stable:   #B4C378;
+      --capacity: #C8AF64;
+      --ink:      #1a1a18;
+      --cream:    #f7f4ee;
+      --slate:    #5a6070;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--cream);
+    }
+    header { padding: 24px 28px 16px; }
+    header h1 { color: var(--high); font-size: 1.5rem; }
+    header p  { color: var(--slate); font-size: 0.95rem; margin-top: 4px; }
+
+    #map {
+      height: 88vh;
+      width: 100%;
+      margin: 8px 0 32px;
+      border-top: 1px solid #d4cfc4;
+      border-bottom: 1px solid #d4cfc4;
+    }
+
+    /* When embedded in an iframe: hide header, map fills the whole frame */
+    body.embedded header { display: none; }
+    body.embedded #map {
+      height: 100vh;
+      margin: 0;
+      border: none;
+    }
+
+    .legend {
+      background: white;
+      padding: 12px 14px;
+      border-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      font-size: 0.82rem;
+      line-height: 1.7;
+    }
+    .legend h4 { margin-bottom: 6px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate); }
+    .legend .row { display: flex; align-items: center; gap: 8px; }
+    .legend .swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.2); flex-shrink: 0; }
+
+    .reserve-label {
+      background: rgba(255,255,255,0.82);
+      border: none !important;
+      box-shadow: none !important;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink);
+      padding: 1px 5px;
+      white-space: nowrap;
+    }
+    .reserve-label::before { display: none !important; }
+
+    .reserve-popup h3 { color: var(--high); font-size: 1rem; margin-bottom: 6px; }
+    .reserve-popup table { font-size: 0.82rem; border-collapse: collapse; }
+    .reserve-popup td { padding: 2px 8px 2px 0; vertical-align: top; }
+    .reserve-popup td:first-child { color: var(--slate); }
+    .reserve-popup .big { font-weight: 600; color: var(--ink); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>India's Tiger Conservation Success Stories</h1>
+    <p>Seven reserves, shaded by population growth category (2006–2022). Click any reserve for detail.</p>
+  </header>
+
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // If this page is loaded inside an iframe, switch to embedded mode
+    // (hides the header, map fills the frame). Standalone view unchanged.
+    if (window.self !== window.top) document.body.classList.add('embedded');
+  </script>
+
+  <script>
+    // ============================================================
+    // 1. CREATE THE MAP — ONE fixed view. Adjust to taste:
+    //      INDIA_ZOOM  6.2 = current   |  higher = tighter
+    //      INDIA_CENTER [lat, lng]     |  raise lng to shift east
+    // ============================================================
+    const INDIA_CENTER = [20, 82];
+    const INDIA_ZOOM   = 6.2;
+
+    const map = L.map('map', {
+      maxBounds: [[2, 64], [37, 96]],
+      maxBoundsViscosity: 0.7,
+      minZoom: 4,
+      zoomSnap: 0.1
+    }).setView(INDIA_CENTER, INDIA_ZOOM);
+
+    // ============================================================
+    // 2. BASEMAP — Esri Light Gray Canvas
+    // ============================================================
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri',
+      maxZoom: 16
+    }).addTo(map);
+
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 16
+    }).addTo(map);
+
+    // ============================================================
+    // 3. COLOR FUNCTION
+    // ============================================================
+    function colorFor(category) {
+      switch (category) {
+        case 'High growth':           return '#225522';
+        case 'Moderate growth':       return '#78AA50';
+        case 'Stable':                return '#B4C378';
+        case 'Stable / At capacity':  return '#C8AF64';
+        default:                      return '#cccccc';
+      }
+    }
+
+    // ============================================================
+    // 4. POLYGON STYLE
+    // ============================================================
+    function styleReserve(feature) {
+      return {
+        fillColor: colorFor(feature.properties.Growth_Category),
+        fillOpacity: 0.9,
+        color: '#1E1E1E',
+        weight: 2,
+        opacity: 1
+      };
+    }
+
+    // ============================================================
+    // 5. POPUP BUILDER
+    // ============================================================
+    function popupFor(p) {
+      const pct = Math.round(p.Pct_Change);
+      const density = p.Density_2022 ? p.Density_2022.toFixed(1) : '—';
+      return `
+        <div class="reserve-popup">
+          <h3>${p.Reserve_Name}</h3>
+          <table>
+            <tr><td>State</td><td class="big">${p.State || '—'}</td></tr>
+            <tr><td>Landscape</td><td>${p.Landscape || '—'}</td></tr>
+            <tr><td>Tigers 2006</td><td class="big">${p.Pop_2006 ?? '—'}</td></tr>
+            <tr><td>Tigers 2022</td><td class="big">${p.Pop_2022 ?? '—'}</td></tr>
+            <tr><td>Change</td><td class="big">${isNaN(pct) ? '—' : '+' + pct + '%'}</td></tr>
+            <tr><td>Density</td><td>${density} / 100 km²</td></tr>
+            <tr><td>Category</td><td>${p.Growth_Category}</td></tr>
+          </table>
+        </div>`;
+    }
+
+    // ============================================================
+    //   LABEL PLACEMENT — per reserve: direction + pixel offset so
+    //   the label clears the polygon. offset = [x, y]:
+    //     +x = right, -x = left, +y = down, -y = up.
+    //   Tune any value here to nudge an individual label.
+    // ============================================================
+    const labelPlacement = {
+      'Jim Corbett National Park':      { direction: 'right', offset: [14, 0]  },
+      'Kaziranga National Park':        { direction: 'right', offset: [14, 0]  },
+      'Ranthambore Tiger Reserve':      { direction: 'right', offset: [14, 0]  },
+      'Kanha National Park':            { direction: 'right', offset: [16, 0]  },
+      'Pench Tiger Reserve (Combined)': { direction: 'left',  offset: [-16, 6] },
+      'Nagarahole National Park':       { direction: 'left',  offset: [-14, 0] },
+      'Bandipur National Park':         { direction: 'right', offset: [14, 8]  }
+    };
+
+    // ============================================================
+    // 6. LOAD GEOJSON → polygons + labels.
+    // ============================================================
+    fetch('data/tiger_reserves.geojson')
+      .then(response => response.json())
+      .then(data => {
+        L.geoJSON(data, {
+          style: styleReserve,
+          onEachFeature: (feature, lyr) => {
+            const p = feature.properties;
+            lyr.bindPopup(popupFor(p));
+
+            const place = labelPlacement[p.Reserve_Name]
+                        || { direction: 'right', offset: [14, 0] };
+            lyr.bindTooltip(p.Reserve_Name, {
+              permanent: true,
+              direction: place.direction,
+              offset: place.offset,
+              className: 'reserve-label'
+            });
+
+            lyr.on('mouseover', () => lyr.setStyle({ weight: 3.5 }));
+            lyr.on('mouseout',  () => lyr.setStyle({ weight: 2 }));
+          }
+        }).addTo(map);
+      })
+      .catch(err => {
+        console.error('Failed to load reserves:', err);
+        alert('Could not load tiger_reserves.geojson — check the data/ path.');
+      });
+
+    // ============================================================
+    // 7. LEGEND
+    // ============================================================
+    const legend = L.control({ position: 'bottomright' });
+    legend.onAdd = function () {
+      const div = L.DomUtil.create('div', 'legend');
+      div.innerHTML = `
+        <h4>Growth Category</h4>
+        <div class="row"><span class="swatch" style="background:#225522"></span> High growth</div>
+        <div class="row"><span class="swatch" style="background:#78AA50"></span> Moderate growth</div>
+        <div class="row"><span class="swatch" style="background:#B4C378"></span> Stable</div>
+        <div class="row"><span class="swatch" style="background:#C8AF64"></span> Stable / At capacity</div>
+      `;
+      return div;
+    };
+    legend.addTo(map);
+  </script>
+</body>
+</html>

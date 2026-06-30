@@ -3,232 +3,888 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tiger Conservation — Overview Map</title>
+  <title>Identifying Conservation Success Stories — Tiger Population Recovery in India</title>
+  <meta name="description" content="Spatial Analysis of Tiger Population Recovery in India's Protected Areas, 2006–2022">
+  <meta name="author" content="Kiran Balasubramanian">
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Open Graph / social -->
+  <meta property="og:title" content="Identifying Conservation Success Stories">
+  <meta property="og:description" content="Spatial Analysis of Tiger Population Recovery in India's Protected Areas, 2006–2022">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
 
   <style>
+    /* ============================================================
+       DESIGN TOKENS — ported from symbology_scheme.html (WCAG AA)
+       ============================================================ */
     :root {
+      --ink:     #1a1a18;
+      --cream:   #f7f4ee;
+      --rule:    #d4cfc4;
+      --forest:  #225522;
+      --amber:   #b07d20;
+      --slate:   #5a6070;
+      --mist:    #edeae3;
+
+      /* growth categories */
       --high:     #225522;
       --moderate: #78AA50;
       --stable:   #B4C378;
       --capacity: #C8AF64;
-      --ink:      #1a1a18;
-      --cream:    #f7f4ee;
-      --slate:    #5a6070;
+
+      /* layout */
+      --maxw:    760px;     /* reading column */
+      --widemaxw: 1100px;   /* maps + charts */
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif;
       color: var(--ink);
       background: var(--cream);
-    }
-    header { padding: 24px 28px 16px; }
-    header h1 { color: var(--high); font-size: 1.5rem; }
-    header p  { color: var(--slate); font-size: 0.95rem; margin-top: 4px; }
-
-    #map {
-      height: 88vh;
-      width: 100%;
-      margin: 8px 0 32px;
-      border-top: 1px solid #d4cfc4;
-      border-bottom: 1px solid #d4cfc4;
+      line-height: 1.8;
+      font-size: 1.24rem;
+      font-weight: 300;
     }
 
-    /* When embedded in an iframe: hide header, map fills the whole frame */
-    body.embedded header { display: none; }
-    body.embedded #map {
-      height: 100vh;
-      margin: 0;
-      border: none;
+    /* ============================================================
+       STICKY NAV
+       ============================================================ */
+    .storynav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(247,244,238,0.96);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--rule);
     }
-
-    .legend {
-      background: white;
-      padding: 12px 14px;
+    .storynav .nav-inner {
+      max-width: var(--widemaxw);
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      padding: 10px 16px;
+    }
+    .storynav a {
+      text-decoration: none;
+      color: var(--slate);
+      font-size: 1.02rem;
+      font-weight: 600;
+      padding: 9px 16px;
       border-radius: 4px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-      font-size: 0.82rem;
+      white-space: nowrap;
+      transition: color 0.2s, background 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+    .storynav a:hover { color: var(--forest); background: var(--mist); }
+    .storynav a.active {
+      color: var(--forest);
+      border-bottom-color: var(--forest);
+    }
+    @media (max-width: 760px) {
+      .storynav .nav-inner {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .storynav a { font-size: 0.94rem; padding: 8px 12px; }
+    }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero {
+      position: relative;
+      height: 92vh;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      color: #fff;
+      overflow: hidden;
+    }
+    .hero img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.78) 100%);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 28px 8vh;
+      max-width: var(--widemaxw);
+      margin: 0 auto;
+      width: 100%;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5.2vw, 3.6rem);
+      line-height: 1.1;
+      text-shadow: 0 2px 18px rgba(0,0,0,0.4);
+      max-width: 16ch;
+    }
+    .hero .subtitle {
+      font-size: clamp(1rem, 2.2vw, 1.4rem);
+      font-weight: 300;
+      margin-top: 16px;
+      max-width: 44ch;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.5);
+    }
+    .hero .byline {
+      margin-top: 22px;
+      font-size: 0.92rem;
+      letter-spacing: 0.04em;
+      opacity: 0.92;
+    }
+    .scroll-cue {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      color: #fff;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      animation: bob 2s ease-in-out infinite;
+    }
+    @keyframes bob { 0%,100%{transform:translate(-50%,0)} 50%{transform:translate(-50%,8px)} }
+
+    /* ============================================================
+       SECTION STRUCTURE
+       ============================================================ */
+    section { padding: 64px 28px; scroll-margin-top: 64px; }
+    .reading {
+      max-width: var(--maxw);
+      margin: 0 auto;
+    }
+    .wide {
+      max-width: var(--widemaxw);
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 10px;
+    }
+    h2.section-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+      color: var(--forest);
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      margin-bottom: 28px;
+    }
+    h3.reserve-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+      color: var(--forest);
+      margin: 12px 0 20px;
+    }
+    p { margin-bottom: 22px; }
+    p:last-child { margin-bottom: 0; }
+
+    .note-italic {
+      font-style: italic;
+      font-size: 0.96rem;
+      color: var(--slate);
+      border-top: 1px solid var(--rule);
+      padding-top: 18px;
+      margin-top: 8px;
+    }
+
+    blockquote.pullquote {
+      border-left: 4px solid var(--amber);
+      background: #fef9ec;
+      padding: 20px 26px;
+      margin: 12px 0;
+      font-size: 1.05rem;
+      color: #5a4a10;
       line-height: 1.7;
     }
-    .legend h4 { margin-bottom: 6px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate); }
-    .legend .row { display: flex; align-items: center; gap: 8px; }
-    .legend .swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.2); flex-shrink: 0; }
+    blockquote.pullquote p:last-child { margin-bottom: 0; }
 
-    .reserve-label {
-      background: rgba(255,255,255,0.82);
-      border: none !important;
-      box-shadow: none !important;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--ink);
-      padding: 1px 5px;
-      white-space: nowrap;
+    /* ============================================================
+       MAP + CHART EMBEDS (iframes)
+       ============================================================ */
+    .embed {
+      margin: 48px auto;
+      width: min(96vw, 1500px);
+      max-width: 96vw;
     }
-    .reserve-label::before { display: none !important; }
+    .embed iframe {
+      width: 100%;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      background: #fff;
+      display: block;
+    }
+    .embed.map iframe    { height: 88vh; min-height: 640px; }
+    .embed.chart iframe  { height: 620px; }
+    .embed.reserve iframe{ height: 88vh; min-height: 700px; }
+    .embed .caption {
+      font-size: 0.95rem;
+      color: var(--slate);
+      margin-top: 10px;
+      text-align: center;
+      font-style: italic;
+      line-height: 1.55;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .embed .caption strong { font-style: normal; color: var(--ink); }
 
-    .reserve-popup h3 { color: var(--high); font-size: 1rem; margin-bottom: 6px; }
-    .reserve-popup table { font-size: 0.82rem; border-collapse: collapse; }
-    .reserve-popup td { padding: 2px 8px 2px 0; vertical-align: top; }
-    .reserve-popup td:first-child { color: var(--slate); }
-    .reserve-popup .big { font-weight: 600; color: var(--ink); }
+    /* ============================================================
+       SLIDESHOWS (arrow-scrollable image galleries)
+       ============================================================ */
+    .slideshow {
+      position: relative;
+      width: min(96vw, 1500px);
+      max-width: 96vw;
+      margin: 0 auto 48px;
+      background: #000;
+      border-radius: 4px;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+    }
+    .slideshow .slides {
+      display: flex;
+      height: 100%;
+      transition: transform 0.45s ease;
+    }
+    .slideshow .slides img {
+      min-width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .slideshow button.nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      border: none;
+      width: 44px;
+      height: 44px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      z-index: 2;
+    }
+    .slideshow button.nav:hover { background: rgba(0,0,0,0.78); }
+    .slideshow button.prev { left: 14px; }
+    .slideshow button.next { right: 14px; }
+    .slideshow .dots {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 2;
+    }
+    .slideshow .dots span {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .slideshow .dots span.active { background: #fff; }
+
+    .slideshow .photo-caption {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      z-index: 2;
+      max-width: 60%;
+      padding: 14px 18px;
+      color: #fff;
+      font-size: 0.92rem;
+      font-style: italic;
+      line-height: 1.45;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.85), 0 0 14px rgba(0,0,0,0.6);
+      pointer-events: none;
+    }
+    @media (max-width: 700px) {
+      .slideshow .photo-caption { max-width: 88%; font-size: 0.82rem; padding: 10px 12px; }
+    }
+
+    /* ============================================================
+       BUTTONS + DIVIDERS
+       ============================================================ */
+    .btn {
+      display: inline-block;
+      background: var(--forest);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+      padding: 12px 24px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #1a401a; }
+    .btn.secondary {
+      background: transparent;
+      color: var(--forest);
+      border: 1.5px solid var(--forest);
+    }
+    .btn.secondary:hover { background: var(--forest); color: #fff; }
+    .btn-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+
+    hr.divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      max-width: var(--maxw);
+      margin: 48px auto;
+    }
+
+    /* ============================================================
+       CREDITS
+       ============================================================ */
+    .credits { background: var(--mist); }
+    .credits h3 {
+      font-family: 'Playfair Display', serif;
+      color: var(--forest);
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+    }
+    .credits p, .credits li {
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+    .credits .src-block { margin-bottom: 14px; }
+    .credits .src-block strong { color: var(--forest); }
+    .credits a { color: var(--forest); }
+
+    /* ============================================================
+       SCROLL-REVEAL
+       ============================================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .scroll-cue { animation: none; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 700px) {
+      body { font-size: 1.02rem; }
+      section { padding: 48px 20px; }
+      .embed, .slideshow { width: 100vw; max-width: 100vw; }
+      .embed.map iframe    { height: 70vh; min-height: 440px; }
+      .embed.reserve iframe{ height: 75vh; min-height: 520px; }
+      .embed.chart iframe  { height: 560px; }
+      .slideshow button.nav { width: 38px; height: 38px; font-size: 1.2rem; }
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>India's Tiger Conservation Success Stories</h1>
-    <p>Seven reserves, shaded by population growth category (2006–2022). Click any reserve for detail.</p>
+  <!-- ========================================================== -->
+  <!-- HERO                                                       -->
+  <!-- ========================================================== -->
+  <header class="hero">
+    <img src="media/photos_processed/tigers/tiger_generic_01.jpg" alt="A wild Bengal tiger in its natural habitat">
+    <div class="hero-content">
+      <h1>Identifying Conservation Success Stories</h1>
+      <p class="subtitle">Spatial Analysis of Tiger Population Recovery in India's Protected Areas, 2006–2022</p>
+      <p class="byline">Kiran Balasubramanian · June 29, 2026</p>
+    </div>
+    <div class="scroll-cue">Scroll ↓</div>
   </header>
 
-  <div id="map"></div>
+  <!-- ========================================================== -->
+  <!-- STICKY NAV                                                 -->
+  <!-- ========================================================== -->
+  <nav class="storynav" id="storynav">
+    <div class="nav-inner">
+      <a href="#introduction">Introduction</a>
+      <a href="#overview">The Overview Map</a>
+      <a href="#numbers">The Numbers</a>
+      <a href="#detected">Where Tigers Are Detected</a>
+      <a href="#profiles">Reserve Profiles</a>
+      <a href="#data-shows">What the Data Shows</a>
+      <a href="#conclusion">Conclusion</a>
+    </div>
+  </nav>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- ========================================================== -->
+  <!-- 1. INTRODUCTION                                            -->
+  <!-- ========================================================== -->
+  <section id="introduction">
+    <div class="reading reveal">
+      <h2 class="section-title">Introduction</h2>
+      <p>At the start of the twentieth century, an estimated 100,000 wild tigers roamed Asia. By 1973, fewer than 1,800 remained in India alone — and the trajectory was unmistakably downward. Poaching, habitat loss, and the collapse of prey populations had driven one of the world's most iconic predators to the edge of extinction within a single human lifetime. That year, the Indian government launched Project Tiger: a coordinated national program to protect core habitats, relocate villages from reserve interiors, and invest in the forest department infrastructure needed to enforce protection at scale. What followed is one of the most consequential wildlife conservation interventions ever attempted.</p>
+    </div>
 
+    <!-- Intro slideshow: 2 images -->
+    <div class="slideshow reveal" data-slideshow>
+      <div class="slides">
+        <img src="media/photos_processed/tigers/tiger_generic_02.jpg" alt="Bengal tiger walking through forest" data-cap="Bengal tiger camouflaged. Photo by Keyur Nandaniya, Unsplash">
+        <img src="media/photos_processed/tigers/tiger_generic_03.jpg" alt="Bengal tiger resting in grassland" data-cap="Bengal tiger stalking. Photo by Subhadeep Dishant, Unsplash">
+      </div>
+      <button class="nav prev" aria-label="Previous image">‹</button>
+      <button class="nav next" aria-label="Next image">›</button>
+      <div class="dots"></div>
+    </div>
+
+    <div class="reading reveal">
+      <p>India's National Tiger Conservation Authority has conducted systematic population assessments every four years since 2006, using camera trap capture-recapture analysis — the Spatially Explicit Capture-Recapture (SECR) method — to generate statistically rigorous population estimates across all 54 tiger reserves. Five census rounds spanning 2006 to 2022 have documented a national population growing from approximately 1,411 tigers to 3,682: a 161% increase in sixteen years. These are estimates, not exact counts, and each carries a confidence interval. But the directional signal across five independent assessments is unambiguous. India's tigers are recovering.</p>
+      <p>This project examines seven reserves that exemplify that recovery. Spread across five Indian states and five distinct ecological landscapes — from the Brahmaputra floodplains of Assam to the Aravalli Hills of Rajasthan, from the Western Ghats rainforests of Karnataka to the Himalayan foothills of Uttarakhand — these reserves represent the geographic and ecological breadth of India's tiger conservation success. They do not all tell the same story. Some have tripled their populations in sixteen years. Others have held steady at densities that approach the ecological limits of their habitat. What unites them is that they have all, in their own way, worked. The maps and analysis that follow explore how, and why.</p>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- 2. THE OVERVIEW MAP                                        -->
+  <!-- ========================================================== -->
+  <section id="overview">
+    <div class="reading reveal">
+      <h2 class="section-title">The Overview Map</h2>
+    </div>
+
+    <div class="embed map reveal">
+      <iframe src="overview.html" loading="lazy" title="Overview map of seven featured tiger reserves colored by population growth category"></iframe>
+      <div class="caption">Tiger Conservation — Overview Map</div>
+    </div>
+
+    <div class="reading reveal">
+      <p>The map above shows all seven featured reserves, colored by population growth category. Dark green reserves — Pench, Bandipur, Nagarahole, and Ranthambore — achieved greater than 75% population growth between 2006 and 2022. Medium green marks Jim Corbett, with moderate but sustained growth from an already large base. Olive marks Kanha, stable and productive over the full sixteen years. Gold marks Kaziranga, a reserve operating not at a growth trajectory but at carrying capacity — the ecological ceiling for its landscape.</p>
+      <p>What the map also communicates, simply by showing where these reserves sit, is the diversity of India's tiger conservation challenge. No two of these reserves share a state, a landscape type, or a primary threat profile. Pench straddles a state boundary in the Satpura Hills. Kaziranga floods every monsoon as the Brahmaputra overflows its banks. Ranthambore shares a fence line with a busy town. Bandipur is bisected by a national highway. That tigers are recovering in all of these places simultaneously is not an accident — it is the result of sustained, systematic protection applied consistently across very different conditions.</p>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- 3. THE NUMBERS                                             -->
+  <!-- ========================================================== -->
+  <section id="numbers">
+    <div class="reading reveal">
+      <h2 class="section-title">The Numbers</h2>
+    </div>
+
+    <div class="embed chart reveal">
+      <iframe src="data/processed/chart1_population_trends.html" loading="lazy" title="Line chart of tiger population trends 2006 to 2022 for seven reserves"></iframe>
+      <div class="caption">Tiger population estimates across seven featured reserves, 2006–2022. Source: NTCA All India Tiger Estimation Reports. Kaziranga baseline begins 2010; no 2006 reserve-level estimate available.</div>
+    </div>
+
+    <div class="reading reveal">
+      <p>The trend lines above tell seven stories simultaneously. Jim Corbett traces the steadiest upward arc — beginning 2006 with 164 tigers, the highest starting population of the group, and climbing consistently to 260 by 2022. Pench begins at just 33 tigers and ends at 77: a 133% increase that, in percentage terms, outpaces every other reserve in the analysis. Kaziranga's line is almost flat — 103 tigers in 2010, 104 in 2022 — but this should be read as ecological success, not stagnation. A reserve sustaining roughly 100 tigers across twelve years in a habitat bounded by a major river and a mountain range is operating at the upper limit of what that landscape can support. Ranthambore's line plateaus after 2018 at 57 tigers, suggesting a similar dynamic: not failure, but a population that has reached the carrying capacity of its semi-arid terrain.</p>
+    </div>
+
+    <div class="embed chart reveal">
+      <iframe src="data/processed/chart2_growth_rate.html" loading="lazy" title="Bar chart ranking reserves by percentage population growth"></iframe>
+      <div class="caption">Percent population change 2006–2022, six reserves. Kaziranga excluded — no 2006 baseline available. Source: NTCA All India Tiger Estimation Reports.</div>
+    </div>
+
+    <div class="reading reveal">
+      <p>Ranked by total percentage growth, Pench leads at 133%, followed by Bandipur at 121%. But percentage growth and absolute growth tell different stories: Jim Corbett, ranked fifth at 58.5%, added 96 tigers in absolute terms — more than any other reserve. Kanha, at 18%, added only 16 tigers — but it was already maintaining one of the largest populations in Central India. Understanding both metrics together is essential: the reserves that grew fastest from a small base and the reserves that sustained large populations from a large base represent equally important conservation achievements.</p>
+      <p class="note-italic">All figures are NTCA statistical estimates derived from camera trap SECR analysis. Confidence intervals are available in the original census reports; this analysis uses point estimates (midpoints) throughout for consistency across census years.</p>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- 4. WHERE TIGERS ARE DETECTED                               -->
+  <!-- ========================================================== -->
+  <section id="detected">
+    <div class="reading reveal">
+      <h2 class="section-title">Where Tigers Are Detected</h2>
+      <p>The swipe map below shows kernel density estimates of tiger occurrence records from the Global Biodiversity Information Facility (GBIF): a global repository of georeferenced wildlife observations contributed by researchers, institutions, and citizen scientists. Drag the divider left or right to compare 2006–2010 (baseline) against 2018–2022 (current period). Darker green indicates higher concentrations of tiger detections. Both sides use identical classification breaks, making them directly comparable — a darker area on the right than the left at the same location represents a genuine increase in detection density, not a rescaling artifact.</p>
+      <p>Sliding the divider across the seven reserves makes the contrast between periods immediately visible. The 2006–2010 baseline shows sparse, tight kernels — reflecting both a lower tiger population and the relatively limited number of GBIF records from that period (116 occurrence points after filtering). The 2018–2022 current period shows noticeably larger and more diffuse green areas, particularly at Corbett, Kanha, and Kaziranga, consistent with expanded detection effort accompanying a growing population.</p>
+    </div>
+
+    <div class="embed map reveal">
+      <iframe src="density.html" loading="lazy" title="Swipe comparison of tiger detection density between 2006-2010 and 2018-2022"></iframe>
+      <div class="caption"><strong>Left: Tiger detection density, 2006–2010 baseline · Right: Tiger detection density, 2018–2022 current period.</strong> Kernel density estimation, 20 km search radius, 1 km cell size. Classification breaks identical across both periods — darker green indicates higher detection concentration. Source: GBIF occurrence records (116 baseline points; 908 current points after filtering).</div>
+    </div>
+
+    <div class="embed map reveal">
+      <iframe src="detections.html" loading="lazy" title="Getis-Ord Gi* hot spot map of tiger detection clusters"></iframe>
+      <div class="caption">Getis-Ord Gi* hot spot analysis, tiger occurrence records 2006–2022. Orange/red: statistically significant clusters (90–99% confidence). Purple: cold spots. Gray: not significant. Distance band: 50 km, FDR correction applied. Source: GBIF occurrence records.</div>
+    </div>
+
+    <div class="reading reveal">
+      <p>The hot spot map above applies Getis-Ord Gi* spatial statistics to identify locations where tiger detections cluster more than would be expected by chance. Orange and red points indicate statistically significant hot spots — areas of concentrated detection at 90%, 95%, and 99% confidence levels. Purple indicates cold spots: areas where detections are sparser than the surrounding average. Confirmed hot spot clusters appear in the Kanha-Pench corridor of Central India and near Kaziranga in the Northeast.</p>
+    </div>
+
+    <div class="reading reveal">
+      <blockquote class="pullquote">
+        <p>A critical analytical note: GBIF records reflect where people look, not just where tigers are. Researchers and tourists tend to concentrate near park gates, roads, and established safari zones — the accessible periphery of reserves rather than their interiors. This observer effort bias means that cold spots and not-significant results in this analysis do not indicate an absence of tigers; they indicate an absence of observers. The next section illustrates this most clearly.</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- 5. RESERVE PROFILES                                        -->
+  <!-- ========================================================== -->
+  <section id="profiles">
+    <div class="reading reveal">
+      <h2 class="section-title">Reserve Profiles</h2>
+    </div>
+
+    <!-- ---------- Ranthambore ---------- -->
+    <div class="reading reveal">
+      <h3 class="reserve-title">Ranthambore Tiger Reserve</h3>
+    </div>
+    <div class="slideshow reveal" data-slideshow>
+      <div class="slides">
+        <img src="media/photos_processed/reserves/ranthambore/ranthambore_landscape_01.jpg" alt="Ranthambore landscape with Aravalli Hills" data-cap="Ranthambore Tiger Reserve, Rajasthan. Photo by THerrington, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/ranthambore/ranthambore_tiger_01.jpg" alt="Tiger in Ranthambore" data-cap="Ranthambore Tiger, Rajasthan. Photo by Keshav995, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/ranthambore/ranthambore_wildlife_01.jpg" alt="Wildlife in Ranthambore" data-cap="Ranthambore Tiger Reserve Wildlife, Rajasthan. Photo by Ashwin Kumar, CC BY-SA 4.0, via Wikimedia Commons">
+      </div>
+      <button class="nav prev" aria-label="Previous image">‹</button>
+      <button class="nav next" aria-label="Next image">›</button>
+      <div class="dots"></div>
+    </div>
+    <div class="embed reserve reveal">
+      <iframe src="reserves.html?reserve=6" loading="lazy" title="Reserve detail map for Ranthambore"></iframe>
+      <div class="caption">Reserve — Ranthambore Tiger Reserve</div>
+    </div>
+    <div class="reading reveal">
+      <p>Ranthambore is the reserve that should not work — and does. In a state where forests cover less than 5% of the land, where the nearest town sits within walking distance of the park boundary, and where the terrain is rocky, seasonally dry, and bounded by agricultural land on three sides, Ranthambore has grown its tiger population from 32 to 57 over sixteen years. It is proof that tigers are more adaptable than their reputation as deep-forest predators suggests — provided the core habitat is protected and prey populations are maintained.</p>
+      <p>The Aravalli Hills that form Ranthambore's spine are ancient and dramatic: ridgelines of bare quartzite rising above dry deciduous forest, punctuated by seasonal lakes that concentrate prey during summer. The ruins of Ranthambore Fort, a tenth-century structure that sits inside the reserve, make this one of the most visually distinctive tiger habitats in the world. That accessibility creates an analytical artifact worth understanding directly: the dense cluster of Cold Spot detections visible north of the reserve in the hot spot map reflects the concentration of tourist and researcher observations near the park gate at Sawai Madhopur — not an absence of tigers. Ranthambore's plateau from 2018 to 2022 at 57 tigers most likely reflects a population approaching the carrying capacity of its current protected area, with individuals dispersing into the surrounding Rajasthan landscape.</p>
+    </div>
+
+    <!-- ---------- Pench ---------- -->
+    <div class="reading reveal">
+      <h3 class="reserve-title">Pench Tiger Reserve</h3>
+    </div>
+    <div class="slideshow reveal" data-slideshow>
+      <div class="slides">
+        <img src="media/photos_processed/reserves/pench/pench_landscape_01.jpg" alt="Pench landscape" data-cap="Pench Tiger Reserve at sunset. Photo by Graf orlok2004, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/pench/pench_tiger_01.jpg" alt="Tiger in Pench" data-cap="Pench Tiger swimming. Photo by Fitindia, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/pench/pench_wildlife_01.jpg" alt="Wildlife in Pench" data-cap="Pench Leopard. Photo by Drashokk, CC BY-SA 4.0, via Wikimedia Commons">
+      </div>
+      <button class="nav prev" aria-label="Previous image">‹</button>
+      <button class="nav next" aria-label="Next image">›</button>
+      <div class="dots"></div>
+    </div>
+    <div class="embed reserve reveal">
+      <iframe src="reserves.html?reserve=4" loading="lazy" title="Reserve detail map for Pench"></iframe>
+      <div class="caption">Reserve — Pench Tiger Reserve</div>
+    </div>
+    <div class="reading reveal">
+      <p>No reserve in this analysis grew faster than Pench. Starting from just 33 tigers in 2006 — the smallest baseline population of the seven — Pench more than doubled to 77 by 2022, achieving the highest percentage growth of any featured reserve. That trajectory reflects the compounding effect of strong anti-poaching enforcement, robust prey recovery, and the ecological connectivity that links Pench to its neighbor Kanha through forested corridors in the Satpura Hills.</p>
+      <p>Pench is treated in this analysis as a single combined landscape spanning Madhya Pradesh and Maharashtra, because the NTCA census surveys the tiger population across the full trans-boundary area rather than by state. The reserve straddles the Satpura plateau, a mosaic of sal and teak forest drained by the Pench River — the reserve's ecological spine, visible threading through the center of the reserve in the map above. The hot spot analysis confirms a statistically significant cluster of detections in the broader Kanha-Pench corridor, underscoring the functional connectivity between these two reserves. The Satpura Hills that Pench calls home are among the most biologically productive landscapes in Central India — a mosaic of sal, teak, and mixed forest that has supported large predators for millennia. That this ancient forest now holds its highest recorded tiger density is a measure of what sustained protection can achieve in a landscape that never lost its ecological potential.</p>
+    </div>
+
+    <!-- ---------- Bandipur & Nagarahole ---------- -->
+    <div class="reading reveal">
+      <h3 class="reserve-title">Bandipur &amp; Nagarahole National Parks</h3>
+    </div>
+    <div class="slideshow reveal" data-slideshow>
+      <div class="slides">
+        <img src="media/photos_processed/reserves/bandipur/bandipur_landscape_01.jpg" alt="Bandipur landscape" data-cap="Bandipur Tiger Reserve from Gopalswami Betta. Photo by Jaseem Hamza, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/bandipur/bandipur_tiger_01.jpg" alt="Tiger in Bandipur" data-cap="Bandipur Tiger Reserve Tiger. Photo by GRaj, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/bandipur/bandipur_wildlife_01.jpg" alt="Wildlife in Bandipur" data-cap="Bandipur Tiger Reserve elephant herd. Photo by Abhijeet1011, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/nagarhole/nagarhole_landscape_01.jpg" alt="Nagarahole landscape" data-cap="Nagarahole National Park from © Ranjith Kumar 2016, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/nagarhole/nagarhole_tiger_01.jpg" alt="Tiger in Nagarahole" data-cap="Nagarahole National Park Tiger. Photo by Bobchak1988, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/nagarhole/nagarhole_wildlife_01.jpg" alt="Wildlife in Nagarahole" data-cap="Nagarahole National Park Cheetal herd. Photo by Yathin S Krishnappa, CC BY-SA 4.0, via Wikimedia Commons">
+      </div>
+      <button class="nav prev" aria-label="Previous image">‹</button>
+      <button class="nav next" aria-label="Next image">›</button>
+      <div class="dots"></div>
+    </div>
+    <div class="embed reserve reveal">
+      <iframe src="reserves.html?reserve=1" loading="lazy" title="Reserve detail map for Bandipur"></iframe>
+      <div class="caption">Reserve — Bandipur National Park</div>
+    </div>
+    <div class="embed reserve reveal">
+      <iframe src="reserves.html?reserve=2" loading="lazy" title="Reserve detail map for Nagarahole"></iframe>
+      <div class="caption">Reserve — Nagarahole National Park</div>
+    </div>
+    <div class="reading reveal">
+      <p>In the Nilgiri Biosphere Reserve of southern Karnataka, two national parks share a boundary and, effectively, a tiger population. Bandipur and Nagarahole together form one of India's most productive tiger landscapes — nearly 3,000 square kilometers of contiguous Western Ghats forest where tigers, elephants, gaur, and leopards coexist at densities rarely seen elsewhere in the country. Bandipur grew from 68 tigers in 2006 to 150 in 2022; Nagarahole from 78 to 141. Together, the complex added 145 tigers over sixteen years.</p>
+      <p>The terrain here is layered: the Western Ghats escarpment rises steeply to the west toward Kerala, the Nilgiri Hills climb to over 2,200 meters to the south toward Ooty, and the Kabini Reservoir spreads across the interior of Nagarahole, drawing wildlife to its banks year-round. What the map also shows, running as a thin gray line through Bandipur, is National Highway 181 — the Mysore-Ooty road. This highway carries substantial truck and tourist traffic through the core of the reserve and has been the subject of a long-running legal battle over nighttime traffic restrictions. That Bandipur has achieved 121% tiger growth despite this persistent corridor fragmentation speaks to the underlying productivity of the Western Ghats habitat and the effectiveness of Karnataka's forest management.</p>
+    </div>
+
+    <!-- ---------- Kanha ---------- -->
+    <div class="reading reveal">
+      <h3 class="reserve-title">Kanha National Park</h3>
+    </div>
+    <div class="slideshow reveal" data-slideshow>
+      <div class="slides">
+        <img src="media/photos_processed/reserves/kanha/kanha_landscape_01.jpg" alt="Kanha landscape" data-cap="Kanha National Park, Madhya Pradesh. Photo by Shreya saha, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/kanha/kanha_tiger_01.jpg" alt="Tiger in Kanha" data-cap="Kanha National Park, Madhya Pradesh, Tigers. Photo by Davidvraju, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/kanha/kanha_wildlife_01.jpg" alt="Wildlife in Kanha" data-cap="Kanha National Park, Madhya Pradesh, Nilgai. Photo by Bhups77, CC BY-SA 4.0, via Wikimedia Commons">
+      </div>
+      <button class="nav prev" aria-label="Previous image">‹</button>
+      <button class="nav next" aria-label="Next image">›</button>
+      <div class="dots"></div>
+    </div>
+    <div class="embed reserve reveal">
+      <iframe src="reserves.html?reserve=3" loading="lazy" title="Reserve detail map for Kanha"></iframe>
+      <div class="caption">Reserve — Kanha National Park</div>
+    </div>
+    <div class="reading reveal">
+      <p>Not every conservation success story is a growth story. Kanha National Park has maintained a population of 89 to 105 tigers across the full sixteen-year period — the most stable trajectory in this analysis, and arguably the most impressive. Sustaining a large predator population at near-constant levels in a reserve of 2,072 square kilometers, surrounded by one of India's most densely populated rural regions, requires the kind of consistent, unglamorous institutional effort that rarely makes headlines.</p>
+      <p>Kanha's two-lobe shape — visible clearly in the map above — reflects the reserve's ecology: a core zone of mature sal forest in the western lobe, connected by a corridor to the buffer zone in the eastern lobe, where the transition to more open bamboo forest supports different prey assemblages. This landscape heterogeneity within a single reserve is part of what makes Kanha productive across decades. Kanha is also one of India's oldest Project Tiger reserves, designated in 1973, and has served as a management model for reserves established in later decades. The consistency of its population data across five census cycles reflects institutional continuity that few reserves anywhere in the world can match.</p>
+    </div>
+
+    <!-- ---------- Kaziranga ---------- -->
+    <div class="reading reveal">
+      <h3 class="reserve-title">Kaziranga National Park</h3>
+    </div>
+    <div class="slideshow reveal" data-slideshow>
+      <div class="slides">
+        <img src="media/photos_processed/reserves/kaziranga/kaziranga_landscape_01.jpg" alt="Kaziranga floodplain landscape" data-cap="Kaziranga National Park, Assam. Photo by Udit Kapoor, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/kaziranga/kaziranga_tiger_01.jpg" alt="Tiger in Kaziranga" data-cap="Kaziranga National Park Tiger, Assam. Photo by Tisha Mukherjee, CC BY-SA 4.0, via Wikimedia Commons">
+      </div>
+      <button class="nav prev" aria-label="Previous image">‹</button>
+      <button class="nav next" aria-label="Next image">›</button>
+      <div class="dots"></div>
+    </div>
+    <div class="embed reserve reveal">
+      <iframe src="reserves.html?reserve=7" loading="lazy" title="Reserve detail map for Kaziranga"></iframe>
+      <div class="caption">Reserve — Kaziranga National Park</div>
+    </div>
+    <div class="reading reveal">
+      <p>No 2006 reserve-level estimate is available for Kaziranga — it is excluded from the percentage growth ranking for this reason. But its story belongs in this analysis for a different metric entirely: density. At approximately 8.8 tigers per 100 square kilometers by census estimates — and likely higher within the core zone — Kaziranga supports the highest tiger density of any reserve in this project, and among the highest in the world.</p>
+      <p>Kaziranga sits on a narrow strip of alluvial floodplain between the Brahmaputra River to the north and the Karbi Anglong Hills to the south — a natural enclosure that has, for millennia, concentrated prey at exceptional densities. Indian one-horned rhinoceroses, water buffalo, swamp deer, and wild pig inhabit the grasslands and wetlands in numbers that sustain a large tiger population within a relatively compact area of 1,180 square kilometers. Every monsoon, the Brahmaputra floods much of the reserve, pushing tigers and other wildlife up into the Karbi Anglong Hills — a seasonal movement that makes corridor protection a conservation priority. The nearly flat census line from 2010 to 2022 is not evidence of stagnation. It is a reserve at ecological equilibrium: producing tigers at the rate the landscape can sustain. Kaziranga is not a reserve that needs to grow — it is a reserve that needs to be maintained.</p>
+    </div>
+
+    <!-- ---------- Jim Corbett ---------- -->
+    <div class="reading reveal">
+      <h3 class="reserve-title">Jim Corbett National Park</h3>
+    </div>
+    <div class="slideshow reveal" data-slideshow>
+      <div class="slides">
+        <img src="media/photos_processed/reserves/corbett/corbett_landscape_01.jpg" alt="Jim Corbett landscape" data-cap="Jim Corbett National Park, Uttarakhand. Photo by Timothy Gonsalves, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/corbett/corbett_river_01.jpg" alt="Ramganga river in Jim Corbett" data-cap="Kosi River, Jim Corbett National Park, Uttarakhand. Photo by Anamdas, CC BY-SA 4.0, via Wikimedia Commons">
+        <img src="media/photos_processed/reserves/corbett/corbett_tiger_01.jpg" alt="Tiger in Jim Corbett" data-cap="Tiger stalking, Jim Corbett National Park, Uttarakhand. Photo by Sulagna Chandra, CC BY-SA 4.0, via Wikimedia Commons">
+      </div>
+      <button class="nav prev" aria-label="Previous image">‹</button>
+      <button class="nav next" aria-label="Next image">›</button>
+      <div class="dots"></div>
+    </div>
+    <div class="embed reserve reveal">
+      <iframe src="reserves.html?reserve=8" loading="lazy" title="Reserve detail map for Jim Corbett"></iframe>
+      <div class="caption">Reserve — Jim Corbett National Park</div>
+    </div>
+    <div class="reading reveal">
+      <p>Jim Corbett National Park holds more tigers than any other reserve in this analysis — 260 by the 2022 census — and has done so from the largest starting point as well. Growing from 164 to 260 tigers over sixteen years represents a 58% increase and an addition of 96 individuals: more tigers added in absolute terms than any other featured reserve. For a reserve that was already operating at high density in 2006, sustaining that trajectory for sixteen years is a significant achievement.</p>
+      <p>Corbett's terrain is the most dramatic of the seven reserves: the Ramganga Reservoir sits at roughly 400 meters elevation in the valley floor, while the surrounding Himalayan foothills rise to nearly 2,000 meters within the reserve boundary. This elevation gradient — from Terai grasslands at the base to Himalayan oak-rhododendron forests on the ridges — creates a diversity of habitat types that supports tigers, leopards, elephants, and a rich assemblage of deer and wild pig prey species simultaneously. The reserve takes its name from Jim Corbett, the hunter-turned-conservationist who spent decades in these forests and whose later writing helped build public support for wildlife protection in colonial and early post-independence India. That the forests he documented now hold their highest tiger density in a century is a fitting conclusion to his conservation legacy.</p>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- 6. WHAT THE DATA SHOWS                                     -->
+  <!-- ========================================================== -->
+  <section id="data-shows">
+    <div class="reading reveal">
+      <h2 class="section-title">What the Data Shows</h2>
+    </div>
+
+    <div class="embed chart reveal">
+      <iframe src="data/processed/chart3_density_comparison.html" loading="lazy" title="Chart comparing tiger density per 100 square kilometers in 2006 and 2022"></iframe>
+      <div class="caption">Tigers per 100 km², 2006 and 2022, seven featured reserves. Corbett 2022 density likely overstated — KBA boundary smaller than legal Tiger Reserve boundary. Source: NTCA All India Tiger Estimation Reports; reserve areas from ISFR 2021 Chapter 4.</div>
+    </div>
+
+    <div class="reading reveal">
+      <p>Population counts and growth rates tell part of the story; density completes it. The chart above compares tigers per 100 square kilometers in 2006 and 2022 for each featured reserve. Nagarahole leads on density in 2022 at 12.23 tigers per 100 km², followed by Jim Corbett at 17.78 — though Corbett's figure should be interpreted cautiously, as the KBA boundary used in this analysis is smaller than the legal Tiger Reserve boundary, likely inflating the density calculation. What the chart shows unambiguously is that every reserve has increased its density over sixteen years, and that the increases are not uniform: Pench and Bandipur show the most dramatic per-unit-area improvements, while Kanha and Ranthambore show more modest density gains from an already productive baseline.</p>
+    </div>
+
+    <div class="embed chart reveal">
+      <iframe src="data/processed/chart4_area_vs_population.html" loading="lazy" title="Bubble chart of reserve area versus 2022 population sized by growth rate"></iframe>
+      <div class="caption">Reserve area (km²) vs. 2022 tiger population, bubble size proportional to percentage growth 2006–2022. Kaziranga bubble sized at median growth for display — no 2006 baseline available. Source: NTCA All India Tiger Estimation Reports; reserve areas from ISFR 2021 Chapter 4.</div>
+    </div>
+
+    <div class="reading reveal">
+      <p>The bubble chart above plots each reserve by its area against its 2022 population, with bubble size representing percentage growth. The key finding is in what the chart does not show: no clear relationship between reserve area and tiger population or growth rate. Kanha, the largest reserve at 2,072 km², has a smaller 2022 population than Corbett, which is 400 km² smaller. Pench, a combined landscape of roughly 1,907 km², achieved the highest growth rate of any reserve. What the analysis cannot fully quantify — but what the literature consistently confirms — is that the variables that most strongly predict tiger recovery are management intensity, prey biomass, and connectivity to other protected areas: factors that operate at the scale of the reserve but are not captured by area alone.</p>
+      <p>Across all seven reserves, a consistent set of enabling conditions appears: effective anti-poaching enforcement, adequate prey populations sustained through habitat management, and the systematic accountability provided by NTCA's four-year census cycle. The census data does more than document recovery — it creates the evidence base that drives management decisions, focuses resources on reserves showing early decline, and demonstrates to policymakers and the public that conservation investment produces measurable results.</p>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- 7. CONCLUSION & CREDITS                                    -->
+  <!-- ========================================================== -->
+  <section id="conclusion">
+    <div class="reading reveal">
+      <h2 class="section-title">Conclusion</h2>
+      <p>India's tiger recovery is not complete. Habitats remain fragmented between reserves, corridors are under pressure from roads and agricultural expansion, human-wildlife conflict at reserve boundaries imposes real costs on communities living alongside protected areas, and climate change is beginning to alter the prey distributions and hydrological cycles that tiger ecosystems depend on. The 3,682 tigers counted in 2022 are more than double the 2006 baseline — but they inhabit a landscape under sustained and intensifying pressure. The work of the next sixteen years will be harder than the work of the last.</p>
+      <p>What the seven reserves documented here demonstrate, however, is that the work is possible. In landscapes as different as the Brahmaputra floodplain and the Aravalli Hills, in states with very different governance capacities and land use pressures, sustained protection produces measurable recovery. The monitoring framework that makes this analysis possible — systematic camera trap surveys, rigorous statistical methods, publicly reported results — is itself a conservation tool, creating the accountability loop that keeps management focused and resources allocated. India has built something rare in global conservation: a large-scale, long-term, evidence-driven recovery program that works. The tigers in these seven reserves are the evidence.</p>
+      <div class="btn-row">
+        <a class="btn" href="https://github.com/K-bsub/tiger-conservation-india/tree/main" target="_blank" rel="noopener">View the project repository →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- CREDITS                                                    -->
+  <!-- ========================================================== -->
+  <section class="credits" id="credits">
+    <div class="reading">
+      <h3>Data Sources</h3>
+
+      <div class="src-block reveal">
+        <strong>Tiger Population:</strong> National Tiger Conservation Authority All India Tiger Estimation Reports (2006–2022); Bandipur/Nagarahole 2006 &amp; 2010 data from Singh &amp; Sen (2015), Am Research Thoughts, Vol. 1.
+        <div class="btn-row">
+          <a class="btn secondary" href="https://ntca.gov.in/" target="_blank" rel="noopener">NTCA reports →</a>
+        </div>
+      </div>
+
+      <div class="src-block reveal"><strong>Protected Areas:</strong> KBA Global Database, BirdLife International / KBA Partnership (February 2026), keybiodiversityareas.org.</div>
+
+      <div class="src-block reveal"><strong>Forest Cover:</strong> Forest Survey of India, India State of Forest Report 2021, Chapter 4 — Assessment of Forest Cover in Tiger Reserves (primary source, reserve-boundary level data); ISFR 2017 state chapters (landscape context); Hansen et al. (2013), Science 342:850–853, via Global Forest Watch (visualization layer).</div>
+
+      <div class="src-block reveal"><strong>Elevation:</strong> NASA SRTM 1 Arc-Second Global DEM (2000), via USGS Earth Explorer.</div>
+
+      <div class="src-block reveal"><strong>Administrative Boundaries:</strong> Natural Earth (public domain), naturalearthdata.com; DataMeet India (CC BY 4.0), github.com/datameet/maps.</div>
+
+      <div class="src-block reveal"><strong>Roads &amp; Settlements:</strong> OpenStreetMap contributors (ODbL), download.geofabrik.de.</div>
+
+      <hr class="divider">
+
+      <h3>Methodology &amp; Repository</h3>
+      <p class="reveal">Full methodology, data processing decisions, and source citations are documented at <a href="https://github.com/K-bsub/tiger-conservation-india" target="_blank" rel="noopener">github.com/K-bsub/tiger-conservation-india</a>.</p>
+
+      <hr class="divider">
+
+      <h3>Photo Credits</h3>
+      <div class="src-block reveal"><strong>Cover &amp; Introduction:</strong> Praniket Desai, Keyur Nandaniya, Subhadeep Dishant (Unsplash License, free to use, no attribution required).</div>
+      <div class="src-block reveal"><strong>Ranthambore Tiger Reserve:</strong> THerrington, Ashwin Kumar, Keshav995 (CC BY-SA 4.0, via Wikimedia Commons).</div>
+      <div class="src-block reveal"><strong>Pench Tiger Reserve:</strong> Graf orlok2004, Drashokk, Fitindia (CC BY-SA 4.0, via Wikimedia Commons).</div>
+      <div class="src-block reveal"><strong>Bandipur National Park:</strong> Jaseem Hamza, Abhijeet1011, GRaj (CC BY-SA 4.0, via Wikimedia Commons).</div>
+      <div class="src-block reveal"><strong>Nagarahole National Park:</strong> © Ranjith Kumar 2016, Yathin S Krishnappa, Bobchak1988 (CC BY-SA 4.0, via Wikimedia Commons).</div>
+      <div class="src-block reveal"><strong>Kanha National Park:</strong> Shreya saha, Bhups77, Davidvraju (CC BY-SA 4.0, via Wikimedia Commons).</div>
+      <div class="src-block reveal"><strong>Kaziranga National Park:</strong> Udit Kapoor, Tisha Mukherjee (CC BY-SA 4.0, via Wikimedia Commons).</div>
+      <div class="src-block reveal"><strong>Jim Corbett National Park:</strong> Timothy Gonsalves, Sulagna Chandra, Anamdas (CC BY-SA 4.0, via Wikimedia Commons).</div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- SCRIPTS                                                    -->
+  <!-- ========================================================== -->
   <script>
-    // If this page is loaded inside an iframe, switch to embedded mode
-    // (hides the header, map fills the frame). Standalone view unchanged.
-    if (window.self !== window.top) document.body.classList.add('embedded');
-  </script>
-
-  <script>
-    // ============================================================
-    // 1. CREATE THE MAP — ONE fixed view. Adjust to taste:
-    //      INDIA_ZOOM  6.2 = current   |  higher = tighter
-    //      INDIA_CENTER [lat, lng]     |  raise lng to shift east
-    // ============================================================
-    const INDIA_CENTER = [20, 82];
-    const INDIA_ZOOM   = 6.2;
-
-    const map = L.map('map', {
-      maxBounds: [[2, 64], [37, 96]],
-      maxBoundsViscosity: 0.7,
-      minZoom: 4,
-      zoomSnap: 0.1
-    }).setView(INDIA_CENTER, INDIA_ZOOM);
-
-    // ============================================================
-    // 2. BASEMAP — Esri Light Gray Canvas
-    // ============================================================
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri',
-      maxZoom: 16
-    }).addTo(map);
-
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 16
-    }).addTo(map);
-
-    // ============================================================
-    // 3. COLOR FUNCTION
-    // ============================================================
-    function colorFor(category) {
-      switch (category) {
-        case 'High growth':           return '#225522';
-        case 'Moderate growth':       return '#78AA50';
-        case 'Stable':                return '#B4C378';
-        case 'Stable / At capacity':  return '#C8AF64';
-        default:                      return '#cccccc';
+    // ---- Scroll-reveal via IntersectionObserver ----
+    (function () {
+      const els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(el => el.classList.add('in'));
+        return;
       }
-    }
-
-    // ============================================================
-    // 4. POLYGON STYLE
-    // ============================================================
-    function styleReserve(feature) {
-      return {
-        fillColor: colorFor(feature.properties.Growth_Category),
-        fillOpacity: 0.9,
-        color: '#1E1E1E',
-        weight: 2,
-        opacity: 1
-      };
-    }
-
-    // ============================================================
-    // 5. POPUP BUILDER
-    // ============================================================
-    function popupFor(p) {
-      const pct = Math.round(p.Pct_Change);
-      const density = p.Density_2022 ? p.Density_2022.toFixed(1) : '—';
-      return `
-        <div class="reserve-popup">
-          <h3>${p.Reserve_Name}</h3>
-          <table>
-            <tr><td>State</td><td class="big">${p.State || '—'}</td></tr>
-            <tr><td>Landscape</td><td>${p.Landscape || '—'}</td></tr>
-            <tr><td>Tigers 2006</td><td class="big">${p.Pop_2006 ?? '—'}</td></tr>
-            <tr><td>Tigers 2022</td><td class="big">${p.Pop_2022 ?? '—'}</td></tr>
-            <tr><td>Change</td><td class="big">${isNaN(pct) ? '—' : '+' + pct + '%'}</td></tr>
-            <tr><td>Density</td><td>${density} / 100 km²</td></tr>
-            <tr><td>Category</td><td>${p.Growth_Category}</td></tr>
-          </table>
-        </div>`;
-    }
-
-    // ============================================================
-    //   LABEL PLACEMENT — per reserve: direction + pixel offset so
-    //   the label clears the polygon. offset = [x, y]:
-    //     +x = right, -x = left, +y = down, -y = up.
-    //   Tune any value here to nudge an individual label.
-    // ============================================================
-    const labelPlacement = {
-      'Jim Corbett National Park':      { direction: 'right', offset: [14, 0]  },
-      'Kaziranga National Park':        { direction: 'right', offset: [14, 0]  },
-      'Ranthambore Tiger Reserve':      { direction: 'right', offset: [14, 0]  },
-      'Kanha National Park':            { direction: 'right', offset: [16, 0]  },
-      'Pench Tiger Reserve (Combined)': { direction: 'left',  offset: [-16, 6] },
-      'Nagarahole National Park':       { direction: 'left',  offset: [-14, 0] },
-      'Bandipur National Park':         { direction: 'right', offset: [14, 8]  }
-    };
-
-    // ============================================================
-    // 6. LOAD GEOJSON → polygons + labels.
-    // ============================================================
-    fetch('data/tiger_reserves.geojson')
-      .then(response => response.json())
-      .then(data => {
-        L.geoJSON(data, {
-          style: styleReserve,
-          onEachFeature: (feature, lyr) => {
-            const p = feature.properties;
-            lyr.bindPopup(popupFor(p));
-
-            const place = labelPlacement[p.Reserve_Name]
-                        || { direction: 'right', offset: [14, 0] };
-            lyr.bindTooltip(p.Reserve_Name, {
-              permanent: true,
-              direction: place.direction,
-              offset: place.offset,
-              className: 'reserve-label'
-            });
-
-            lyr.on('mouseover', () => lyr.setStyle({ weight: 3.5 }));
-            lyr.on('mouseout',  () => lyr.setStyle({ weight: 2 }));
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
           }
-        }).addTo(map);
-      })
-      .catch(err => {
-        console.error('Failed to load reserves:', err);
-        alert('Could not load tiger_reserves.geojson — check the data/ path.');
-      });
+        });
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+      els.forEach(el => io.observe(el));
+    })();
 
-    // ============================================================
-    // 7. LEGEND
-    // ============================================================
-    const legend = L.control({ position: 'bottomright' });
-    legend.onAdd = function () {
-      const div = L.DomUtil.create('div', 'legend');
-      div.innerHTML = `
-        <h4>Growth Category</h4>
-        <div class="row"><span class="swatch" style="background:#225522"></span> High growth</div>
-        <div class="row"><span class="swatch" style="background:#78AA50"></span> Moderate growth</div>
-        <div class="row"><span class="swatch" style="background:#B4C378"></span> Stable</div>
-        <div class="row"><span class="swatch" style="background:#C8AF64"></span> Stable / At capacity</div>
-      `;
-      return div;
-    };
-    legend.addTo(map);
+    // ---- Slideshows ----
+    (function () {
+      document.querySelectorAll('[data-slideshow]').forEach(box => {
+        const slides = box.querySelector('.slides');
+        const imgs = slides.querySelectorAll('img');
+        const dotsWrap = box.querySelector('.dots');
+        let idx = 0;
+
+        // caption element (only if at least one image has a caption)
+        let capEl = null;
+        if ([...imgs].some(im => im.dataset.cap)) {
+          capEl = document.createElement('div');
+          capEl.className = 'photo-caption';
+          box.appendChild(capEl);
+        }
+
+        // build dots
+        imgs.forEach((_, i) => {
+          const d = document.createElement('span');
+          if (i === 0) d.classList.add('active');
+          d.addEventListener('click', () => go(i));
+          dotsWrap.appendChild(d);
+        });
+        const dots = dotsWrap.querySelectorAll('span');
+
+        function go(n) {
+          idx = (n + imgs.length) % imgs.length;
+          slides.style.transform = `translateX(-${idx * 100}%)`;
+          dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+          if (capEl) capEl.textContent = imgs[idx].dataset.cap || '';
+        }
+
+        box.querySelector('.prev').addEventListener('click', () => go(idx - 1));
+        box.querySelector('.next').addEventListener('click', () => go(idx + 1));
+
+        // keyboard support when focused
+        box.setAttribute('tabindex', '0');
+        box.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') go(idx - 1);
+          if (e.key === 'ArrowRight') go(idx + 1);
+        });
+
+        // set initial caption
+        go(0);
+      });
+    })();
+    // ---- Scroll-spy: highlight active nav tab ----
+    (function () {
+      const links = [...document.querySelectorAll('.storynav a')];
+      const map = {};
+      links.forEach(a => {
+        const id = a.getAttribute('href').slice(1);
+        const sec = document.getElementById(id);
+        if (sec) map[id] = a;
+      });
+      const sections = Object.keys(map).map(id => document.getElementById(id));
+      if (!('IntersectionObserver' in window) || !sections.length) return;
+
+      const spy = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            links.forEach(l => l.classList.remove('active'));
+            const active = map[e.target.id];
+            if (active) active.classList.add('active');
+          }
+        });
+      }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+
+      sections.forEach(s => spy.observe(s));
+    })();
   </script>
 </body>
 </html>
