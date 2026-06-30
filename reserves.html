@@ -27,6 +27,11 @@
 
     .layout { display: flex; height: 80vh; margin: 0 0 32px; }
     #map { flex: 1; border: 1px solid #d4cfc4; }
+
+    /* Embedded mode: hide header text, fill the frame */
+    body.embedded header { display: none; }
+    body.embedded .controls { padding: 10px 16px; }
+    body.embedded .layout { height: calc(100vh - 48px); margin: 0; }
     .panel {
       width: 320px; flex-shrink: 0; background: white; border: 1px solid #d4cfc4; border-left: none;
       padding: 22px; overflow-y: auto;
@@ -76,6 +81,10 @@
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    if (window.self !== window.top) document.body.classList.add('embedded');
+  </script>
 
   <script>
     // ============================================================

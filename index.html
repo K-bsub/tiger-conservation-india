@@ -35,6 +35,14 @@
       border-bottom: 1px solid #d4cfc4;
     }
 
+    /* When embedded in an iframe: hide header, map fills the whole frame */
+    body.embedded header { display: none; }
+    body.embedded #map {
+      height: 100vh;
+      margin: 0;
+      border: none;
+    }
+
     .legend {
       background: white;
       padding: 12px 14px;
@@ -76,6 +84,12 @@
   <div id="map"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // If this page is loaded inside an iframe, switch to embedded mode
+    // (hides the header, map fills the frame). Standalone view unchanged.
+    if (window.self !== window.top) document.body.classList.add('embedded');
+  </script>
 
   <script>
     // ============================================================

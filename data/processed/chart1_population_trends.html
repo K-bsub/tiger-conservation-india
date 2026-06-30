@@ -79,9 +79,15 @@
     font-style: italic;
     line-height: 1.5;
   }
+
+  /* Embedded mode: trim chrome, let chart fill the iframe */
+  body.embedded { padding: 14px 16px; }
+  body.embedded .chart-container { max-width: 100%; height: calc(100vh - 28px); display: flex; flex-direction: column; }
+  body.embedded .chart-wrap { height: auto !important; flex: 1; min-height: 0; }
 </style>
 </head>
 <body>
+<script>if (window.self !== window.top) document.body.classList.add('embedded');</script>
 
 <div class="chart-container">
   <div class="chart-label">Chart 1 · Population Trends</div>

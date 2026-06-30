@@ -25,6 +25,9 @@
       border-top: 1px solid #d4cfc4; border-bottom: 1px solid #d4cfc4;
     }
 
+    body.embedded header { display: none; }
+    body.embedded #map { height: 100vh; margin: 0; border: none; }
+
     .legend {
       background: white; padding: 12px 14px; border-radius: 4px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.2); font-size: 0.8rem; line-height: 1.7; max-width: 230px;
@@ -61,6 +64,10 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+  <script>
+    if (window.self !== window.top) document.body.classList.add('embedded');
+  </script>
 
   <script>
     // ============================================================

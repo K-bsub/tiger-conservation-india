@@ -23,6 +23,9 @@
       border-top: 1px solid #d4cfc4; border-bottom: 1px solid #d4cfc4;
     }
 
+    body.embedded header { display: none; }
+    body.embedded #map { height: 100vh; margin: 0; border: none; }
+
     .period-tag {
       position: absolute; top: 14px; z-index: 500;
       background: rgba(255,255,255,0.92); padding: 6px 12px; border-radius: 4px;
@@ -78,6 +81,10 @@
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    if (window.self !== window.top) document.body.classList.add('embedded');
+  </script>
 
   <script>
     // ============================================================
@@ -201,6 +208,11 @@
     map.on('move zoom moveend zoomend viewreset', clipCurrent);
     currentLayer.on('load', update);
     setTimeout(update, 400);
+
+    // Keep the swipe aligned if the container resizes (e.g. inside an
+    // iframe that settles its height after load, or window resize).
+    window.addEventListener('resize', () => { map.invalidateSize(); update(); });
+    window.addEventListener('load', () => { map.invalidateSize(); update(); });
 
     // ============================================================
     // 6. LEGEND
