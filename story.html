@@ -48,8 +48,8 @@
       font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif;
       color: var(--ink);
       background: var(--cream);
-      line-height: 1.75;
-      font-size: 1.08rem;
+      line-height: 1.8;
+      font-size: 1.24rem;
       font-weight: 300;
     }
 
@@ -76,9 +76,9 @@
     .storynav a {
       text-decoration: none;
       color: var(--slate);
-      font-size: 0.88rem;
+      font-size: 1.02rem;
       font-weight: 600;
-      padding: 8px 14px;
+      padding: 9px 16px;
       border-radius: 4px;
       white-space: nowrap;
       transition: color 0.2s, background 0.2s;
@@ -96,7 +96,7 @@
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
       }
-      .storynav a { font-size: 0.82rem; padding: 8px 11px; }
+      .storynav a { font-size: 0.94rem; padding: 8px 12px; }
     }
 
     /* ============================================================
@@ -251,12 +251,17 @@
     .embed.chart iframe  { height: 620px; }
     .embed.reserve iframe{ height: 88vh; min-height: 700px; }
     .embed .caption {
-      font-size: 0.82rem;
+      font-size: 0.95rem;
       color: var(--slate);
-      margin-top: 8px;
+      margin-top: 10px;
       text-align: center;
       font-style: italic;
+      line-height: 1.55;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
     }
+    .embed .caption strong { font-style: normal; color: var(--ink); }
 
     /* ============================================================
        SLIDESHOWS (arrow-scrollable image galleries)
@@ -464,6 +469,7 @@
 
     <div class="embed map reveal">
       <iframe src="index.html" loading="lazy" title="Overview map of seven featured tiger reserves colored by population growth category"></iframe>
+      <div class="caption">Tiger Conservation — Overview Map</div>
     </div>
 
     <div class="reading reveal">
@@ -482,6 +488,7 @@
 
     <div class="embed chart reveal">
       <iframe src="data/processed/chart1_population_trends.html" loading="lazy" title="Line chart of tiger population trends 2006 to 2022 for seven reserves"></iframe>
+      <div class="caption">Tiger population estimates across seven featured reserves, 2006–2022. Source: NTCA All India Tiger Estimation Reports. Kaziranga baseline begins 2010; no 2006 reserve-level estimate available.</div>
     </div>
 
     <div class="reading reveal">
@@ -490,6 +497,7 @@
 
     <div class="embed chart reveal">
       <iframe src="data/processed/chart2_growth_rate.html" loading="lazy" title="Bar chart ranking reserves by percentage population growth"></iframe>
+      <div class="caption">Percent population change 2006–2022, six reserves. Kaziranga excluded — no 2006 baseline available. Source: NTCA All India Tiger Estimation Reports.</div>
     </div>
 
     <div class="reading reveal">
@@ -510,11 +518,12 @@
 
     <div class="embed map reveal">
       <iframe src="density.html" loading="lazy" title="Swipe comparison of tiger detection density between 2006-2010 and 2018-2022"></iframe>
-      <div class="caption">Drag the divider to compare baseline (2006–2010) against current (2018–2022) detection density.</div>
+      <div class="caption"><strong>Left: Tiger detection density, 2006–2010 baseline · Right: Tiger detection density, 2018–2022 current period.</strong> Kernel density estimation, 20 km search radius, 1 km cell size. Classification breaks identical across both periods — darker green indicates higher detection concentration. Source: GBIF occurrence records (116 baseline points; 908 current points after filtering).</div>
     </div>
 
     <div class="embed map reveal">
       <iframe src="detections.html" loading="lazy" title="Getis-Ord Gi* hot spot map of tiger detection clusters"></iframe>
+      <div class="caption">Getis-Ord Gi* hot spot analysis, tiger occurrence records 2006–2022. Orange/red: statistically significant clusters (90–99% confidence). Purple: cold spots. Gray: not significant. Distance band: 50 km, FDR correction applied. Source: GBIF occurrence records.</div>
     </div>
 
     <div class="reading reveal">
@@ -552,6 +561,7 @@
     </div>
     <div class="embed reserve reveal">
       <iframe src="reserves.html?reserve=6" loading="lazy" title="Reserve detail map for Ranthambore"></iframe>
+      <div class="caption">Reserve — Ranthambore Tiger Reserve</div>
     </div>
     <div class="reading reveal">
       <p>Ranthambore is the reserve that should not work — and does. In a state where forests cover less than 5% of the land, where the nearest town sits within walking distance of the park boundary, and where the terrain is rocky, seasonally dry, and bounded by agricultural land on three sides, Ranthambore has grown its tiger population from 32 to 57 over sixteen years. It is proof that tigers are more adaptable than their reputation as deep-forest predators suggests — provided the core habitat is protected and prey populations are maintained.</p>
@@ -574,6 +584,7 @@
     </div>
     <div class="embed reserve reveal">
       <iframe src="reserves.html?reserve=4" loading="lazy" title="Reserve detail map for Pench"></iframe>
+      <div class="caption">Reserve — Pench Tiger Reserve</div>
     </div>
     <div class="reading reveal">
       <p>No reserve in this analysis grew faster than Pench. Starting from just 33 tigers in 2006 — the smallest baseline population of the seven — Pench more than doubled to 77 by 2022, achieving the highest percentage growth of any featured reserve. That trajectory reflects the compounding effect of strong anti-poaching enforcement, robust prey recovery, and the ecological connectivity that links Pench to its neighbor Kanha through forested corridors in the Satpura Hills.</p>
@@ -599,11 +610,11 @@
     </div>
     <div class="embed reserve reveal">
       <iframe src="reserves.html?reserve=1" loading="lazy" title="Reserve detail map for Bandipur"></iframe>
-      <div class="caption">Bandipur National Park</div>
+      <div class="caption">Reserve — Bandipur National Park</div>
     </div>
     <div class="embed reserve reveal">
       <iframe src="reserves.html?reserve=2" loading="lazy" title="Reserve detail map for Nagarahole"></iframe>
-      <div class="caption">Nagarahole National Park</div>
+      <div class="caption">Reserve — Nagarahole National Park</div>
     </div>
     <div class="reading reveal">
       <p>In the Nilgiri Biosphere Reserve of southern Karnataka, two national parks share a boundary and, effectively, a tiger population. Bandipur and Nagarahole together form one of India's most productive tiger landscapes — nearly 3,000 square kilometers of contiguous Western Ghats forest where tigers, elephants, gaur, and leopards coexist at densities rarely seen elsewhere in the country. Bandipur grew from 68 tigers in 2006 to 150 in 2022; Nagarahole from 78 to 141. Together, the complex added 145 tigers over sixteen years.</p>
@@ -626,6 +637,7 @@
     </div>
     <div class="embed reserve reveal">
       <iframe src="reserves.html?reserve=3" loading="lazy" title="Reserve detail map for Kanha"></iframe>
+      <div class="caption">Reserve — Kanha National Park</div>
     </div>
     <div class="reading reveal">
       <p>Not every conservation success story is a growth story. Kanha National Park has maintained a population of 89 to 105 tigers across the full sixteen-year period — the most stable trajectory in this analysis, and arguably the most impressive. Sustaining a large predator population at near-constant levels in a reserve of 2,072 square kilometers, surrounded by one of India's most densely populated rural regions, requires the kind of consistent, unglamorous institutional effort that rarely makes headlines.</p>
@@ -647,6 +659,7 @@
     </div>
     <div class="embed reserve reveal">
       <iframe src="reserves.html?reserve=7" loading="lazy" title="Reserve detail map for Kaziranga"></iframe>
+      <div class="caption">Reserve — Kaziranga National Park</div>
     </div>
     <div class="reading reveal">
       <p>No 2006 reserve-level estimate is available for Kaziranga — it is excluded from the percentage growth ranking for this reason. But its story belongs in this analysis for a different metric entirely: density. At approximately 8.8 tigers per 100 square kilometers by census estimates — and likely higher within the core zone — Kaziranga supports the highest tiger density of any reserve in this project, and among the highest in the world.</p>
@@ -669,6 +682,7 @@
     </div>
     <div class="embed reserve reveal">
       <iframe src="reserves.html?reserve=8" loading="lazy" title="Reserve detail map for Jim Corbett"></iframe>
+      <div class="caption">Reserve — Jim Corbett National Park</div>
     </div>
     <div class="reading reveal">
       <p>Jim Corbett National Park holds more tigers than any other reserve in this analysis — 260 by the 2022 census — and has done so from the largest starting point as well. Growing from 164 to 260 tigers over sixteen years represents a 58% increase and an addition of 96 individuals: more tigers added in absolute terms than any other featured reserve. For a reserve that was already operating at high density in 2006, sustaining that trajectory for sixteen years is a significant achievement.</p>
@@ -686,6 +700,7 @@
 
     <div class="embed chart reveal">
       <iframe src="data/processed/chart3_density_comparison.html" loading="lazy" title="Chart comparing tiger density per 100 square kilometers in 2006 and 2022"></iframe>
+      <div class="caption">Tigers per 100 km², 2006 and 2022, seven featured reserves. Corbett 2022 density likely overstated — KBA boundary smaller than legal Tiger Reserve boundary. Source: NTCA All India Tiger Estimation Reports; reserve areas from ISFR 2021 Chapter 4.</div>
     </div>
 
     <div class="reading reveal">
@@ -694,6 +709,7 @@
 
     <div class="embed chart reveal">
       <iframe src="data/processed/chart4_area_vs_population.html" loading="lazy" title="Bubble chart of reserve area versus 2022 population sized by growth rate"></iframe>
+      <div class="caption">Reserve area (km²) vs. 2022 tiger population, bubble size proportional to percentage growth 2006–2022. Kaziranga bubble sized at median growth for display — no 2006 baseline available. Source: NTCA All India Tiger Estimation Reports; reserve areas from ISFR 2021 Chapter 4.</div>
     </div>
 
     <div class="reading reveal">
