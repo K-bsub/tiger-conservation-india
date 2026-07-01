@@ -67,6 +67,19 @@
     }
     .reserve-label::before { display: none !important; }
 
+    /* Mobile: shrink labels and allow wrapping so long reserve names
+       (e.g. "Pench Tiger Reserve (Combined)") don't overflow the map edge. */
+    @media (max-width: 760px) {
+      .reserve-label {
+        font-size: 0.62rem;
+        padding: 1px 4px;
+        white-space: normal;
+        max-width: 110px;
+        line-height: 1.15;
+        text-align: center;
+      }
+    }
+
     .reserve-popup h3 { color: var(--high); font-size: 1rem; margin-bottom: 6px; }
     .reserve-popup table { font-size: 0.82rem; border-collapse: collapse; }
     .reserve-popup td { padding: 2px 8px 2px 0; vertical-align: top; }
