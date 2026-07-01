@@ -54,6 +54,21 @@
     .legend-inline .row { display: flex; align-items: center; gap: 8px; }
     .legend-inline .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
 
+    /* Mobile: stack map on top, stats panel below (instead of side-by-side).
+       The horizontal 320px panel eats the screen on narrow viewports. */
+    @media (max-width: 760px) {
+      .layout { flex-direction: column; height: auto; }
+      #map { height: 60vh; min-height: 340px; width: 100%; flex: none; }
+      .panel {
+        width: 100%; border-left: 1px solid #d4cfc4; border-top: none;
+        max-height: none; overflow-y: visible;
+      }
+      body.embedded .layout { height: auto; }
+      body.embedded #map { height: 58vh; min-height: 320px; }
+      /* two-column stat grid stays readable on phones */
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+
     /* Reserve label — cyan to match the boundary, dark backing for legibility on imagery */
     .reserve-label {
       background: rgba(0,26,26,0.75); border: none !important; box-shadow: none !important;
@@ -164,6 +179,15 @@
         sel.value = requested;
       }
       showReserve(+sel.value);
+    });
+
+    // Keep the map correctly sized when the viewport changes (e.g. phone
+    // rotation, or the layout switching between side-by-side and stacked).
+    // Leaflet needs invalidateSize when its container is resized.
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => map.invalidateSize(), 150);
     });
 
     // ============================================================
