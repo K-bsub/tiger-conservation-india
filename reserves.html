@@ -178,14 +178,7 @@
       if (requested && [...sel.options].some(o => o.value === requested)) {
         sel.value = requested;
       }
-      showReserve(+sel.value);
-
-      // Force Leaflet to re-measure the container and re-request tiles
-      // after the initial layout settles. Without this, the basemap
-      // can paint only a partial checkerboard of tiles until the user
-      // zooms (which triggers a fresh tile request).
-      setTimeout(() => map.invalidateSize(), 200);
-      setTimeout(() => map.invalidateSize(), 600);
+      showReserve(+sel.value, false);   // first load: no animation, self re-fits
     });
 
     // Keep the map correctly sized when the viewport changes (e.g. phone
@@ -212,7 +205,7 @@
     // ============================================================
     // 3. showReserve — outline-only polygon, tighter zoom
     // ============================================================
-    function showReserve(reserveId) {
+    function showReserve(reserveId, animate = true) {
       const feature = reservesData.features.find(f => f.properties.Reserve_ID === reserveId);
       const p = feature.properties;
       const center = [p.FIRST_SitLat, p.FIRST_SitLong];
@@ -255,11 +248,23 @@
       gbifLayer.bringToBack();
 
       // tighter zoom: less padding, allow closer maxZoom
-      const bounds = reserveLayer.getBounds();
-      map.flyToBounds(bounds.pad(0.25), { duration: 0.6, maxZoom: 12 });
-      // Re-request tiles once the fly animation settles (prevents the
-      // partial-tile checkerboard seen on first load).
-      map.once('moveend', () => map.invalidateSize());
+      const bounds = reserveLayer.getBounds().pad(0.25);
+
+      if (animate) {
+        // User-triggered change: nice animated fly.
+        map.flyToBounds(bounds, { duration: 0.6, maxZoom: 12 });
+        map.once('moveend', () => map.invalidateSize());
+      } else {
+        // First load: NO animation. Set the view instantly, then
+        // re-measure the container and re-fit so Leaflet requests the
+        // correct tiles for the final container size. Repeated across a
+        // short window because iframes settle their height gradually.
+        map.fitBounds(bounds, { maxZoom: 12, animate: false });
+        [100, 350, 700, 1200].forEach(ms => setTimeout(() => {
+          map.invalidateSize();
+          map.fitBounds(bounds, { maxZoom: 12, animate: false });
+        }, ms));
+      }
 
       fillPanel(p, gbifNear.features.length, hotNear.features.length);
     }
