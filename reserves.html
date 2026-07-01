@@ -179,6 +179,13 @@
         sel.value = requested;
       }
       showReserve(+sel.value);
+
+      // Force Leaflet to re-measure the container and re-request tiles
+      // after the initial layout settles. Without this, the basemap
+      // can paint only a partial checkerboard of tiles until the user
+      // zooms (which triggers a fresh tile request).
+      setTimeout(() => map.invalidateSize(), 200);
+      setTimeout(() => map.invalidateSize(), 600);
     });
 
     // Keep the map correctly sized when the viewport changes (e.g. phone
@@ -189,6 +196,18 @@
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => map.invalidateSize(), 150);
     });
+
+    // ResizeObserver reliably catches the container getting its final
+    // size (iframe settling, layout reflow) where load/resize can miss —
+    // this is what prevents the partial-tile checkerboard on first paint.
+    if (window.ResizeObserver) {
+      let rafId = null;
+      const ro = new ResizeObserver(() => {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => map.invalidateSize());
+      });
+      ro.observe(document.getElementById('map'));
+    }
 
     // ============================================================
     // 3. showReserve — outline-only polygon, tighter zoom
@@ -238,6 +257,9 @@
       // tighter zoom: less padding, allow closer maxZoom
       const bounds = reserveLayer.getBounds();
       map.flyToBounds(bounds.pad(0.25), { duration: 0.6, maxZoom: 12 });
+      // Re-request tiles once the fly animation settles (prevents the
+      // partial-tile checkerboard seen on first load).
+      map.once('moveend', () => map.invalidateSize());
 
       fillPanel(p, gbifNear.features.length, hotNear.features.length);
     }
