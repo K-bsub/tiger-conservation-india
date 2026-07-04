@@ -263,6 +263,37 @@
     }
     .embed .caption strong { font-style: normal; color: var(--ink); }
 
+    /* "Open full screen" links on embeds + slideshows */
+    .fs-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.85rem;
+      font-style: normal;
+      font-weight: 600;
+      color: var(--forest);
+      text-decoration: none;
+      margin-left: 8px;
+      white-space: nowrap;
+    }
+    .fs-link:hover { text-decoration: underline; }
+    .embed .caption .fs-link { display: block; margin: 8px auto 0; width: fit-content; }
+
+    /* Slideshow variant: floating button top-right of the image */
+    .slideshow .fs-link {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 3;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      backdrop-filter: blur(2px);
+    }
+    .slideshow .fs-link:hover { background: rgba(0,0,0,0.78); text-decoration: none; }
+
     /* ============================================================
        SLIDESHOWS (arrow-scrollable image galleries)
        ============================================================ */
@@ -831,6 +862,14 @@
           box.appendChild(capEl);
         }
 
+        // "Open full screen" link — opens the current image in a new tab
+        const fsLink = document.createElement('a');
+        fsLink.className = 'fs-link';
+        fsLink.target = '_blank';
+        fsLink.rel = 'noopener';
+        fsLink.textContent = 'Open full screen ↗';
+        box.appendChild(fsLink);
+
         // build dots
         imgs.forEach((_, i) => {
           const d = document.createElement('span');
@@ -845,6 +884,7 @@
           slides.style.transform = `translateX(-${idx * 100}%)`;
           dots.forEach((d, i) => d.classList.toggle('active', i === idx));
           if (capEl) capEl.textContent = imgs[idx].dataset.cap || '';
+          fsLink.href = imgs[idx].getAttribute('src');   // current image
         }
 
         box.querySelector('.prev').addEventListener('click', () => go(idx - 1));
@@ -859,6 +899,25 @@
 
         // set initial caption
         go(0);
+      });
+    })();
+
+    // ---- "Open full screen" links for map + chart embeds ----
+    (function () {
+      document.querySelectorAll('.embed').forEach(embed => {
+        const iframe = embed.querySelector('iframe');
+        const caption = embed.querySelector('.caption');
+        if (!iframe || !caption) return;
+        const src = iframe.getAttribute('src');
+        if (!src) return;
+
+        const link = document.createElement('a');
+        link.className = 'fs-link';
+        link.href = src;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = 'Open full screen ↗';
+        caption.appendChild(link);
       });
     })();
     // ---- Scroll-spy: highlight active nav tab ----

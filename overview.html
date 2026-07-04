@@ -67,16 +67,13 @@
     }
     .reserve-label::before { display: none !important; }
 
-    /* Mobile: shrink labels and allow wrapping so long reserve names
-       (e.g. "Pench Tiger Reserve (Combined)") don't overflow the map edge. */
+    /* Mobile: shrink labels (single line, no wrap) so they stay close
+       to the reserve and don't overflow. Extra fitBounds padding (JS)
+       keeps edge reserves like Kaziranga inside the frame. */
     @media (max-width: 760px) {
       .reserve-label {
-        font-size: 0.62rem;
-        padding: 1px 4px;
-        white-space: normal;
-        max-width: 110px;
-        line-height: 1.15;
-        text-align: center;
+        font-size: 0.6rem;
+        padding: 1px 3px;
       }
     }
 
@@ -233,7 +230,10 @@
     function fitReserves() {
       if (!reserveBounds) return;
       map.invalidateSize();
-      map.fitBounds(reserveBounds, { padding: [70, 70] });
+      // More padding on narrow screens so edge reserves (Kaziranga east,
+      // Bandipur south) and their labels stay inside the frame.
+      const pad = window.innerWidth <= 760 ? [90, 55] : [70, 70];
+      map.fitBounds(reserveBounds, { padding: pad });
     }
 
     // Re-fit whenever the map container actually changes size. A

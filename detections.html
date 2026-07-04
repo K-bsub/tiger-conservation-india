@@ -48,11 +48,7 @@
     @media (max-width: 760px) {
       .reserve-label {
         font-size: 0.6rem;
-        padding: 1px 4px;
-        white-space: normal;
-        max-width: 105px;
-        line-height: 1.15;
-        text-align: center;
+        padding: 1px 3px;
       }
     }
 
@@ -154,7 +150,8 @@
     function fitReserves() {
       if (!reserveBounds) return;
       map.invalidateSize();
-      map.fitBounds(reserveBounds, { padding: [70, 70] });
+      const pad = window.innerWidth <= 760 ? [90, 55] : [70, 70];
+      map.fitBounds(reserveBounds, { padding: pad });
     }
     const mapContainer = document.getElementById('map');
     if (window.ResizeObserver) {

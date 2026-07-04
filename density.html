@@ -67,11 +67,7 @@
     @media (max-width: 760px) {
       .reserve-label {
         font-size: 0.6rem;
-        padding: 1px 4px;
-        white-space: normal;
-        max-width: 105px;
-        line-height: 1.15;
-        text-align: center;
+        padding: 1px 3px;
       }
     }
   </style>
@@ -168,7 +164,8 @@
         [reserveBounds.getSouth() - 0.45, reserveBounds.getWest() - 0.45],
         [reserveBounds.getNorth() + 0.45, reserveBounds.getEast() + 0.45]
       );
-      map.fitBounds(widened, { padding: [50, 50] });
+      const pad = window.innerWidth <= 760 ? [70, 45] : [50, 50];
+      map.fitBounds(widened, { padding: pad });
     }
     const fitContainer = document.getElementById('map');
     if (window.ResizeObserver) {
